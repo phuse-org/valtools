@@ -3,3 +3,6 @@
 ^docs$
 ^valtools\.Rproj$
 ^\.github$
+^\.Rproj\.user$
+CONDUCT.md
+CONTRIBUTING.md
