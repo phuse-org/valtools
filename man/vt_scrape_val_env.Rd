@@ -4,7 +4,10 @@
 \alias{vt_scrape_val_env}
 \title{Retrieve validation environment}
 \usage{
-vt_scrape_val_env()
+vt_scrape_val_env(pkg = here())
+}
+\arguments{
+\item{pkg}{path to package}
 }
 \value{
 data.frame with columns:

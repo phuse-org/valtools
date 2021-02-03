@@ -2,6 +2,7 @@
 #' @description Retrieves dependencies used in validation report.
 #' Includes: OS, R version, packages listed in the validation package DESCRIPTION (Depends/Imports/Suggests), packages
 #' present in current session.
+#' @param pkg path to package
 #' @return data.frame with columns:
 #'
 #' \itemize{
@@ -20,9 +21,12 @@
 #' @importFrom utils packageVersion sessionInfo
 #' @importFrom desc desc
 #' @export
-vt_scrape_val_env <- function(){
-  # cannot use roxygen2::: due to cran checks.
-  desc <- desc(here("DESCRIPTION"))
+vt_scrape_val_env <- function(pkg = here()){
+  # cannot use roxygen2::: due to cran checks (::: calls generate note)
+  # cannot use here::here due to cran check for valtools
+  #  - here::here() maps to valtools.Rcheck/tests/ which does not include DESCRIPTION
+  #  - must switch to valtools.Rcheck/pkgname
+  desc <- desc(file.path(pkg, "DESCRIPTION"))
 
   # use trycatch b/c not all packages have all Depends, Imports & Suggests
   e <- function(cond) {
@@ -72,12 +76,13 @@ vt_scrape_val_env <- function(){
   session_pkg <- session_pkg[!session_pkg %in%
                                c(desc$get_field("Package"),
                                  val_env[val_env$type %in% c("package_req", "extended_req"), "resource"])]
-
-  val_env <- rbind(val_env,
-                   data.frame(resource = session_pkg,
-                              type = "session",
-                              detail = unname(sapply(session_pkg,
-                                              FUN = function(.x){as.character(packageVersion(.x))}))))
+  if(length(session_pkg) > 0){
+    val_env <- rbind(val_env,
+                     data.frame(resource = session_pkg,
+                                type = "session",
+                                detail = unname(sapply(session_pkg,
+                                                FUN = function(.x){as.character(packageVersion(.x))}))))
+  }
   val_env$type <- factor(val_env$type, levels = c("system", "package_req", "extended_req", "session"))
   val_env[] <- lapply(val_env[order(val_env$type, val_env$resource),], as.character)
   val_env
