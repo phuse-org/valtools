@@ -23,9 +23,26 @@
 vt_scrape_val_env <- function(){
   # cannot use roxygen2::: due to cran checks.
   desc <- desc(here("DESCRIPTION"))
-  depends <- gsub("\n", "", trimws(strsplit(desc$get_field("Depends"), split = ",")[[1]]))
-  imports <- gsub("\n", "", trimws(strsplit(desc$get_field("Imports"), split = ",")[[1]]))
-  suggests <- gsub("\n", "", trimws(strsplit(desc$get_field("Suggests"), split = ",")[[1]]))
+
+  # use trycatch b/c not all packages have all Depends, Imports & Suggests
+  e <- function(cond) {
+    character()
+  }
+
+  depends <- tryCatch({
+    gsub("\n", "", trimws(strsplit(desc$get_field("Depends"), split = ",")[[1]]))
+  },
+  error = e)
+
+  imports <- tryCatch({
+    gsub("\n", "", trimws(strsplit(desc$get_field("Imports"), split = ",")[[1]]))
+  },
+  error = e)
+
+  suggests <- tryCatch({
+    gsub("\n", "", trimws(strsplit(desc$get_field("Suggests"), split = ",")[[1]]))
+  },
+  error = e)
 
 
   val_env <- data.frame(
@@ -53,7 +70,7 @@ vt_scrape_val_env <- function(){
 
   session_pkg <- names(sessionInfo()[["otherPkgs"]])
   session_pkg <- session_pkg[!session_pkg %in%
-                               c(desc$Package,
+                               c(desc$get_field("Package"),
                                  val_env[val_env$type %in% c("package_req", "extended_req"), "resource"])]
 
   val_env <- rbind(val_env,
