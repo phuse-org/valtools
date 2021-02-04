@@ -4,7 +4,7 @@
 \alias{vt_scrape_val_env}
 \title{Retrieve validation environment}
 \usage{
-vt_scrape_val_env(pkg = here())
+vt_scrape_val_env(pkg = ".")
 }
 \arguments{
 \item{pkg}{path to package}

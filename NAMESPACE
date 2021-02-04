@@ -2,6 +2,6 @@
 
 export(vt_scrape_val_env)
 importFrom(desc,desc)
-importFrom(here,here)
+importFrom(devtools,package_file)
 importFrom(utils,packageVersion)
 importFrom(utils,sessionInfo)

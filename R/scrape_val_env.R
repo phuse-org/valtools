@@ -17,36 +17,17 @@
 #' \item \code{detail} OS or version details
 #'
 #' }
-#' @importFrom here here
+#' @importFrom devtools package_file
 #' @importFrom utils packageVersion sessionInfo
 #' @importFrom desc desc
 #' @export
-vt_scrape_val_env <- function(pkg = here()){
+vt_scrape_val_env <- function(pkg = "."){
   # cannot use roxygen2::: due to cran checks (::: calls generate note)
-  # cannot use here::here due to cran check for valtools
-  #  - here::here() maps to valtools.Rcheck/tests/ which does not include DESCRIPTION
-  #  - must switch to valtools.Rcheck/pkgname
-  desc <- desc(file.path(pkg, "DESCRIPTION"))
-
-  # use trycatch b/c not all packages have all Depends, Imports & Suggests
-  e <- function(cond) {
-    character()
-  }
-
-  depends <- tryCatch({
-    gsub("\n", "", trimws(strsplit(desc$get_field("Depends"), split = ",")[[1]]))
-  },
-  error = e)
-
-  imports <- tryCatch({
-    gsub("\n", "", trimws(strsplit(desc$get_field("Imports"), split = ",")[[1]]))
-  },
-  error = e)
-
-  suggests <- tryCatch({
-    gsub("\n", "", trimws(strsplit(desc$get_field("Suggests"), split = ",")[[1]]))
-  },
-  error = e)
+  desc <- desc(file.path(package_file(path = pkg), "DESCRIPTION"))
+  all_deps <- desc$get_deps()
+  depends <- all_deps[all_deps$type == "Depends","package"]
+  imports <- all_deps[all_deps$type == "Imports","package"]
+  suggests <- all_deps[all_deps$type == "Suggests","package"]
 
 
   val_env <- data.frame(

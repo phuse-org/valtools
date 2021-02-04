@@ -15,7 +15,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
     covr,
-    testthat
-Imports:
+    testthat,
     here,
-    desc
+    glue,
+    usethis
+Imports:
+    desc,
+    devtools
