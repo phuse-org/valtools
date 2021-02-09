@@ -17,8 +17,11 @@ Suggests:
     covr,
     testthat,
     here,
-    glue,
-    usethis
+    glue
 Imports:
     desc,
-    devtools
+    devtools,
+    stringr,
+    rlang,
+    usethis,
+    rmarkdown
