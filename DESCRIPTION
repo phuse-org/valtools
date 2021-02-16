@@ -21,4 +21,5 @@ Suggests:
     usethis
 Imports:
     desc,
-    devtools
+    devtools,
+    R6
