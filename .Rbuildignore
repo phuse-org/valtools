@@ -3,3 +3,4 @@
 ^docs$
 ^valtools\.Rproj$
 ^\.github$
+^\.Rproj\.user$
