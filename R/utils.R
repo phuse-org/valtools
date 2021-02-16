@@ -11,7 +11,8 @@
 #' @noRd
 create_item <- function(pkg, type, item_name){
 
-  if(!dir.exists(paste0(pkg, "inst", "validation", sep = .Platform$file.sep))) {
+  if(!dir.exists(paste0(c(pkg, "inst", "validation"),
+                        sep = .Platform$file.sep, collapse = ""))) {
     abort("No validation structure found. Run `valtools::vt_use_validation().`",
           class = "vt.missingStructure")
   }
