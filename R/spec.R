@@ -6,10 +6,21 @@
 #' @export
 #'
 #' @rdname new_item
-vt_use_spec <- function(spec_name, pkg = "."){
+vt_use_spec <- function(spec_name, spec_content, pkg = "."){
 
+  # Create file to write in
   spec_path <- create_item(pkg, "specs", spec_name)
 
-  writeLines("here is your spec file", con = spec_path)
+  # Create the content to write
+  content <- paste0(c(
+    "#' @section Last Updated By:",
+    paste0("#' ", Sys.getenv("USER")),
+    "#' @section Last Update Date",
+    paste0("#' ", as.character(Sys.Date())),
+    paste0("+ ", spec_content, collapse = ""),
+    collapse = "",
+    sep = "\n"
+  ))
 
+  writeLines(content, con = spec_path)
 }

@@ -11,20 +11,28 @@
 #' @noRd
 create_item <- function(pkg, type, item_name){
 
+  # Error out if no validation skel
   if(!dir.exists(paste0(c(pkg, "inst", "validation"),
                         sep = .Platform$file.sep, collapse = ""))) {
     abort("No validation structure found. Run `valtools::vt_use_validation().`",
           class = "vt.missingStructure")
+
+    # Create item folder if this is the first item
+  } else if(!dir.exists(paste0(c(pkg, "inst", "validation", item),
+                               sep = .Platform$file.sep, collapse = ""))) {
+    dir.create(paste0(c(pkg, "inst", "validation", type),
+                      sep = .Platform$file.sep, collapse = ""),
+               recursive  = TRUE)
   }
 
   # Split out item_name to get any directories and create the structure.
   item_name_split <- str_split(item_name, .Platform$file.sep)[[1]]
+  # Path to new validation item
+  val_dir_path <- paste0(c(pkg, "inst", "validation", type,
+                           paste0(head(item_name_split,-1)),collapse = ""),
+                         sep = .Platform$file.sep, collapse = "")
+  # If the item is nested in a folder make sure its made.
   if(length(item_name_split) > 1){
-
-    val_dir_path <- paste0(c(pkg, "inst", "validation", type,
-                             paste0(head(item_name_split,-1)),collapse = ""),
-                           sep = .Platform$file.sep, collapse = "")
-
     tryCatch({
       dir.create(val_dir_path, recursive  = TRUE)
 

@@ -18,9 +18,20 @@
 #' vt_use_case("spec1", package_dir)
 #' # Create spec at `inst/validation/cases/regTests/Update2/spec2`
 #' vt_use_case("regTests/Update2/spec2", package_dir)
-vt_use_case <- function(case_name, pkg = ".") {
+vt_use_case <- function(case_name, case_content, pkg = ".") {
 
   case_path <- create_item(pkg, "cases", case_name)
 
-  writeLines("here is your case file", con = case_path)
+  # Create the content to write
+  content <- paste0(c(
+    "#' @section Last Updated By:",
+    paste0("#' ", Sys.getenv("USER")),
+    "#' @section Last Update Date",
+    paste0("#' ", as.character(Sys.Date())),
+    paste0("+ ", case_content, collapse = ""),
+    collapse = "",
+    sep = "\n"
+  ))
+
+  writeLines(content, con = case_path)
 }
