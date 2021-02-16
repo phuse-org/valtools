@@ -12,8 +12,8 @@
 #' By default, the expected indicator for a reference is "@@", though this can be
 #' changed. A reference starts with the indicator (@@) and can then be any 
 #' contiguous (no white spaces or special characters) alphanumeric sequence, or include 
-#' an underscore or dash. ie. @@THISIS_A-reference1234 is valid for the entire string, but
-#' @@THISIS_A-reference.12345 is a dynamic reference up to the ".".
+#' an underscore or dash. ie. @@THISIS_A-reference1234 is valid for the entire string, 
+#' but @@THISIS_A-reference.12345 is a dynamic reference up to the ".".
 #' 
 #' The method 'scrape_references' takes in a vector of strings, and an indicator whether
 #' the input file text is a specification ('spec'), test case ('test_case') or 
@@ -37,6 +37,17 @@
 #' 
 vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
         public = list(
+          #' @description
+          #' collect references from text.
+          #' @param text character vector to collect references from.
+          #' @param type type of file being converted; a specification ('spec'), test case ('test_case') or 
+          #' test code ('test_code')
+          #' @examples
+          #' ref <- vt_dynamic_referencer$new()
+          #' ref$list_references()
+          #' ref$scrape_references("@@new_reference")
+          #' ref$list_references()
+
           scrape_references = function(text, type = c("spec","test_case","test_code")){
             type <- match.arg(type)
             
@@ -79,6 +90,16 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           
             invisible()
           },
+          
+          #' @description
+          #' replace references in text with values
+          #' @param text character vector to be inserting references into
+          #' @examples
+          #' ref <- vt_dynamic_referencer$new()
+          #' ref$list_references()
+          #' ref$scrape_references("@@new_reference")
+          #' ref$list_references()
+          #' ref$reference_insertion("This is my @@new_reference")
           reference_insertion = function(text){
 
             ## ensure ordering to try to prevent accdentally replacing strings that are subs of the other
@@ -98,9 +119,22 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
             text
             
           },
+          
+          #' @description
+          #' list references available and their value
+          #' @examples
+          #' ref <- vt_dynamic_referencer$new()
+          #' ref$list_references()
+          #' ref$scrape_references("@@new_reference")
+          #' ref$list_references()
           list_references = function(){
             private$references
           },
+          
+          #' @description
+          #' create a new dynamic reference object
+          #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "@@"
+          #' @return a new `vt_dynamic_reference` object
           initialize = function(reference_indicator = "@@"){
             private$references <- list()
             private$ref_iter_number <- list(
@@ -113,6 +147,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
             private$reference_indicator_regex <- paste0("\\",strsplit(reference_indicator,"")[[1]], collapse = "")
           }
           ),
+        
         private = list(
           references = list(),
           ref_iter_number = list(
