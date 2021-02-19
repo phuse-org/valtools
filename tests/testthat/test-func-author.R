@@ -1,14 +1,5 @@
 context("function author table")
 
-test_that("works on valtools locally", {
- skip_if(grepl(dirname(here::here()), pattern = "\\.Rcheck"))
- author_table <- vt_scrape_function_authors()
- # valtools includes .R files with NULL, author info, missing author info, @section in example
- testthat::expect_identical(author_table$title, c("vt_scrape_function_authors",
-                                                    "vt_scrape_section",
-                                                    "vt_scrape_val_env"))
-})
-
 
 test_that("dummy case in temp dir", {
   temp_path <- tempdir()
