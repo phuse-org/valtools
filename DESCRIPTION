@@ -18,7 +18,9 @@ Suggests:
     testthat,
     here,
     glue,
-    usethis
+    usethis,
+    fs
 Imports:
     desc,
-    devtools
+    devtools,
+    lubridate
