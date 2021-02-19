@@ -18,7 +18,8 @@ Suggests:
     testthat,
     here,
     glue,
-    usethis
+    usethis,
+    withr
 Imports:
     desc,
     devtools
