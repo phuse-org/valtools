@@ -6,6 +6,7 @@
 #' @export
 #'
 #' @rdname new_item
+#' @importFrom usethis edit_file
 vt_use_test_code <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
 
   code_name <- vt_set_ext(name, ext = "R")
@@ -38,7 +39,7 @@ vt_use_test_code <- function(name, username = vt_username(), open = interactive(
   }
 
   if(open){
-    usethis::edit_file(code_name)
+    edit_file(code_name)
   }
 
   invisible(code_name)

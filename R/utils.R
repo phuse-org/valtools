@@ -71,9 +71,9 @@ create_item <- function(pkg, type = c("specification","test_case","test_code"), 
 #' @examples
 #' vt_username()
 #'
-#'
+#' @importFrom whoami username
 vt_username <- function(){
-  whoami::username(fallback = "")
+  username(fallback = "")
 }
 
 

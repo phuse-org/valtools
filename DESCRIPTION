@@ -16,14 +16,15 @@ RoxygenNote: 7.1.1
 Suggests: 
     covr,
     testthat,
-    here,
-    glue,
-    usethis,
-    withr
+    glue
 Imports:
     desc,
     devtools,
     stringr,
     rlang,
     usethis,
-    rmarkdown
+    rmarkdown,
+    whoami,
+    withr,
+    callr,
+    here
