@@ -9,6 +9,7 @@
 #' @export
 #'
 #' @rdname new_item
+#' @importFrom usethis edit_file
 vt_use_spec <- function(name, username = vt_username(), open = interactive(), pkg = "."){
 
   # ensure file extensions are of the acceptable type
@@ -38,7 +39,7 @@ vt_use_spec <- function(name, username = vt_username(), open = interactive(), pk
   }
 
   if(open){
-    usethis::edit_file(spec_name)
+    edit_file(spec_name)
   }
 
   invisible(spec_name)
