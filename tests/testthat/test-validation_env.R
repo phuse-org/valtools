@@ -17,6 +17,10 @@ test_that("works on valtools (no Depends)", {
 
 
 test_that("temp", {
+
+  testthat::skip_if_not_installed("plotly")
+  testthat::skip_if_not_installed("magrittr")
+
   temp_path <- tempdir()
 
   capture_output <- usethis::create_package(path = temp_path, open = FALSE,

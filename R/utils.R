@@ -1,56 +1,102 @@
-#' Create a file path to a validation item(spec, test case, test code file)
+#' Create a file path to a validation item(specification, test case, test code file)
 #'
-#' @param item_name Name/path of item file
-#' @param type "spec", "cases", "code"
+#' @param item_name Name of item file
+#' @param type "specification", "cases", "code"
 #'
 #' @return Nothing, side-effect to create directories and file
 #'
-#' @importFrom stringr str_split
-#' @importFrom rlang abort
+#' @importFrom rlang abort inform
 #'
 #' @noRd
-create_item <- function(pkg, type, item_name){
+create_item <- function(pkg, type = c("specification","test_case","test_code"), item_name){
 
-  # Error out if no validation skel
-  if(!dir.exists(paste0(c(pkg, "inst", "validation"),
-                        sep = .Platform$file.sep, collapse = ""))) {
+  type <- match.arg(type)
+
+  validation_directory <- getOption("vt.validation_directory", default = "vignettes/validation")
+
+  # Error out if no validation skeleton
+  if(!dir.exists(file.path(pkg, validation_directory))) {
     abort("No validation structure found. Run `valtools::vt_use_validation().`",
           class = "vt.missingStructure")
 
     # Create item folder if this is the first item
-  } else if(!dir.exists(paste0(c(pkg, "inst", "validation", item),
-                               sep = .Platform$file.sep, collapse = ""))) {
-    dir.create(paste0(c(pkg, "inst", "validation", type),
-                      sep = .Platform$file.sep, collapse = ""),
-               recursive  = TRUE)
   }
 
-  # Split out item_name to get any directories and create the structure.
-  item_name_split <- str_split(item_name, .Platform$file.sep)[[1]]
-  # Path to new validation item
-  val_dir_path <- paste0(c(pkg, "inst", "validation", type,
-                           paste0(head(item_name_split,-1)),collapse = ""),
-                         sep = .Platform$file.sep, collapse = "")
-  # If the item is nested in a folder make sure its made.
-  if(length(item_name_split) > 1){
-    tryCatch({
-      dir.create(val_dir_path, recursive  = TRUE)
+  if(!dir.exists(file.path(pkg, validation_directory, type))) {
+    dir.create(file.path(pkg, validation_directory, type))
+  }
 
+
+  # Split out item_name to get any directories and create the structure.
+  item_dir <- dirname(item_name)
+
+  # If the item is nested in a folder make sure its made.
+  if( !item_dir %in% c("",".")){
+    tryCatch({
+      dir.create(file.path(pkg,validation_directory,type,item_dir), recursive  = TRUE, showWarnings = FALSE)
     },
     error = function(e) {
       abort(paste0("Failed to create validation", type, item_name,
                    sep = " ", collapse = ""),
             class = "vt.itemCreateFail")
     })
-
   }
 
-  item_file_path <- paste0(c(val_dir_path, .Platform$file.sep,tail(item_name_split, 1)),
-                           collapse = "")
+  item_file_path <- file.path(pkg,validation_directory, type, item_name)
 
-  file.create(item_file_path)
+  tryCatch({
 
-  inform(paste0("Item created:", type, item_name, sep = " ", collapse = ""))
+    file.create(item_file_path)
+    inform(paste0("Item created:", file.path(type, item_name), sep = " ", collapse = ""))
+    return(item_file_path)
 
-  item_file_path
+  }, error = function(e) {
+    abort(paste0("Failed to create validation", type, item_name,
+                                  sep = " ", collapse = ""),
+                           class = "vt.itemCreateFail")
+  })
+
+
 }
+
+
+#' Get current username
+#'
+#' Wrapper for whoami::username
+#'
+#' @returns `[character]` Username of the person that called the function
+#'
+#' @importFrom whoami username
+#' @export
+#' @examples
+#' vt_username()
+#'
+#'
+vt_username <- function(){
+  whoami::username(fallback = "")
+}
+
+
+#' Add specific extention to file names
+#'
+#' @noRd
+#' @param filename the filname to add/replace extention
+#' @param ext intended extention
+#'
+#' @returns filename with correct extention
+#'
+#'
+vt_set_ext <- function(filename, ext){
+
+    filename_ext <- tools::file_ext(filename)
+    filename <- tools::file_path_sans_ext(filename)
+
+    filename_ext <- ifelse(
+      identical(tolower(filename_ext), tolower(ext)),
+      filename_ext,
+      ext
+    )
+
+    paste0(filename, ".", filename_ext)
+}
+

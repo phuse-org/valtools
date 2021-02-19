@@ -12,13 +12,12 @@
 #' @export
 vt_use_validation <- function(pkg = ".") {
 
-  tryCatch({
-    dir.create(paste0(c(pkg, "inst", "validation"),
-                      sep = .Platform$file.sep,
-                      collapse = ""),
-               recursive = TRUE)
+  validation_directory <- getOption("vt.validation_directory",default = "vignettes/validation")
 
-    inform("Created inst/validation in package structure",
+  tryCatch({
+    dir.create(file.path(pkg, validation_directory),recursive = TRUE)
+
+    inform(paste("Created",validation_directory," in package structure"),
            class = "vt.init")
 
   }, error = function(e) {
