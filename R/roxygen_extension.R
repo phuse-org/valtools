@@ -1,24 +1,25 @@
 #' @export
-#' @importFrom roxygen2 tag_markdown
+#' @importFrom roxygen2 tag_markdown roxy_tag_parse
 roxy_tag_parse.roxy_tag_editor <- function(x) {
   roxygen2::tag_markdown(x)
 }
 
 #' @export
-#' @importFrom lubiridate parse_date_time
+#' @importFrom lubridate parse_date_time
+#' @importFrom roxygen2  roxy_tag_parse
 roxy_tag_parse.roxy_tag_editDate <- function(x) {
   x$val <- as.character(lubridate::parse_date_time(x$raw, orders = c("ymd", "mdy")))
   x
 }
 
 #' @export
-#' @importFrom roxygen2 rd_section
+#' @importFrom roxygen2 rd_section roxy_tag_rd
 roxy_tag_rd.roxy_tag_editor <- function(x, base_path, env) {
   rd_section("editor", x$val)
 }
 
 #' @export
-#' @importFrom roxygen2 rd_section
+#' @importFrom roxygen2 roxy_tag_rd rd_section
 roxy_tag_rd.roxy_tag_editDate <- function(x, base_path, env) {
   rd_section("editDate", x$val)
 }
