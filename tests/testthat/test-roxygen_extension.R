@@ -8,7 +8,6 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   #' @editDate 1900-01-01
   #' @export
   #' @aliases testing
-  #' @importFrom devtools package_file
   hello_world <- function(name = \"\"){
     paste(\"Hello,\",name)
   }
@@ -42,7 +41,6 @@ test_that("Roxygen can read in new tags - MM-DD-YYYY", {
   #' @editDate 01-02-2010
   #' @export
   #' @aliases testing
-  #' @importFrom devtools package_file
   hello_world <- function(name = \"\"){
     paste(\"Hello,\",name)
   }

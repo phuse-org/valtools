@@ -1,14 +1,14 @@
 #' @export
 #' @importFrom roxygen2 tag_markdown roxy_tag_parse
 roxy_tag_parse.roxy_tag_editor <- function(x) {
-  roxygen2::tag_markdown(x)
+  tag_markdown(x)
 }
 
 #' @export
 #' @importFrom lubridate parse_date_time
 #' @importFrom roxygen2  roxy_tag_parse
 roxy_tag_parse.roxy_tag_editDate <- function(x) {
-  x$val <- as.character(lubridate::parse_date_time(x$raw, orders = c("ymd", "mdy")))
+  x$val <- as.character(parse_date_time(x$raw, orders = c("ymd", "mdy", "dmy")))
   x
 }
 
