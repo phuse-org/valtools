@@ -1,5 +1,5 @@
 Package: valtools
-Title: What the Package Does (One Line, Title Case)
+Title: Automate Validated Package Creation
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -7,7 +7,11 @@ Authors@R:
            role = c("aut", "cre"),
            email = "first.last@example.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Automate the steps necessary to create a validation ready package
+    to make the process of validation simple. This includes setting up the 
+    specifications, test cases, test code, and validation report. Also provides
+    tools to be able to execute the validation report from a variety of 
+    situations to provide documentation for validation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
