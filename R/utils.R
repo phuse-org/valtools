@@ -73,7 +73,7 @@ create_item <- function(pkg, type = c("specification","test_case","test_code"), 
 #'
 #'
 vt_username <- function(){
-  whoami::username(fallback = "")
+  getOption("vt_username",default = whoami::username(fallback = ""))
 }
 
 
