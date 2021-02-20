@@ -17,7 +17,9 @@ Suggests:
     covr,
     testthat,
     here,
-    glue
+    glue,
+    usethis,
+    withr
 Imports:
     desc,
     devtools,
