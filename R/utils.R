@@ -100,3 +100,24 @@ vt_set_ext <- function(filename, ext){
     paste0(filename, ".", filename_ext)
 }
 
+
+## this section heavily cribbing from the usethis:::check_file_name, but
+## it is not exported, so implementing our own version here, more or less copied
+
+#' @importFrom tools file_path_sans_ext
+valid_file_name <- function (x) {
+  grepl("^[a-zA-Z0-9._\\/\\-]+$", x)
+}
+
+#' @importFrom usethis ui_stop ui_value
+is_valid_name <- function(filename){
+
+  if (!rlang::is_string(filename)) {
+    ui_stop("Name must be a single string")
+  }
+
+  if(!valid_file_name(filename)){
+    ui_stop(c("{ui_value(filename)} is not a valid file name. It should:",
+              "* Contain only ASCII letters, numbers, '-','_', or file path delimeters (`\`,'//`)."))
+  }
+}

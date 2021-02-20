@@ -24,6 +24,8 @@ vt_use_test_case <- function(name, username = vt_username(), open = interactive(
 
   name <- vt_set_ext(name, ext = "md")
 
+  is_valid_name(name)
+
   case_name <- create_item(pkg, "test_case", name)
 
   ## if the file didnt exist before, populate with contents

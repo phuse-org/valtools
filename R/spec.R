@@ -14,6 +14,8 @@ vt_use_spec <- function(name, username = vt_username(), open = interactive(), pk
   # ensure file extensions are of the acceptable type
   name <- vt_set_ext(name, ext = "md")
 
+  is_valid_name(name)
+
   # Create file to write in
   spec_name <- create_item(pkg, "specification", name)
 
