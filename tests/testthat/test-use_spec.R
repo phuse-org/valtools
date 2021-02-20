@@ -1,4 +1,4 @@
-test_that("Creating specifications and set user", {
+test_that("Creating specifications and set user/title", {
 
   withr::with_tempdir({
 
@@ -7,6 +7,7 @@ test_that("Creating specifications and set user", {
     spec_path <- vt_use_spec(
       name = "spec001.md",
       username = "New User",
+      title = "Specification 001",
       pkg = ".",
       open = FALSE
       )
@@ -20,13 +21,11 @@ test_that("Creating specifications and set user", {
     expect_equal(
       content,
       c(
-        "#' @section Last Updated By:",
-        "#' New User",
-        "#' @section Last Update Date:",
-        paste("#'",as.character(Sys.Date())),
+        "#' @title Specification 001",
+        "#' @editor New User",
+        paste ("#' @editDate",as.character(Sys.Date())),
         "",
-        "+ _Specifications_",
-        "    + Start documenting specifications here!",
+        "+ Start documenting requirements here!",
         ""
       )
     )
@@ -56,13 +55,11 @@ test_that("Creating specifications and not setting user takes username", {
     expect_equal(
       content,
       c(
-        "#' @section Last Updated By:",
-        paste("#'",vt_username()),
-        "#' @section Last Update Date:",
-        paste ("#'",as.character(Sys.Date())),
+        "#' @title spec001",
+        paste("#' @editor",vt_username()),
+        paste ("#' @editDate",as.character(Sys.Date())),
         "",
-        "+ _Specifications_",
-        "    + Start documenting specifications here!",
+        "+ Start documenting requirements here!",
         ""
       )
     )

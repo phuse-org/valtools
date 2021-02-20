@@ -33,10 +33,8 @@ vt_use_test_case <- function(name, username = vt_username(), open = interactive(
 
     # Create the content to write
     content <- paste0(c(
-      "#' @section Last Updated By:",
-      paste0("#' ", username),
-      "#' @section Last Update Date:",
-      paste0("#' ", as.character(Sys.Date())),
+      paste0("#' @editor ", username),
+      paste0("#' @editDate ", as.character(Sys.Date())),
       "",
       "+ _Test Case_",
       "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",

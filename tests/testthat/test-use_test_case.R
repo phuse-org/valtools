@@ -20,10 +20,8 @@ test_that("Creating test cases and set user", {
     expect_equal(
       content,
       c(
-        "#' @section Last Updated By:",
-        "#' New User",
-        "#' @section Last Update Date:",
-        paste("#'",as.character(Sys.Date())),
+        "#' @editor New User",
+        paste ("#' @editDate",as.character(Sys.Date())),
         "",
         "+ _Test Case_",
         "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
@@ -60,10 +58,8 @@ test_that("Creating test cases and not setting user takes username", {
     expect_equal(
       content,
       c(
-        "#' @section Last Updated By:",
-        paste("#'",vt_username()),
-        "#' @section Last Update Date:",
-        paste ("#'",as.character(Sys.Date())),
+        paste("#' @editor",vt_username()),
+        paste ("#' @editDate",as.character(Sys.Date())),
         "",
         "+ _Test Case_",
         "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
