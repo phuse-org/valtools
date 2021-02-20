@@ -8,9 +8,11 @@
 #'
 #' @return Path to the newly created specification file, invisibly.
 #'
-#' @export
+#' @importFrom usethis edit_file
 #'
 #' @rdname new_item
+#'
+#' @export
 vt_use_spec <- function(name, username = vt_username(), title = NULL, open = interactive(), pkg = "."){
 
   # ensure file extensions are of the acceptable type
@@ -44,7 +46,7 @@ vt_use_spec <- function(name, username = vt_username(), title = NULL, open = int
   }
 
   if(open){
-    usethis::edit_file(spec_name)
+    edit_file(spec_name)
   }
 
   invisible(spec_name)

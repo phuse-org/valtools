@@ -71,7 +71,7 @@ create_item <- function(pkg, type = c("specification","test_case","test_code"), 
 #' @examples
 #' vt_username()
 #'
-#'
+#' @importFrom whoami username
 vt_username <- function(){
   getOption("vt_username",default = whoami::username(fallback = ""))
 }
@@ -85,11 +85,11 @@ vt_username <- function(){
 #'
 #' @returns filename with correct extention
 #'
-#'
+#' @importFrom tools file_ext file_path_sans_ext
 vt_set_ext <- function(filename, ext){
 
-    filename_ext <- tools::file_ext(filename)
-    filename <- tools::file_path_sans_ext(filename)
+    filename_ext <- file_ext(filename)
+    filename <- file_path_sans_ext(filename)
 
     filename_ext <- ifelse(
       identical(tolower(filename_ext), tolower(ext)),

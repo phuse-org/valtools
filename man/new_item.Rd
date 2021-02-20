@@ -20,7 +20,13 @@ vt_use_test_code(
   pkg = "."
 )
 
-vt_use_spec(name, username = vt_username(), open = interactive(), pkg = ".")
+vt_use_spec(
+  name,
+  username = vt_username(),
+  title = NULL,
+  open = interactive(),
+  pkg = "."
+)
 }
 \arguments{
 \item{name}{The Name of the new specification. specs can be named with your
@@ -38,14 +44,19 @@ Path to the newly created specification file, invisibly.
 }
 \description{
 Create a validation specification, test case, or test code file
+
+title for the specification. defaults to be the base name passed sans
+file paths or extensions.
 }
 \examples{
+\dontrun{
+# TODO: error during devtools::check
 package_dir <- tempdir()
 
 vt_use_validation(package_dir)
-
 # Create spec at the cases top level `inst/validation/cases/spec1`
 vt_use_test_case("spec1", package_dir)
 # Create spec at `inst/validation/cases/regTests/Update2/spec2`
 vt_use_test_case("regTests/Update2/spec2", package_dir)
+}
 }

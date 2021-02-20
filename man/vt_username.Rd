@@ -15,5 +15,4 @@ Wrapper for whoami::username
 \examples{
 vt_username()
 
-
 }

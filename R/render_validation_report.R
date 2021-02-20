@@ -12,13 +12,13 @@
 #' @param package the report  type of rendering of validation to run, "build" or "installed".
 #'
 #' @importFrom withr with_envvar
-
+#' @importFrom rmarkdown render
 render_validation_report <- function(report_path, output_dir = dirname(report_path), ..., render_time = c("build","installed"), package = ""){
 
   render_time <- match.arg(render_time)
 
   tryCatch({
-    withr::with_envvar(
+    with_envvar(
       new = list("vt_validation_state" = render_time,
                  "vt_validation_package" = package),
       render(input = report_path, output_dir = output_dir, ...)

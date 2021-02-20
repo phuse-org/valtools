@@ -15,11 +15,11 @@ vt_validated_build <- function(pkg = ".",...) {
 
   tryCatch({
 
-    withr::with_temp_libpaths(
-      callr::r( function(pkg, validation_directory){
+    with_temp_libpaths(
+      r( function(pkg, validation_directory){
 
         ## install R package to temporary libpath
-        devtools::install(
+        install(
           pkg = pkg,
           quick = TRUE,
           build = FALSE,
@@ -28,7 +28,7 @@ vt_validated_build <- function(pkg = ".",...) {
           )
 
         ## render validation report
-        valtools:::render_validation_report(
+        render_validation_report(
           report_path = file.path(pkg, "vignettes", "validation.Rmd"),
           output_dir = file.path(pkg, validation_directory),
           render_time = "build",
@@ -113,10 +113,10 @@ vt_validate_installed_package <- function(pkg, output_directory = ".", open = in
   tryCatch({
 
 
-    validation_report_path <- callr::r( function(pkg, validation_directory, output_directory){
+    validation_report_path <- r( function(pkg, validation_directory, output_directory){
 
         ## render validation report
-        valtools:::render_validation_report(
+        render_validation_report(
           report_path = file.path(validation_directory, "validation.Rmd"),
           output_dir = output_directory,
           render_time = "installed",

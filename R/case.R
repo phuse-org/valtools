@@ -12,14 +12,17 @@
 #' @rdname new_item
 #'
 #' @examples
+#' \dontrun{
+#' # TODO: error during devtools::check
 #' package_dir <- tempdir()
 #'
 #' vt_use_validation(package_dir)
-#'
 #' # Create spec at the cases top level `inst/validation/cases/spec1`
 #' vt_use_test_case("spec1", package_dir)
 #' # Create spec at `inst/validation/cases/regTests/Update2/spec2`
 #' vt_use_test_case("regTests/Update2/spec2", package_dir)
+#' }
+#' @importFrom usethis edit_file
 vt_use_test_case <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
 
   name <- vt_set_ext(name, ext = "md")
@@ -49,7 +52,7 @@ vt_use_test_case <- function(name, username = vt_username(), open = interactive(
   }
 
   if(open){
-    usethis::edit_file(case_name)
+    edit_file(case_name)
   }
 
   invisible(case_name)

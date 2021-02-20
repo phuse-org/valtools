@@ -35,10 +35,11 @@ vt_use_validation <- function(pkg = ".") {
 #' @rdname val_init
 #'
 #' @export
+#' @importFrom usethis create_package
 vt_create_package <- function(pkg = ".", ...) {
 
   tryCatch({
-    usethis::create_package(path = pkg, ...)
+    create_package(path = pkg, ...)
 
     inform("Created package structure",
            class = "vt.initPackage")

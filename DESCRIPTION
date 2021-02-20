@@ -19,11 +19,18 @@ Suggests:
     here,
     glue,
     usethis,
-    withr
+    withr,
+    glue,
+    knitr
 Imports:
     desc,
     devtools,
     stringr,
     rlang,
     usethis,
-    rmarkdown
+    rmarkdown,
+    whoami,
+    withr,
+    callr,
+    here
+VignetteBuilder: knitr
