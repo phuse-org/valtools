@@ -16,10 +16,6 @@ RoxygenNote: 7.1.1
 Suggests: 
     covr,
     testthat,
-    here,
-    glue,
-    usethis,
-    withr,
     glue,
     knitr
 Imports:
