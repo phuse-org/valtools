@@ -36,13 +36,13 @@ test_that("invalid names invoke error", {
 
   expect_error(
     is_valid_name("test fail"),
-    "\033[34m'test fail'\033[39m is not a valid file name.",
+    "is not a valid file name.",
     fixed = TRUE
   )
 
   expect_error(
     is_valid_name("test!"),
-    "\033[34m'test!'\033[39m is not a valid file name.",
+    "is not a valid file name.",
     fixed = TRUE
   )
 
