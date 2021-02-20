@@ -3,7 +3,7 @@
 #' @param name The Name of the new specification. specs can be named with your
 #'   file system separator and will be organized as a directory structure. Specs
 #'   are located at `./inst/validation/specification/{spec}`.
-#' @title title for the specification. defaults to be the base name passed sans
+#' @param title title for the specification. defaults to be the base name passed sans
 #'  file paths or extensions.
 #'
 #' @return Path to the newly created specification file, invisibly.

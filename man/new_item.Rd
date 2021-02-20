@@ -38,15 +38,15 @@ are located at \code{./inst/validation/specification/{spec}}.}
 \item{open}{should the newly make specification open for editing.}
 
 \item{pkg}{Top-level of package}
+
+\item{title}{title for the specification. defaults to be the base name passed sans
+file paths or extensions.}
 }
 \value{
 Path to the newly created specification file, invisibly.
 }
 \description{
 Create a validation specification, test case, or test code file
-
-title for the specification. defaults to be the base name passed sans
-file paths or extensions.
 }
 \examples{
 \dontrun{
