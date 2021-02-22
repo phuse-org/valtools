@@ -22,4 +22,6 @@ Suggests:
     withr
 Imports:
     desc,
-    devtools
+    devtools,
+    roxygen2,
+    lubridate
