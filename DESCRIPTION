@@ -21,6 +21,8 @@ Suggests:
 Imports:
     desc,
     devtools,
+    roxygen2,
+    lubridate,
     stringr,
     rlang,
     usethis,
@@ -30,3 +32,4 @@ Imports:
     callr,
     here
 VignetteBuilder: knitr
+
