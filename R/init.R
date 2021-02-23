@@ -10,12 +10,14 @@
 #' @rdname val_init
 #'
 #' @export
+#' @importFrom usethis use_git_ignore
 vt_use_validation <- function(pkg = ".") {
 
   validation_directory <- getOption("vt.validation_directory",default = "vignettes/validation")
 
   tryCatch({
     dir.create(file.path(pkg, validation_directory),recursive = TRUE)
+    use_git_ignore("!*", directory =  getOption("vt.validation_directory"))
 
     inform(paste("Created",validation_directory," in package structure"),
            class = "vt.init")
