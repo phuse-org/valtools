@@ -23,7 +23,10 @@ Suggests:
     here,
     glue,
     usethis,
-    withr
+    withr,
+    knitr,
+    rmarkdown
 Imports:
     desc,
     devtools
+VignetteBuilder: knitr
