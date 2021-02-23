@@ -2,11 +2,13 @@ Package: valtools
 Title: Automate Validated Package Creation
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    c(
+    person(given = "Eli",
+           family = "Miller",
+           role = "aut",
+           email = "elimillera@gmail.com",
+           comment = c(ORCID = "0000-0002-2127-9456"))
+    )
 Description: Automate the steps necessary to create a validation ready package
     to make the process of validation simple. This includes setting up the 
     specifications, test cases, test code, and validation report. Also provides
