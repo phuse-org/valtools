@@ -28,5 +28,8 @@ Suggests:
     rmarkdown
 Imports:
     desc,
-    devtools
+    devtools,
+    roxygen2,
+    lubridate
 VignetteBuilder: knitr
+
