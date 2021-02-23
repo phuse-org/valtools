@@ -4,13 +4,23 @@
 \alias{vt_validate_installed_package}
 \title{Validate an installed package}
 \usage{
-vt_validate_installed_package(pkg, output_directory = ".")
+vt_validate_installed_package(
+  pkg,
+  output_directory = ".",
+  open = interactive()
+)
 }
 \arguments{
 \item{pkg}{Name of installed package}
 
 \item{output_directory}{Location of directory to output validation report}
+
+\item{open}{open the validation report after the rendering is completed}
+}
+\value{
+Returns the path of the regenerated validation report
 }
 \description{
-Validate an installed package
+Rerun the validation report that is contained within a package that was built
+by \code{valtools::vt_validated_built()}. Saves the new report in the current directory.
 }

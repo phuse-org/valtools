@@ -10,15 +10,16 @@
 #' @rdname val_init
 #'
 #' @export
+#' @importFrom usethis use_git_ignore
 vt_use_validation <- function(pkg = ".") {
 
-  tryCatch({
-    dir.create(paste0(c(pkg, "inst", "validation"),
-                      sep = .Platform$file.sep,
-                      collapse = ""),
-               recursive = TRUE)
+  validation_directory <- getOption("vt.validation_directory",default = "vignettes/validation")
 
-    inform("Created inst/validation in package structure",
+  tryCatch({
+    dir.create(file.path(pkg, validation_directory),recursive = TRUE)
+    use_git_ignore("!*", directory =  getOption("vt.validation_directory"))
+
+    inform(paste("Created",validation_directory," in package structure"),
            class = "vt.init")
 
   }, error = function(e) {
@@ -36,10 +37,11 @@ vt_use_validation <- function(pkg = ".") {
 #' @rdname val_init
 #'
 #' @export
+#' @importFrom usethis create_package
 vt_create_package <- function(pkg = ".", ...) {
 
   tryCatch({
-    usethis::create_package(path = pkg, ...)
+    create_package(path = pkg, ...)
 
     inform("Created package structure",
            class = "vt.initPackage")

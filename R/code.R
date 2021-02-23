@@ -1,14 +1,47 @@
 # The rest of this documentation is in case.R
-#' @param code_name The name/path of the test code. Codes can be named with your
+#' @param name The name/path of the test code. Codes can be named with your
 #'   file system separator and will be organized as a directory structure. Codes
-#'   are located at `./inst/validation/codes/{code_name}`.
+#'   are located at `./inst/validation/test_code/{name}`.
 #'
 #' @export
 #'
 #' @rdname new_item
-vt_use_code <- function(code_name, pkg = ".") {
+#' @importFrom usethis edit_file
+vt_use_test_code <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
 
-  code_path <- create_item(pkg, "codes", code_name)
+  name <- vt_set_ext(name, ext = "R")
 
-  writeLines("here is your code file", con = code_path)
+  is_valid_name(name)
+
+  # Create file to write in
+  code_name <- create_item(pkg, "test_code", name)
+
+  ## if the file didnt exist before, populate with contents
+  if (file.size(code_name) == 0){
+
+    # Create the content to write
+    content <- paste0(c(
+      "",
+      "# Test setup",
+      "",
+      "",
+      paste0("#' @editor ", username),
+      paste0("#' @editDate ", as.character(Sys.Date())),
+      "test_that(\"TESTNUMBER\", {",
+      "  #TEST CODE HERE",
+      "",
+      "})",
+      collapse = "",
+      sep = "\n"
+    ))
+
+    writeLines(content, con = code_name)
+  }
+
+  if(open){
+    edit_file(code_name)
+  }
+
+  invisible(code_name)
+
 }

@@ -1,26 +1,56 @@
 # The rest of this documentation is in case.R
-#' @param spec_name The name/path of the spec. specs can be named with your
-#'   file system separator and will be organized as a directory structure. Specs
-#'   are located at `./inst/validation/specs/{spec_name}`.
 #'
-#' @export
+#' @param name The Name of the new specification. specs can be named with your
+#'   file system separator and will be organized as a directory structure. Specs
+#'   are located at `./inst/validation/specification/{spec}`.
+#' @param title title for the specification. defaults to be the base name passed sans
+#'  file paths or extensions.
+#'
+#' @return Path to the newly created specification file, invisibly.
+#'
+#' @importFrom usethis edit_file
 #'
 #' @rdname new_item
-vt_use_spec <- function(spec_name, spec_content, pkg = "."){
+#'
+#' @export
+vt_use_spec <- function(name, username = vt_username(), title = NULL, open = interactive(), pkg = "."){
+
+  # ensure file extensions are of the acceptable type
+  name <- vt_set_ext(name, ext = "md")
+
+  is_valid_name(name)
 
   # Create file to write in
-  spec_path <- create_item(pkg, "specs", spec_name)
+  spec_name <- create_item(pkg, "specification", name)
 
-  # Create the content to write
-  content <- paste0(c(
-    "#' @section Last Updated By:",
-    paste0("#' ", Sys.getenv("USER")),
-    "#' @section Last Update Date",
-    paste0("#' ", as.character(Sys.Date())),
-    paste0("+ ", spec_content, collapse = ""),
-    collapse = "",
-    sep = "\n"
-  ))
+  ## if the file didnt exist before, populate with contents
+  if (file.size(spec_name) == 0){
 
-  writeLines(content, con = spec_path)
+    if(is.null(title)){
+      title <- basename(file_path_sans_ext(spec_name))
+    }
+
+    # Create the content to write
+    content <- paste0(c(
+      paste0("#' @title ", title),
+      paste0("#' @editor ", username),
+      paste0("#' @editDate ", as.character(Sys.Date())),
+      "",
+      "+ Start documenting requirements here!"
+      ),
+      collapse = "",
+      sep = "\n"
+    )
+
+    writeLines(content, con = spec_name)
+  }
+
+  if(open){
+    edit_file(spec_name)
+  }
+
+  invisible(spec_name)
+
 }
+
+

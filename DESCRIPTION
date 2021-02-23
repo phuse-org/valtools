@@ -16,12 +16,20 @@ RoxygenNote: 7.1.1
 Suggests: 
     covr,
     testthat,
-    here,
-    glue
+    glue,
+    knitr
 Imports:
     desc,
     devtools,
+    roxygen2,
+    lubridate,
     stringr,
     rlang,
     usethis,
-    rmarkdown
+    rmarkdown,
+    whoami,
+    withr,
+    callr,
+    here
+VignetteBuilder: knitr
+
