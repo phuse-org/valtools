@@ -7,7 +7,9 @@ Authors@R:
            family = "Miller",
            role = "aut",
            email = "elimillera@gmail.com",
-           comment = c(ORCID = "0000-0002-2127-9456"))
+           comment = c(ORCID = "0000-0002-2127-9456")),
+    person(given = "PHUSE",
+           role = "cph")
     )
 Description: Automate the steps necessary to create a validation ready package
     to make the process of validation simple. This includes setting up the 
