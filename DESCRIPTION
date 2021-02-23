@@ -18,8 +18,12 @@ Suggests:
     testthat,
     here,
     glue,
-    usethis
+    usethis,
+    withr
 Imports:
     desc,
     devtools,
-    R6
+    R6,
+    roxygen2,
+    lubridate
+
