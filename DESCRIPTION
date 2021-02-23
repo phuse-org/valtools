@@ -19,7 +19,8 @@ Suggests:
     here,
     glue,
     usethis,
-    withr
+    withr,
+    rmarkdown
 Imports:
     desc,
     devtools,
