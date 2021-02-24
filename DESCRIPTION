@@ -26,4 +26,5 @@ Imports:
     roxygen2,
     lubridate,
     rlang,
-    yaml
+    yaml,
+    whoami
