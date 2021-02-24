@@ -8,11 +8,14 @@
 #' @param val_dir_o [character] which folder under `inst` should the contents for
 #'     validation be copied to on successful validation build.
 #' @param username_list named list of named vectors. Name of list is username,
-#'     with named list containing entries for username, name, and
-#'     title to be used for documentation.
+#'     with named list containing entries for username, name, title, and
+#'     role to be used for documentation. Formatted as
+#'     `list(username = list(name = name, title = title, role = role, username = username))`
 #' @param ... These dots are for future extensions and must be empty.
+#' @param overwrite `[boolean]`If a validation file exists, should it be overwritten?
+#'    Defaults to FALSE.
 #'
-#' @importFrom rlang is_interactive inform
+#' @importFrom rlang inform abort
 #'
 #' @returns Used for side effect to create validation config file. Invisibly
 #'     returns TRUE on success.
@@ -25,14 +28,25 @@ vt_use_validation_config <- function(pkg = ".",
                                        val_dir = "vignettes/validation",
                                        val_dir_o = "validation",
                                        username_list = list(),
-                                       ...) {
+                                       ...,
+                                     overwrite = FALSE) {
+
+  if(file.exists(file.path(pkg,".validation")) & !overwrite){
+    abort(
+      paste0(
+      "Validation config file already exists.\n",
+      "To overwrite, set `overwrite` to `TRUE` in `vt_use_validation_config()`"
+      ),
+      class = "vt.validation_config_exists"
+    )
+  }
 
   if(length(username_list) > 0 ){
     check_username_list(username_list)
   }
 
   write_validation_config(
-    path = ".",
+    path = pkg,
     val_dir = val_dir,
     val_dir_o = val_dir_o,
     username_list = username_list,
@@ -52,7 +66,7 @@ vt_use_validation_config <- function(pkg = ".",
 #'
 #' Add user information to the projects validation config file to make for easier documentation
 #'
-#' @param username computer username associated with the name and role
+#' @param username computer username associated with the name, title, and role
 #' @param name name of the user
 #' @param role title of the user
 #'
@@ -65,15 +79,14 @@ vt_use_validation_config <- function(pkg = ".",
 #' @rdname config
 #'
 #' @export
-vt_add_user_to_config <- function(username = whoami::username(), name, title, pkg = "."){
-
-
-
+vt_add_user_to_config <- function(username = whoami::username(), name, title, role, pkg = "."){
 
   user_info <-
-    ask_user_name_role(username = username,
-                       name = name,
-                       title = title)
+    ask_user_name_title_role(
+      username = username,
+      name = name,
+      title = title,
+      role = role)
 
   validation_config <- read_validation_config(pkg = pkg)
 
@@ -105,6 +118,43 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, pk
 }
 
 
+
+#' Get user information from validation config file
+#'
+#' Get recorded user information from the validation config file to make for easier documentation
+#'
+#' @param username computer username associated with the name and role
+#' @param type type of information to pull. select at least one: name, title, role
+#'
+#' @importFrom whoami username
+#' @importFrom rlang inform
+#'
+#' @returns Used for side effect of adding user information to validation config
+#'     file. Invisibly returns TRUE on success.
+#'
+#' @rdname config
+#'
+#' @export
+vt_get_user_info <- function(username = whoami::username(), type = c("name","title","role")){
+
+  type <- match.arg(type,several.ok = TRUE)
+
+  output <- c()
+
+  if("name" %in% type){
+    output <- c(name = get_config_user_name(username))
+  }
+  if("title" %in% type){
+    output <- c(output, title = get_config_user_title(username))
+  }
+  if("role" %in% type){
+    output <- c(output, role = get_config_user_role(username))
+  }
+
+  return(output)
+}
+
+
 #' write validation config file
 #'
 #' validation configuration for directories and username-name-role key
@@ -114,8 +164,8 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, pk
 #' @param val_dir [character] where validation contents are used interactively
 #' @param val_dir_o [character] which folder under `inst` should the contents for
 #'     validation be copied to on successful validation build.
-#' @param username_list list of lists for username, names, and title to be used for
-#'     documentation formatted as list(username = list(name = name, title = title, username = username))
+#' @param username_list list of lists for username, names, title, and role to be used for
+#'     documentation. Formatted as list(username = list(name = name, title = title, role = role, username = username))
 #' @param ... These dots are for future extensions and must be empty.
 #'
 #' @importFrom yaml write_yaml
@@ -173,11 +223,11 @@ read_validation_config <- function(pkg = "."){
 #' @param name name of the user
 #' @param role title of the user
 #' @importFrom whoami username
-ask_user_name_role <- function(username = whoami::username(), name, title){
+ask_user_name_title_role <- function(username = whoami::username(), name, title, role){
 
   if(!missing(username) & !missing(name) & !missing(title)){
     return(
-      make_userlist_entry(username = username, name = name, title = title)
+      make_userlist_entry(username = username, name = name, title = title, role)
     )
   }
 
@@ -188,23 +238,28 @@ ask_user_name_role <- function(username = whoami::username(), name, title){
 
   if(missing(name)){
     cat("\n")
-    name <- readline(paste0(" Please provide your name associated with the username `",username,"` and press `Enter`: "))
+    name <- readline(paste0(" Please provide the name of the person associated with the username `",username,"` and press `Enter`: "))
   }
 
   if(missing(title)){
     cat("\n")
-    title <- readline(paste0(" Please provide your title associated with the username `",username,"` and press `Enter`: "))
+    title <- readline(paste0(" Please provide the title of the person associated with the username `",username,"` and press `Enter`: "))
   }
-s
+
+  if(missing(role)){
+    cat("\n")
+    role <- readline(paste0(" Please provide the role of the person for this validation associated with the username `",username,"` and press `Enter`: "))
+  }
+
   cat("\n")
 
-  make_userlist_entry(username = username, name = name, title = title)
+  make_userlist_entry(username = username, name = name, title = title, role = role)
 
 }
 
-make_userlist_entry <- function(username, name, title){
+make_userlist_entry <- function(username, name, title, role){
   setNames(list(
-    list(name = name, title = title, username = username)
+    list(name = name, title = title, role = role, username = username)
   ),username)
 }
 
@@ -230,7 +285,7 @@ check_username_list <- function(username_list){
         )
       }
 
-      has_req_fields <- c("name","title","username") %in% names(user_info)
+      has_req_fields <- c("name","title","role","username") %in% names(user_info)
 
       uid_matches <- user_info[["username"]] == uname
 
@@ -238,7 +293,7 @@ check_username_list <- function(username_list){
         rlang::abort(
           paste0(
             "Entry for username `",uname,"` is missing ",
-            "entries for ",paste0("`",c("name","title","username")[!has_req_fields],"`", collapse =", ")," in the username list."
+            "entries for ",paste0("`",c("name","title","role","username")[!has_req_fields],"`", collapse =", ")," in the username list."
             ),
           class = 'vt.invalid_username_list_entry'
         )
@@ -263,4 +318,71 @@ check_username_list <- function(username_list){
 }
 
 
+### Accessor functions for internal use
 
+get_config_val_dir <- function(pkg = "."){
+  read_validation_config(pkg = pkg)$validation_directory
+}
+
+get_config_val_dir_o <- function(pkg = "."){
+  read_validation_config(pkg = pkg)$validation_output_directory
+}
+
+#' @importFrom rlang is_interactive inform abort
+get_config_user <- function(username, pkg = "."){
+
+  users <- read_validation_config(pkg = pkg)$usernames
+
+  if( !username %in% names(users)){
+
+    if(is_interactive()){
+
+
+      inform(
+        paste0("User `",username,"` does not exist in the config file"),
+        class = "vt.validation_config_missing_user_inform"
+      )
+
+      message('Add user to config file?')
+      decision <- "?"
+      while(!tolower(decision) %in% c("y","n")){
+        decision <-readline("[Y/n]: ")
+      }
+
+      if(tolower(decision) == "y"){
+        vt_add_user_to_config(username = username)
+        read_validation_config(pkg = pkg)$usernames[[username]]
+      }else{
+        abort(
+          paste0("User `",username,"` does not exist in the config file.\n",
+                 "Add `",username,"` to the config file with `vt_add_user_to_config(\"",username,"\")`."),
+          class = "vt.validation_config_missing_user_error_interactive"
+        )
+      }
+
+    }else{
+      abort(
+        paste0("User `",username,"` does not exist in the config file.\n",
+               "Add `",username,"` to the config file with `vt_add_user_to_config(\"",username,"\")`."),
+        class = "vt.validation_config_missing_user_error_batch"
+      )
+    }
+
+  }else{
+
+    return(users[[username]])
+
+  }
+}
+
+get_config_user_name <- function(username, pkg = "."){
+  get_config_user(username, pkg = pkg)$name
+}
+
+get_config_user_title <- function(username, pkg = "."){
+  get_config_user(username, pkg = pkg)$title
+}
+
+get_config_user_role <- function(username, pkg = "."){
+  get_config_user(username, pkg = pkg)$role
+}

@@ -3,6 +3,7 @@
 \name{vt_use_validation_config}
 \alias{vt_use_validation_config}
 \alias{vt_add_user_to_config}
+\alias{vt_get_user_info}
 \title{use a validation config file}
 \usage{
 vt_use_validation_config(
@@ -10,10 +11,22 @@ vt_use_validation_config(
   val_dir = "vignettes/validation",
   val_dir_o = "validation",
   username_list = list(),
-  ...
+  ...,
+  overwrite = FALSE
 )
 
-vt_add_user_to_config(username = whoami::username(), name, title, pkg = ".")
+vt_add_user_to_config(
+  username = whoami::username(),
+  name,
+  title,
+  role,
+  pkg = "."
+)
+
+vt_get_user_info(
+  username = whoami::username(),
+  type = c("name", "title", "role")
+)
 }
 \arguments{
 \item{val_dir}{\link{character} where validation contents are used interactively}
@@ -22,22 +35,31 @@ vt_add_user_to_config(username = whoami::username(), name, title, pkg = ".")
 validation be copied to on successful validation build.}
 
 \item{username_list}{named list of named vectors. Name of list is username,
-with named list containing entries for username, name, and
-title to be used for documentation.}
+with named list containing entries for username, name, title, and
+role to be used for documentation. Formatted as
+\code{list(username = list(name = name, title = title, role = role, username = username))}}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{overwrite}{\verb{[boolean]}If a validation file exists, should it be overwritten?
+Defaults to FALSE.}
 
 \item{username}{computer username associated with the name and role}
 
 \item{name}{name of the user}
 
-\item{path}{where to write config file}
-
 \item{role}{title of the user}
+
+\item{type}{type of information to pull. select at least one: name, title, role}
+
+\item{path}{where to write config file}
 }
 \value{
 Used for side effect to create validation config file. Invisibly
 returns TRUE on success.
+
+Used for side effect of adding user information to validation config
+file. Invisibly returns TRUE on success.
 
 Used for side effect of adding user information to validation config
 file. Invisibly returns TRUE on success.
@@ -46,4 +68,6 @@ file. Invisibly returns TRUE on success.
 validation configuration for directories and username-name-role key
 
 Add user information to the projects validation config file to make for easier documentation
+
+Get recorded user information from the validation config file to make for easier documentation
 }
