@@ -1,4 +1,110 @@
 
+#' use a validation config file
+#'
+#' validation configuration for directories and username-name-role key
+#'
+#' @param path where to write config file
+#' @param val_dir [character] where validation contents are used interactively
+#' @param val_dir_o [character] which folder under `inst` should the contents for
+#'     validation be copied to on successful validation build.
+#' @param username_list named list of named vectors. Name of list is username,
+#'     with named list containing entries for username, name, and
+#'     title to be used for documentation.
+#' @param ... These dots are for future extensions and must be empty.
+#'
+#' @importFrom rlang is_interactive inform
+#'
+#' @returns Used for side effect to create validation config file. Invisibly
+#'     returns TRUE on success.
+#'
+#' @rdname config
+#'
+#' @export
+#'
+vt_use_validation_config <- function(pkg = ".",
+                                       val_dir = "vignettes/validation",
+                                       val_dir_o = "validation",
+                                       username_list = list(),
+                                       ...) {
+
+  if(length(username_list) > 0 ){
+    check_username_list(username_list)
+  }
+
+  write_validation_config(
+    path = ".",
+    val_dir = val_dir,
+    val_dir_o = val_dir_o,
+    username_list = username_list,
+    ...
+  )
+
+  inform(
+    "validation config file created. Add user information through `vt_add_user_to_config()`",
+    class = "vt.validation_config_created"
+  )
+
+  invisible(TRUE)
+
+}
+
+#' Add users to validation config file
+#'
+#' Add user information to the projects validation config file to make for easier documentation
+#'
+#' @param username computer username associated with the name and role
+#' @param name name of the user
+#' @param role title of the user
+#'
+#' @importFrom whoami username
+#' @importFrom rlang inform
+#'
+#' @returns Used for side effect of adding user information to validation config
+#'     file. Invisibly returns TRUE on success.
+#'
+#' @rdname config
+#'
+#' @export
+vt_add_user_to_config <- function(username = whoami::username(), name, title, pkg = "."){
+
+
+
+
+  user_info <-
+    ask_user_name_role(username = username,
+                       name = name,
+                       title = title)
+
+  validation_config <- read_validation_config(pkg = pkg)
+
+  updating_info <-
+    names(user_info) %in% names(validation_config$usernames)
+
+  user_list <-
+    c(validation_config$usernames[setdiff(names(validation_config$usernames), names(user_info))],
+      user_info)
+
+  write_validation_config(
+    path = pkg,
+    val_dir = validation_config$validation_directory,
+    val_dir_o = validation_config$validation_output_directory,
+    username_list = user_list
+  )
+
+  inform(paste0(
+    "User `",
+    username,
+    "` ",
+    ifelse(!updating_info, "added to", "information updated in the") ,
+    " validation config file."
+  ),
+  class = "vt.validation_config_add_user")
+
+  invisible(TRUE)
+
+}
+
+
 #' write validation config file
 #'
 #' validation configuration for directories and username-name-role key
@@ -8,16 +114,16 @@
 #' @param val_dir [character] where validation contents are used interactively
 #' @param val_dir_o [character] which folder under `inst` should the contents for
 #'     validation be copied to on successful validation build.
-#' @param username_list list of key for username, names, and role to be used for
-#'     documentation
+#' @param username_list list of lists for username, names, and title to be used for
+#'     documentation formatted as list(username = list(name = name, title = title, username = username))
 #' @param ... These dots are for future extensions and must be empty.
 #'
 #' @importFrom jsonlite write_json
 write_validation_config <- function(path = ".",
-                                      val_dir = "vignettes/validation",
-                                      val_dir_o = "validation",
-                                      username_list = list(),
-                                      ...) {
+                                    val_dir = "vignettes/validation",
+                                    val_dir_o = "validation",
+                                    username_list = list(),
+                                    ...) {
   config_contents <- list(
     validation_directory = val_dir,
     validation_output_directory = val_dir_o,
@@ -26,7 +132,7 @@ write_validation_config <- function(path = ".",
 
   tryCatch({
     write_json(x = config_contents,
-                         path = file.path(path, ".validation"),
+               path = file.path(path, ".validation"),
                pretty = TRUE)
   }, error = function(e) {
     abort(paste0(
@@ -42,56 +148,19 @@ write_validation_config <- function(path = ".",
 }
 
 #' @importFrom rlang abort
-read_validation_config <- function(path = "."){
+read_validation_config <- function(pkg = "."){
 
-  if(!file.exists(file.path(path,".validation"))){
+  if(!file.exists(file.path(pkg,".validation"))){
     abort(
       paste0(
-        "A validation config file does not exist.",
-        "Run `valtools::vt_use_validation_config()` to creae a config file."
-        ),
+        "A validation config file does not exist.\n",
+        "Run `valtools::vt_use_validation_config()` to create a validation config file."
+      ),
       class = "vt.validation_config_missing"
-      )
+    )
   }
-  jsonlite::read_json(file.path(path,".validation"),simplifyVector = TRUE)
+  jsonlite::read_json(file.path(pkg,".validation"),simplifyVector = TRUE)
 }
-
-#' use a validation config file
-#'
-#' validation configuration for directories and username-name-role key
-#'
-#' @param path where to write config file
-#' @param val_dir [character] where validation contents are used interactively
-#' @param val_dir_o [character] which folder under `inst` should the contents for
-#'     validation be copied to on successful validation build.
-#' @param username_list named list of named vectors. Name of list is username,
-#'     with named character vector containing entries for username, name, and
-#'     title to be used for documentation.
-#' @param ... These dots are for future extensions and must be empty.
-#'
-#' @export
-#'
-vt_use_validation_config <- function(pkg = ".",
-                                       val_dir = "vignettes/validation",
-                                       val_dir_o = "validation",
-                                       username_list = list(),
-                                       ...) {
-  if (length(username_list) == 0) {
-    username_list <- ask_user_name_role()
-  }
-
-  check_username_list(username_list)
-
-  write_validation_config(
-    path = ".",
-    val_dir = val_dir,
-    val_dir_o = val_dir_o,
-    username_list = username_list,
-    ...
-  )
-
-}
-
 
 #' ask information about user
 #' @keywords internal
@@ -131,7 +200,7 @@ ask_user_name_role <- function(username = whoami::username(), name, title){
 
 make_userlist_entry <- function(username, name, title){
   setNames(list(
-    c(name = name, title = title, username = username)
+    list(name = name, title = title, username = username)
   ),username)
 }
 
@@ -146,6 +215,17 @@ check_username_list <- function(username_list){
 
       user_info <- username_list[[user_info_idx]]
 
+      user_info_is_list <- is.list(user_info)
+
+      if(!user_info_is_list){
+        rlang::abort(
+          paste0(
+            "Entry for username `",uname,"` is not a list."
+          ),
+          class = 'vt.invalid_username_as_list_entry'
+        )
+      }
+
       has_req_fields <- c("name","title","username") %in% names(user_info)
 
       uid_matches <- user_info[["username"]] == uname
@@ -154,7 +234,7 @@ check_username_list <- function(username_list){
         rlang::abort(
           paste0(
             "Entry for username `",uname,"` is missing ",
-            "entries for ",paste("`",c("name","title","username")[!has_req_fields],"`", collapse =", ")," in the username list.",
+            "entries for ",paste0("`",c("name","title","username")[!has_req_fields],"`", collapse =", ")," in the username list."
             ),
           class = 'vt.invalid_username_list_entry'
         )
@@ -164,58 +244,19 @@ check_username_list <- function(username_list){
         rlang::abort(
           paste0(
             "Entry for username `",uname,"` does not match the username ",
-            "of the content: `",user_info[["username"]],"`.",
+            "of the content: `",user_info[["username"]],"`."
           ),
           class = 'vt.mismatched_username_list_entry'
         )
       }
 
+      return(all(c(has_req_fields, uid_matches)))
+
     },username_list)
   )
 
-  invisible((all_valid))
+  invisible(all_valid)
 }
 
 
-#' Add users to validation config file
-#'
-#' Add user information to the projects validation config file to make for easier documentation
-#'
-#' @param username computer username associated with the name and role
-#' @param name name of the user
-#' @param role title of the user
-#'
-#' @importFrom whoami username
-#' @importFrom rlang inform
-#'
-#' @export
-vt_add_user_to_config <- function(username = whoami::username(), name, title, pkg = "."){
 
-
-
-  user_info <-
-    ask_user_name_role(username = username,
-                       name = name,
-                       title = title)
-
-  validation_config <- read_validation_config(path = pkg)
-
-  updating_info <- names(user_info) %in% names(validation_config$usernames)
-
-  user_list <- c(validation_config$usernames[setdiff(names(validation_config$usernames), names(user_info))],
-                 user_info)
-
-  write_validation_config(
-    path = pkg,
-    val_dir = validation_config$validation_directory,
-    val_dir_o = validation_config$validation_output_directory,
-    username_list = user_list
-  )
-
-  inform(paste0("User `",username,"` ", ifelse(!updating_info, "added to","information updated in the ") ,"validation config file."),
-    class = "vt.validation_config_add_user"
-  )
-
-  invisible(TRUE)
-
-}
