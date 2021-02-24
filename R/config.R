@@ -3,14 +3,14 @@
 #'
 #' validation configuration for directories and username-name-role key
 #'
-#' @param path where to write config file
+#' @param pkg where to write config file
 #' @param val_dir [character] where validation contents are used interactively
 #' @param val_dir_o [character] which folder under `inst` should the contents for
 #'     validation be copied to on successful validation build.
 #' @param username_list named list of named vectors. Name of list is username,
 #'     with named list containing entries for username, name, title, and
 #'     role to be used for documentation. Formatted as
-#'     `list(username = list(name = name, title = title, role = role, username = username))`
+#'     list(username = list(name = name, title = title, role = role, username = username))
 #' @param ... These dots are for future extensions and must be empty.
 #' @param overwrite `[boolean]`If a validation file exists, should it be overwritten?
 #'    Defaults to FALSE.
@@ -68,7 +68,8 @@ vt_use_validation_config <- function(pkg = ".",
 #'
 #' @param username computer username associated with the name, title, and role
 #' @param name name of the user
-#' @param role title of the user
+#' @param role role of the user
+#' @param title title of the user
 #'
 #' @importFrom whoami username
 #' @importFrom rlang inform
@@ -135,20 +136,20 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @rdname config
 #'
 #' @export
-vt_get_user_info <- function(username = whoami::username(), type = c("name","title","role")){
+vt_get_user_info <- function(username = whoami::username(), type = c("name","title","role"), pkg = "."){
 
   type <- match.arg(type,several.ok = TRUE)
 
   output <- c()
 
   if("name" %in% type){
-    output <- c(name = get_config_user_name(username))
+    output <- c(name = get_config_user_name(username,pkg = pkg))
   }
   if("title" %in% type){
-    output <- c(output, title = get_config_user_title(username))
+    output <- c(output, title = get_config_user_title(username,pkg = pkg))
   }
   if("role" %in% type){
-    output <- c(output, role = get_config_user_role(username))
+    output <- c(output, role = get_config_user_role(username,pkg = pkg))
   }
 
   return(output)
@@ -257,6 +258,8 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 
 }
 
+#' @importFrom stats setNames
+#' @noRd
 make_userlist_entry <- function(username, name, title, role){
   setNames(list(
     list(name = name, title = title, role = role, username = username)

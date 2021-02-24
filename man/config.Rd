@@ -25,10 +25,13 @@ vt_add_user_to_config(
 
 vt_get_user_info(
   username = whoami::username(),
-  type = c("name", "title", "role")
+  type = c("name", "title", "role"),
+  pkg = "."
 )
 }
 \arguments{
+\item{pkg}{where to write config file}
+
 \item{val_dir}{\link{character} where validation contents are used interactively}
 
 \item{val_dir_o}{\link{character} which folder under \code{inst} should the contents for
@@ -37,7 +40,7 @@ validation be copied to on successful validation build.}
 \item{username_list}{named list of named vectors. Name of list is username,
 with named list containing entries for username, name, title, and
 role to be used for documentation. Formatted as
-\code{list(username = list(name = name, title = title, role = role, username = username))}}
+list(username = list(name = name, title = title, role = role, username = username))}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -48,11 +51,11 @@ Defaults to FALSE.}
 
 \item{name}{name of the user}
 
-\item{role}{title of the user}
+\item{title}{title of the user}
+
+\item{role}{role of the user}
 
 \item{type}{type of information to pull. select at least one: name, title, role}
-
-\item{path}{where to write config file}
 }
 \value{
 Used for side effect to create validation config file. Invisibly
