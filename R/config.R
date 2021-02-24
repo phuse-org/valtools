@@ -119,6 +119,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, pk
 #' @param ... These dots are for future extensions and must be empty.
 #'
 #' @importFrom jsonlite write_json
+#' @importFrom rlang abort
 write_validation_config <- function(path = ".",
                                     val_dir = "vignettes/validation",
                                     val_dir_o = "validation",
@@ -160,6 +161,7 @@ read_validation_config <- function(pkg = "."){
     )
   }
   jsonlite::read_json(file.path(pkg,".validation"),simplifyVector = TRUE)
+
 }
 
 #' ask information about user

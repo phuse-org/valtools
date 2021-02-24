@@ -24,4 +24,6 @@ Imports:
     desc,
     devtools,
     roxygen2,
-    lubridate
+    lubridate,
+    rlang,
+    jsonlite
