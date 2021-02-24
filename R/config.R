@@ -13,6 +13,7 @@
 #' @param ... These dots are for future extensions and must be empty.
 #'
 #' @importFrom jsonlite write_json
+#' @importFrom rlang abort
 write_validation_config <- function(path = ".",
                                       val_dir = "vignettes/validation",
                                       val_dir_o = "validation",
@@ -79,7 +80,6 @@ vt_use_validation_config <- function(pkg = ".",
   if (length(username_list) == 0) {
     username_list <- ask_user_name_role()
   }
-
   check_username_list(username_list)
 
   write_validation_config(
