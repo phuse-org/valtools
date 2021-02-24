@@ -26,4 +26,4 @@ Imports:
     roxygen2,
     lubridate,
     rlang,
-    jsonlite
+    yaml

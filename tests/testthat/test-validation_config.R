@@ -13,17 +13,13 @@ test_that("Test creation of the config file", {
     expect_equal(
       validation_config,
       c(
-        "{",
-        "  \"validation_directory\": [\"vignettes/validation\"],",
-        "  \"validation_output_directory\": [\"validation\"]," ,
-        "  \"usernames\": {",
-        "    \"test\": {",
-        "      \"name\": [\"test\"],",
-        "      \"title\": [\"test\"]," ,
-        "      \"username\": [\"test\"]" ,
-        "    }" ,
-        "  }",
-        "}"
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation",
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test",
+        "    username: test"
       )
     )
 
@@ -76,11 +72,9 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config,
       c(
-        "{",
-        "  \"validation_directory\": [\"vignettes/validation\"],",
-        "  \"validation_output_directory\": [\"validation\"]," ,
-        "  \"usernames\": []",
-        "}"
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation",
+        "usernames: []"
       )
     )
 
@@ -98,11 +92,9 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config,
       c(
-        "{",
-        "  \"validation_directory\": [\"vignettes/validation\"],",
-        "  \"validation_output_directory\": [\"validation\"]," ,
-        "  \"usernames\": []",
-        "}"
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation" ,
+        "usernames: []"
       )
     )
 
@@ -120,17 +112,41 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config2,
       c(
-        "{",
-        "  \"validation_directory\": [\"vignettes/validation\"],",
-        "  \"validation_output_directory\": [\"validation\"]," ,
-        "  \"usernames\": {",
-        "    \"test\": {",
-        "      \"name\": [\"test\"],",
-        "      \"title\": [\"test\"]," ,
-        "      \"username\": [\"test\"]" ,
-        "    }" ,
-        "  }",
-        "}"
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation" ,
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test" ,
+        "    username: test"
+      )
+    )
+
+    add_user_message2 <- capture_messages(
+      vt_add_user_to_config(username = "test2", name = "test2", title = "tester2")
+    )
+
+    validation_config3 <- readLines(".validation")
+
+    expect_equal(
+      add_user_message2,
+      "User `test2` added to validation config file.\n",
+    )
+
+    expect_equal(
+      validation_config3,
+      c(
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation" ,
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test" ,
+        "    username: test",
+        "  test2:",
+        "    name: test2",
+        "    title: tester2" ,
+        "    username: test2"
       )
     )
 
@@ -154,17 +170,13 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config,
       c(
-        "{",
-        "  \"validation_directory\": [\"vignettes/validation\"],",
-        "  \"validation_output_directory\": [\"validation\"]," ,
-        "  \"usernames\": {",
-        "    \"test\": {",
-        "      \"name\": [\"test\"],",
-        "      \"title\": [\"test\"]," ,
-        "      \"username\": [\"test\"]" ,
-        "    }" ,
-        "  }",
-        "}"
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation" ,
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test" ,
+        "    username: test"
       )
     )
 
@@ -182,17 +194,13 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config2,
       c(
-        "{",
-        "  \"validation_directory\": [\"vignettes/validation\"],",
-        "  \"validation_output_directory\": [\"validation\"]," ,
-        "  \"usernames\": {",
-        "    \"test\": {",
-        "      \"name\": [\"test\"],",
-        "      \"title\": [\"test2\"]," ,
-        "      \"username\": [\"test\"]" ,
-        "    }" ,
-        "  }",
-        "}"
+        "validation_directory: vignettes/validation",
+        "validation_output_directory: validation" ,
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test2" ,
+        "    username: test"
       )
     )
 

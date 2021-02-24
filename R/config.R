@@ -118,7 +118,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, pk
 #'     documentation formatted as list(username = list(name = name, title = title, username = username))
 #' @param ... These dots are for future extensions and must be empty.
 #'
-#' @importFrom jsonlite write_json
+#' @importFrom yaml write_yaml
 #' @importFrom rlang abort
 write_validation_config <- function(path = ".",
                                     val_dir = "vignettes/validation",
@@ -132,9 +132,10 @@ write_validation_config <- function(path = ".",
   )
 
   tryCatch({
-    write_json(x = config_contents,
-               path = file.path(path, ".validation"),
-               pretty = TRUE)
+
+    write_yaml(x = config_contents,
+               file = file.path(path, ".validation"))
+
   }, error = function(e) {
     abort(paste0(
       c(
@@ -149,6 +150,7 @@ write_validation_config <- function(path = ".",
 }
 
 #' @importFrom rlang abort
+#' @importFrom yaml read_yaml
 read_validation_config <- function(pkg = "."){
 
   if(!file.exists(file.path(pkg,".validation"))){
@@ -160,7 +162,7 @@ read_validation_config <- function(pkg = "."){
       class = "vt.validation_config_missing"
     )
   }
-  jsonlite::read_json(file.path(pkg,".validation"),simplifyVector = TRUE)
+  read_yaml(file = file.path(pkg,".validation"))
 
 }
 
@@ -193,7 +195,7 @@ ask_user_name_role <- function(username = whoami::username(), name, title){
     cat("\n")
     title <- readline(paste0(" Please provide your title associated with the username `",username,"` and press `Enter`: "))
   }
-
+s
   cat("\n")
 
   make_userlist_entry(username = username, name = name, title = title)
