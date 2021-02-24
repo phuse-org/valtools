@@ -195,7 +195,7 @@ ask_user_name_role <- function(username = whoami::username(), name, title){
     cat("\n")
     title <- readline(paste0(" Please provide your title associated with the username `",username,"` and press `Enter`: "))
   }
-s
+
   cat("\n")
 
   make_userlist_entry(username = username, name = name, title = title)
