@@ -28,6 +28,7 @@ test_that("Accessing config dirs works", {
       working_dir = "new/dir",
       output_dir = "test",
       report_naming_format = "{package}_v{version}_Validation_report"
+    )
 
     expect_equal(
       get_config_working_dir(),
