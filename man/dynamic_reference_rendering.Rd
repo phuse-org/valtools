@@ -4,17 +4,10 @@
 \alias{dynamic_reference_rendering}
 \title{Dynamic Reference Rendering}
 \usage{
-dynamic_reference_rendering(
-  file,
-  type = c("spec", "test_case", "test_code"),
-  reference = NULL
-)
+dynamic_reference_rendering(file, reference = NULL)
 }
 \arguments{
 \item{file}{path to the file to convert dynamic referencing to values}
-
-\item{type}{type of file being converted; a specification ('spec'), test case ('test_case') or
-test code ('test_code')}
 
 \item{reference}{which dynamic referencer to use. When NULL, uses internal dynamic referencer.}
 }
