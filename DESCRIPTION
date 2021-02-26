@@ -20,11 +20,16 @@ Suggests:
     glue,
     usethis,
     withr,
-    rmarkdown
+    rmarkdown,
+    XML,
+    pdftools,
+    bookdown
 Imports:
     desc,
     devtools,
     R6,
     roxygen2,
     lubridate
+SystemRequirements:
+    lua
 

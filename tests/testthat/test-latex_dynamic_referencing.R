@@ -1,10 +1,10 @@
 test_that("latex Number Referencing across rmarkdown chunks", {
-
+  withr::with_tempdir({
   ## Create test files
-  test_req1 <- tempfile(fileext = ".tex")
-  test_req2 <- tempfile(fileext = ".tex")
-  test_report <- tempfile(fileext = ".Rmd")
-  test_output <- tempfile(fileext = ".pdf")
+  test_req1 <- tempfile(fileext = ".tex", tmpdir = getwd())
+  test_req2 <- tempfile(fileext = ".tex", tmpdir = getwd())
+  test_report <- tempfile(fileext = ".Rmd", tmpdir = getwd())
+  test_output <- tempfile(fileext = ".pdf", tmpdir = getwd())
 
 
 
@@ -81,20 +81,20 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 
 
 
-})
+})})
 
 
 test_that("latex Number Referencing across rmarkdown chunks", {
+ withr::with_tempdir({
 
   ## Create test files
-  test_req1 <- tempfile(fileext = ".Rmd")
-  test_req2 <- tempfile(fileext = ".Rmd")
+  test_req1 <- tempfile(fileext = ".Rmd", tmpdir = getwd())
+  test_req2 <- tempfile(fileext = ".Rmd", tmpdir = getwd())
   yml_contents <- file.path(dirname(test_req1), "_bookdown.yml")
-
 
   ## these files will not change with release
   yml_output <- file.path(dirname(test_req1), "_output.yml")
-  test_report <- tempfile(fileext = ".Rmd")
+  test_report <- tempfile(fileext = ".Rmd", tmpdir = getwd())
 
 
   cat(
@@ -172,6 +172,6 @@ test_that("latex Number Referencing across rmarkdown chunks", {
   expect_equal("S2.1.1", substr(trimws(test_output_rendered[9]), 3, 8))
 
 
-
+})
 
 })
