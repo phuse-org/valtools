@@ -1,7 +1,9 @@
 test_that("Test creation of the config file", {
   withr::with_tempdir({
+
     vt_use_validation_config(pkg = ".",
-                             username_list = list(test = list(
+                             username_list = list(
+                               vt_user(
                                name = "test",
                                title = "test",
                                role = "tester",
@@ -10,18 +12,17 @@ test_that("Test creation of the config file", {
 
     validation_config <- readLines(".validation")
 
-
     expect_equal(
       validation_config,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation",
+        "working_dir: vignettes",
+        "output_dir: inst",
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
         "    name: test",
         "    title: test",
-        "    role: tester",
-        "    username: test"
+        "    role: tester"
       )
     )
 
@@ -34,33 +35,16 @@ test_that("Test creation of the config file with invalid username list", {
 
     expect_error(
     vt_use_validation_config(pkg = ".",
-                             username_list = list(test = list(
-                               name = "test",
-                               username = "test",
-                               role = "tester"
-                             ))),
-    "Entry for username `test` is missing entries for `title` in the username list."
-    )
-
-    expect_error(
-      vt_use_validation_config(pkg = ".",
-                               username_list = list(test = c(
+                             username_list = list(
+                               vt_user(
+                                 username = "test",
                                  name = "test",
                                  title = "test",
-                                 role = "tester"
-                               ))),
-      "Entry for username `test` is not a list."
-    )
-
-    expect_error(
-      vt_use_validation_config(pkg = ".",
-                               username_list = list(test2 = list(
-                                 name = "test",
-                                 title = "test",
-                                 role = "tester",
-                                 username = "test"
-                               ))),
-      "Entry for username `test2` does not match the username of the content: `test`."
+                                 role = "tester"),
+                               "bad Entry"
+                             )),
+    "1 invalid entry in username_list: \nArgument 2 is not created by `vt_user()`.",
+    fixed = TRUE
     )
   })
 
@@ -77,8 +61,9 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation",
+        "working_dir: vignettes",
+        "output_dir: inst",
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames: []"
       )
     )
@@ -97,8 +82,9 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation" ,
+        "working_dir: vignettes",
+        "output_dir: inst" ,
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames: []"
       )
     )
@@ -117,14 +103,14 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config2,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation" ,
+        "working_dir: vignettes",
+        "output_dir: inst" ,
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
         "    name: test",
         "    title: test" ,
-        "    role: tester" ,
-        "    username: test"
+        "    role: tester"
       )
     )
 
@@ -142,19 +128,18 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config3,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation" ,
+        "working_dir: vignettes",
+        "output_dir: inst" ,
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
         "    name: test",
         "    title: test" ,
         "    role: tester" ,
-        "    username: test",
         "  test2:",
         "    name: test2",
         "    title: tester2" ,
-        "    role: tester2" ,
-        "    username: test2"
+        "    role: tester2"
       )
     )
 
@@ -166,7 +151,8 @@ test_that("Test creation of the config file without passed values in a non-inter
   withr::with_tempdir({
 
     vt_use_validation_config(pkg = ".",
-                             username_list = list(test = list(
+                             username_list = list(
+                               vt_user(
                                name = "test",
                                title = "test",
                                role = "tester",
@@ -179,14 +165,14 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation" ,
+        "working_dir: vignettes",
+        "output_dir: inst" ,
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
         "    name: test",
         "    title: test",
-        "    role: tester",
-        "    username: test"
+        "    role: tester"
       )
     )
 
@@ -204,14 +190,14 @@ test_that("Test creation of the config file without passed values in a non-inter
     expect_equal(
       validation_config2,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation" ,
+        "working_dir: vignettes",
+        "output_dir: inst" ,
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
         "    name: test",
         "    title: test2" ,
-        "    role: tester2" ,
-        "    username: test"
+        "    role: tester2"
       )
     )
 
@@ -223,7 +209,7 @@ test_that("Test overwriting of the config file", {
   withr::with_tempdir({
 
     vt_use_validation_config(pkg = ".",
-                             username_list = list(test = list(
+                             username_list = list(vt_user(
                                name = "test",
                                title = "test",
                                role = "tester",
@@ -248,8 +234,9 @@ test_that("Test overwriting of the config file", {
     expect_equal(
       validation_config_new,
       c(
-        "validation_directory: vignettes/validation",
-        "validation_output_directory: validation",
+        "working_dir: vignettes",
+        "output_dir: inst",
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames: []"
       )
     )
@@ -287,16 +274,12 @@ test_that("ask_user_name_title_role only requests when missing information",{
 
   expect_equal(
     res,
-    list(
-      test = list(
-        name = "test",
-        title = "test",
-        role = "test",
-        username = "test"
+    vt_user(
+      username = "test",
+      name = "test",
+      title = "test",
+      role = "test"
       )
-    )
   )
-
-
 
 })

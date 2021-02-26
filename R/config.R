@@ -1,16 +1,22 @@
-
-#' use a validation config file
+#' @title Validation Config
 #'
-#' validation configuration for directories and username-name-role key
+#' @description Use a Validation Config File
+#'     Validation configuration for working/output directories, validation report
+#'     naming conventions, and tracking user information(username,name,title, role).
+#'     Provides a single location for setting behaviors.
 #'
 #' @param pkg where to write config file
-#' @param val_dir [character] where validation contents are used interactively
-#' @param val_dir_o [character] which folder under `inst` should the contents for
-#'     validation be copied to on successful validation build.
-#' @param username_list named list of named vectors. Name of list is username,
-#'     with named list containing entries for username, name, title, and
-#'     role to be used for documentation. Formatted as
-#'     list(username = list(name = name, title = title, role = role, username = username))
+#' @param working_dir [character] which directory to be have working validation
+#'  contents that are used interactively
+#' @param output_dir [character] which folder should the contents for validation
+#'  output to.
+#'@param report_naming_format [character] a \link[glue]{glue} friendly string
+#'  of the naming structure of the output validation report. use `{package}`
+#'  for package name, `{version}` to record package version, and `{date}` to
+#'  capture the date the report was run.
+#' @param username_list list of user objects created by {make_user}. Each user
+#'     contains entries for username, name, title, and role to be used for
+#'     documentation.
 #' @param ... These dots are for future extensions and must be empty.
 #' @param overwrite `[boolean]`If a validation file exists, should it be overwritten?
 #'    Defaults to FALSE.
@@ -20,16 +26,36 @@
 #' @returns Used for side effect to create validation config file. Invisibly
 #'     returns TRUE on success.
 #'
-#' @rdname config
+#' @rdname validation_config
+#'
+#' @examples
+#' \donotrun{
+#'
+#' vt_use_validation_config(pkg = ".",
+#'                          working_dir = "vignettes",
+#'                          output_dir  = "inst",
+#'                          report_naming_format = "Validation_Report_{package}_v{version}_{date}"
+#'                          username_list = list(
+#'                            vt_user(
+#'                              name = "test",
+#'                              title = "test",
+#'                              role = "tester",
+#'                              username = "test"
+#'                            )
+#'                          ))
+#'
+#' }
 #'
 #' @export
 #'
 vt_use_validation_config <- function(pkg = ".",
-                                       val_dir = "vignettes/validation",
-                                       val_dir_o = "validation",
-                                       username_list = list(),
-                                       ...,
-                                     overwrite = FALSE) {
+                                     working_dir = "vignettes",
+                                     output_dir  = "inst",
+                                     report_naming_format = "Validation_Report_{package}_v{version}_{date}",
+                                     username_list = list(),
+                                     ...,
+                                     overwrite = FALSE)
+{
 
   if(file.exists(file.path(pkg,".validation")) & !overwrite){
     abort(
@@ -42,13 +68,25 @@ vt_use_validation_config <- function(pkg = ".",
   }
 
   if(length(username_list) > 0 ){
-    check_username_list(username_list)
+    user_entries <- sapply(username_list, is_vt_user)
+    non_users <- sum(!user_entries)
+    if(non_users > 0){
+      abort(
+        paste0(
+          non_users," invalid entr",ifelse(non_users > 1, "ies","y")," in username_list: \n",
+          "Argument ",paste(which(!user_entries), collapse = ", "), " is not created by `vt_user()`."
+        ),
+        class = "vt.validation_config_invalid_userlist"
+      )
+    }
+    username_list <- do.call('c', username_list)
   }
 
   write_validation_config(
     path = pkg,
-    val_dir = val_dir,
-    val_dir_o = val_dir_o,
+    working_dir = working_dir,
+    output_dir = output_dir,
+    report_naming_format = report_naming_format,
     username_list = username_list,
     ...
   )
@@ -62,14 +100,50 @@ vt_use_validation_config <- function(pkg = ".",
 
 }
 
+#' Create a user object
+#'
+#' Capture the information on a user that is going to be involved with validation
+#'
+#' @param username username of the user.
+#' @param name full name of the user.
+#' @param title title of the user.
+#' @param role role of the user. Can be more than one.
+#' @param ... additional information about the user to be passed into a list.
+#'
+#' @returns a "user" object
+#'
+#' @importFrom stats setNames
+#' @rdname validation_config
+#'
+#' @examples
+#'
+#' vt_user(
+#'     username = "ellis",
+#'     name = "Ellis Hughes",
+#'     title = "Statistical Programmer",
+#'     role = "Programmer")
+#'
+#' @export
+#'
+vt_user <- function(username, name, title, role, ...) {
+  structure(setNames(list(
+    list(
+      name = name,
+      title = title,
+      role = role,
+      ...
+    )
+  ), username),
+  class = c("vt_user","list"))
+}
+
+is_vt_user <- function(x){
+  "vt_user" %in% class(x)
+}
+
 #' Add users to validation config file
 #'
 #' Add user information to the projects validation config file to make for easier documentation
-#'
-#' @param username computer username associated with the name, title, and role
-#' @param name name of the user
-#' @param role role of the user
-#' @param title title of the user
 #'
 #' @importFrom whoami username
 #' @importFrom rlang inform
@@ -77,8 +151,20 @@ vt_use_validation_config <- function(pkg = ".",
 #' @returns Used for side effect of adding user information to validation config
 #'     file. Invisibly returns TRUE on success.
 #'
-#' @rdname config
+#' @rdname validation_config
 #'
+#' @examples
+#' \donotrun{
+#'
+#' vt_use_validation_config(pkg = ".")
+#'
+#' vt_add_user_to_config(
+#'     username = "ellis",
+#'     name = "Ellis Hughes",
+#'     title = "Statistical Programmer",
+#'     role = "Programmer")
+#'
+#' }
 #' @export
 vt_add_user_to_config <- function(username = whoami::username(), name, title, role, pkg = "."){
 
@@ -100,8 +186,9 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 
   write_validation_config(
     path = pkg,
-    val_dir = validation_config$validation_directory,
-    val_dir_o = validation_config$validation_output_directory,
+    working_dir = validation_config$working_dir,
+    output_directory = validation_config$output_directory,
+    report_naming_format = validation_config$report_naming_format,
     username_list = user_list
   )
 
@@ -118,6 +205,74 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 
 }
 
+#' Drop user from validation config file
+#'
+#' Remove user information from the projects validation config file
+#'
+#' @importFrom rlang inform warn
+#'
+#' @returns Used for side effect of removing user information to validation config
+#'     file. Invisibly returns TRUE on success.
+#'
+#' @rdname validation_config
+#'
+#' @examples
+#' \donotrun{
+#'
+#' vt_use_validation_config(pkg = ".")
+#'
+#' vt_add_user_to_config(
+#'     username = "ellis",
+#'     name = "Ellis Hughes",
+#'     title = "Statistical Programmer",
+#'     role = "Programmer")
+#'
+#' vt_drop_user_from_config(username = "ellis")
+#'
+#' }
+#' @export
+vt_drop_user_from_config <- function(username, pkg = "."){
+
+  validation_config <- read_validation_config(pkg = pkg)
+
+  existing_info <-
+    username %in% names(validation_config$usernames)
+
+  if(!existing_info){
+    rlang::warn(
+      paste0(
+        "User `",
+        username,
+        "` ",
+        "did not exist in the " ,
+        " validation config file."
+      ),
+      class = "vt.validation_config_drop_did_not_exist")
+  }else{
+
+  user_list <- validation_config$usernames[setdiff(names(validation_config$usernames), username)]
+
+  write_validation_config(
+    path = pkg,
+    working_dir = validation_config$working_dir,
+    output_directory = validation_config$output_directory,
+    report_naming_format = validation_config$report_naming_format,
+    username_list = user_list
+  )
+
+    inform(paste0(
+      "User `",
+      username,
+      "` ",
+      "removed from the" ,
+      " validation config file."
+    ),
+    class = "vt.validation_config_drop_user")
+  }
+
+  invisible(existing_info)
+}
+
 
 
 #' Get user information from validation config file
@@ -130,13 +285,28 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @importFrom whoami username
 #' @importFrom rlang inform
 #'
-#' @returns Used for side effect of adding user information to validation config
-#'     file. Invisibly returns TRUE on success.
+#' @returns a character vector length of types requested containing the user
+#'    information from the validation config file.
 #'
-#' @rdname config
+#' @rdname validation_config
+#'
+#' @examples
+#' \donotrun{
+#'
+#' vt_use_validation_config(pkg = ".")
+#'
+#' vt_add_user_to_config(
+#'     username = "ellis",
+#'     name = "Ellis Hughes",
+#'     title = "Statistical Programmer",
+#'     role = "Programmer")
+#'
+#' vt_get_user_info(username = "ellis", type = c("name","title"))
+#'
+#' }
 #'
 #' @export
-vt_get_user_info <- function(username = whoami::username(), type = c("name","title","role"), pkg = "."){
+vt_get_user_info <- function(username, type = c("name","title","role"), pkg = "."){
 
   type <- match.arg(type,several.ok = TRUE)
 
@@ -161,31 +331,28 @@ vt_get_user_info <- function(username = whoami::username(), type = c("name","tit
 #' validation configuration for directories and username-name-role key
 #' @noRd
 #'
-#' @param path where to write config file
-#' @param val_dir [character] where validation contents are used interactively
-#' @param val_dir_o [character] which folder under `inst` should the contents for
-#'     validation be copied to on successful validation build.
-#' @param username_list list of lists for username, names, title, and role to be used for
-#'     documentation. Formatted as list(username = list(name = name, title = title, role = role, username = username))
 #' @param ... These dots are for future extensions and must be empty.
 #'
 #' @importFrom yaml write_yaml
 #' @importFrom rlang abort
 write_validation_config <- function(path = ".",
-                                    val_dir = "vignettes/validation",
-                                    val_dir_o = "validation",
+                                    working_dir = "vignettes",
+                                    output_dir = "inst",
+                                    report_naming_format = "Validation_Report_{package}_v{version}_{date}",
                                     username_list = list(),
                                     ...) {
   config_contents <- list(
-    validation_directory = val_dir,
-    validation_output_directory = val_dir_o,
+    working_dir = working_dir,
+    output_dir = output_dir,
+    report_naming_format = report_naming_format,
     usernames = username_list
   )
 
   tryCatch({
-
-    write_yaml(x = config_contents,
-               file = file.path(path, ".validation"))
+    write_yaml(
+      x = config_contents,
+      file = file.path(path, ".validation")
+    )
 
   }, error = function(e) {
     abort(paste0(
@@ -228,7 +395,7 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 
   if(!missing(username) & !missing(name) & !missing(title)){
     return(
-      make_userlist_entry(username = username, name = name, title = title, role)
+      vt_user(username = username, name = name, title = title, role)
     )
   }
 
@@ -254,81 +421,22 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 
   cat("\n")
 
-  make_userlist_entry(username = username, name = name, title = title, role = role)
+  vt_user(username = username, name = name, title = title, role = role)
 
 }
-
-#' @importFrom stats setNames
-#' @noRd
-make_userlist_entry <- function(username, name, title, role){
-  setNames(list(
-    list(name = name, title = title, role = role, username = username)
-  ),username)
-}
-
-#' @importFrom rlang abort
-#' @noRd
-check_username_list <- function(username_list){
-
-  all_valid <- all(
-    sapply(seq_along(username_list),function(user_info_idx,username_list){
-
-      uname <- names(username_list)[[user_info_idx]]
-
-      user_info <- username_list[[user_info_idx]]
-
-      user_info_is_list <- is.list(user_info)
-
-      if(!user_info_is_list){
-        rlang::abort(
-          paste0(
-            "Entry for username `",uname,"` is not a list."
-          ),
-          class = 'vt.invalid_username_as_list_entry'
-        )
-      }
-
-      has_req_fields <- c("name","title","role","username") %in% names(user_info)
-
-      uid_matches <- user_info[["username"]] == uname
-
-      if(any(!has_req_fields)){
-        rlang::abort(
-          paste0(
-            "Entry for username `",uname,"` is missing ",
-            "entries for ",paste0("`",c("name","title","role","username")[!has_req_fields],"`", collapse =", ")," in the username list."
-            ),
-          class = 'vt.invalid_username_list_entry'
-        )
-      }
-
-      if(!uid_matches){
-        rlang::abort(
-          paste0(
-            "Entry for username `",uname,"` does not match the username ",
-            "of the content: `",user_info[["username"]],"`."
-          ),
-          class = 'vt.mismatched_username_list_entry'
-        )
-      }
-
-      return(all(c(has_req_fields, uid_matches)))
-
-    },username_list)
-  )
-
-  invisible(all_valid)
-}
-
 
 ### Accessor functions for internal use
 
-get_config_val_dir <- function(pkg = "."){
-  read_validation_config(pkg = pkg)$validation_directory
+get_config_working_dir <- function(pkg = "."){
+  read_validation_config(pkg = pkg)$working_dir
 }
 
-get_config_val_dir_o <- function(pkg = "."){
-  read_validation_config(pkg = pkg)$validation_output_directory
+get_config_output_dir <- function(pkg = "."){
+  read_validation_config(pkg = pkg)$output_dir
+}
+
+get_config_report_naming_format <- function(pkg = "."){
+  read_validation_config(pkg = pkg)$report_naming_format
 }
 
 #' @importFrom rlang is_interactive inform abort

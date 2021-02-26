@@ -5,28 +5,37 @@ test_that("Accessing config dirs works", {
       vt_use_validation_config(pkg = ".")
 
       expect_equal(
-        get_config_val_dir(),
-        "vignettes/validation"
+        get_config_working_dir(),
+        "vignettes"
       )
 
       expect_equal(
-        get_config_val_dir_o(),
-        "validation"
+        get_config_output_dir(),
+        "inst"
+      )
+
+      expect_equal(
+        get_config_report_naming_format(),
+        "Validation_Report_{package}_v{version}_{date}"
       )
 
     })
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",val_dir = "new/dir",val_dir_o = "test")
+    vt_use_validation_config(
+      pkg = ".",
+      working_dir = "new/dir",
+      output_dir = "test",
+      report_naming_format = "{package}_v{version}_Validation_report"
 
     expect_equal(
-      get_config_val_dir(),
+      get_config_working_dir(),
       "new/dir"
     )
 
     expect_equal(
-      get_config_val_dir_o(),
+      get_config_output_dir(),
       "test"
     )
 
@@ -40,7 +49,7 @@ test_that("Accessing config user info works", {
 
     vt_use_validation_config(pkg = ".",
                              username_list = list(
-                               "test-username" = list(
+                               vt_user(
                                  name = "test-name",
                                  title = "test-title",
                                  role = "test-role",
@@ -80,19 +89,19 @@ test_that("Accessing config user info works even with multiple users", {
 
     vt_use_validation_config(pkg = ".",
                              username_list = list(
-                               "test-username" = list(
+                               vt_user(
                                  name = "test-name",
                                  title = "test-title",
                                  role = "test-role",
                                  username = "test-username"
                                ),
-                               "test-username2" = list(
+                               vt_user(
                                  name = "test-name2",
                                  title = "test-title2",
                                  role = "test-role2",
                                  username = "test-username2"
                                ),
-                               "test-username3" = list(
+                               vt_user(
                                  name = "test-name3",
                                  title = "test-title3",
                                  role = "test-role3",
@@ -133,7 +142,7 @@ test_that("Accessing config user info that does not exist throws informative err
 
     vt_use_validation_config(pkg = ".",
                              username_list = list(
-                               "test-username" = list(
+                               vt_user(
                                  name = "test-name",
                                  title = "test-title",
                                  role = "test-role",
