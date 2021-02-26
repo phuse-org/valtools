@@ -29,7 +29,7 @@
 #' @rdname validation_config
 #'
 #' @examples
-#' \donotrun{
+#' \dontrun{
 #'
 #' vt_use_validation_config(pkg = ".",
 #'                          working_dir = "vignettes",
@@ -154,7 +154,7 @@ is_vt_user <- function(x){
 #' @rdname validation_config
 #'
 #' @examples
-#' \donotrun{
+#' \dontrun{
 #'
 #' vt_use_validation_config(pkg = ".")
 #'
@@ -217,7 +217,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @rdname validation_config
 #'
 #' @examples
-#' \donotrun{
+#' \dontrun{
 #'
 #' vt_use_validation_config(pkg = ".")
 #'
@@ -291,7 +291,7 @@ vt_drop_user_from_config <- function(username, pkg = "."){
 #' @rdname validation_config
 #'
 #' @examples
-#' \donotrun{
+#' \dontrun{
 #'
 #' vt_use_validation_config(pkg = ".")
 #'
