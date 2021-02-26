@@ -95,7 +95,7 @@ Remove user information from the projects validation config file
 Get recorded user information from the validation config file to make for easier documentation
 }
 \examples{
-\donotrun{
+\dontrun{
 
 vt_use_validation_config(pkg = ".",
                          working_dir = "vignettes",
@@ -119,7 +119,7 @@ vt_user(
     title = "Statistical Programmer",
     role = "Programmer")
 
-\donotrun{
+\dontrun{
 
 vt_use_validation_config(pkg = ".")
 
@@ -130,7 +130,7 @@ vt_add_user_to_config(
     role = "Programmer")
 
 }
-\donotrun{
+\dontrun{
 
 vt_use_validation_config(pkg = ".")
 
@@ -143,7 +143,7 @@ vt_add_user_to_config(
 vt_drop_user_from_config(username = "ellis")
 
 }
-\donotrun{
+\dontrun{
 
 vt_use_validation_config(pkg = ".")
 
