@@ -1,7 +1,7 @@
-#' Create a file path to a validation item(specification, test case, test code file)
+#' Create a file path to a validation item(requirement, test case, test code file)
 #'
 #' @param item_name Name of item file
-#' @param type "specification", "cases", "code"
+#' @param type "requirements", "test_cases", "test_code"
 #'
 #' @return Nothing, side-effect to create directories and file
 #'

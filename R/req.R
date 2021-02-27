@@ -1,5 +1,5 @@
 # The rest of this documentation is in case.R
-#' @param title Title for the specification. defaults to be the base name passed
+#' @param title Title for the requirement defaults to be the base name passed
 #'   sans file paths or extensions.
 #'
 #' @rdname new_item

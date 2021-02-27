@@ -4,7 +4,7 @@
 \alias{vt_use_test_case}
 \alias{vt_use_test_code}
 \alias{vt_use_req}
-\title{Create a validation specification, test case, or test code file}
+\title{Create a validation requirement, test case, or test code file}
 \usage{
 vt_use_test_case(
   name,
@@ -33,29 +33,29 @@ vt_use_req(
 file system separator and will be organized as a directory structure. Items
 are located at \verb{./inst/validation/<ItemType>/\{name\}}.}
 
-\item{username}{The username to insert into the specification as the author.}
+\item{username}{The username to insert into the validation item as the author.}
 
 \item{open}{Should the newly made file be opened for editing.}
 
 \item{pkg}{Top-level of package}
 
-\item{title}{Title for the specification. defaults to be the base name passed
+\item{title}{Title for the requirement defaults to be the base name passed
 sans file paths or extensions.}
 }
 \value{
 Path to the newly created validation item file, invisibly.
 }
 \description{
-Create a validation specification, test case, or test code file
+Create a validation requirement, test case, or test code file
 }
 \examples{
 withr::with_tempdir({
 
 vt_create_package(package_dir)
-# Create spec at the cases top level `inst/validation/cases/spec1`
-vt_use_test_case("spec1", pkg = package_dir, open = FALSE)
-# Create spec at `inst/validation/cases/regTests/Update2/spec2`
-vt_use_test_case("regTests/Update2/spec2", pkg = package_dir, open = FALSE)
+# Create req at the cases top level `inst/validation/cases/case1`
+vt_use_test_case("case1", pkg = package_dir, open = FALSE)
+# Create req at `inst/validation/cases/regTests/Update2/case2`
+vt_use_test_case("regTests/Update2/case2", pkg = package_dir, open = FALSE)
 
 })
 }

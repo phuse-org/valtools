@@ -1,9 +1,9 @@
-#' Create a validation specification, test case, or test code file
+#' Create a validation requirement, test case, or test code file
 #'
 #' @param name The name/path of the validation item. These can be named with your
 #'   file system separator and will be organized as a directory structure. Items
 #'   are located at `./inst/validation/<ItemType>/{name}`.
-#' @param username The username to insert into the specification as the author.
+#' @param username The username to insert into the validation item as the author.
 #' @param open Should the newly made file be opened for editing.
 #' @param pkg Top-level of package
 #'
@@ -17,10 +17,10 @@
 #' withr::with_tempdir({
 #'
 #' vt_create_package(package_dir)
-#' # Create spec at the cases top level `inst/validation/cases/spec1`
-#' vt_use_test_case("spec1", pkg = package_dir, open = FALSE)
-#' # Create spec at `inst/validation/cases/regTests/Update2/spec2`
-#' vt_use_test_case("regTests/Update2/spec2", pkg = package_dir, open = FALSE)
+#' # Create req at the cases top level `inst/validation/cases/case1`
+#' vt_use_test_case("case1", pkg = package_dir, open = FALSE)
+#' # Create req at `inst/validation/cases/regTests/Update2/case2`
+#' vt_use_test_case("regTests/Update2/case2", pkg = package_dir, open = FALSE)
 #'
 #' })
 vt_use_test_case <- function(name, username = vt_username(), open = interactive(), pkg = ".") {

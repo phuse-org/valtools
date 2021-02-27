@@ -44,8 +44,8 @@ render_validation_report <- function(report_path, output_dir = dirname(report_pa
 #' @examples
 #' vt_path()
 #' \dontrun{
-#' vt_path("some", "specs", "spec01.md")
-#' vt_path("some/specs/spec01.md")
+#' vt_path("some", "reqs", "req01.md")
+#' vt_path("some/reqs/req01.md")
 #' }
 #'
 #'
