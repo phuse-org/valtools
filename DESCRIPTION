@@ -26,13 +26,13 @@ Imports:
     R6,
     roxygen2,
     lubridate,
-    stringr,
     rlang,
+    yaml,
+    whoami,
+    stringr,
     usethis,
     rmarkdown,
-    whoami,
     withr,
     callr,
     here
 VignetteBuilder: knitr
-
