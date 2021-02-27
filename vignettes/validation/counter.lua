@@ -20,8 +20,8 @@ return {
         end
 --]]
 
-if string.find(elem.text, "@+(.)") then
-        ref_id = string.gsub(elem.text, "@+(.)", "%1")
+if string.find(elem.text, "@@(.)") then
+        ref_id = string.gsub(elem.text, "@@(.)", "%1")
         if(a[ref_id] == nil) then
           counter = counter + 1
           a[ref_id] = counter

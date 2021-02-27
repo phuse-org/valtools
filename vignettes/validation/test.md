@@ -10,7 +10,7 @@ output:
 
 **First via inline code** `@@Ref-1`
 
-**Advance to second via the text:** @vt-refA
+**Advance to second via the text:** @@refA
 
 **Call the value first using inline:** `@@Ref-1`
 
@@ -24,11 +24,11 @@ more code who knows
 
 **First ref, inline again** `@@Ref-1`
 
-**second entry, again in the text:** @vt-refA
+**second entry, again in the text:** @@refA
 
 **Call third again via inline code:** `@@Ref-2`
 
-**use the first tag (inline code) but with text syntax:** @vt-Ref-1
+**use the first tag (inline code) but with text syntax:** @@refA
 
 **use the second tax (text) but inline syntax** `@@refA`
 
