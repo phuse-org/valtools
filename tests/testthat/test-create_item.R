@@ -7,12 +7,12 @@ test_that("simple item creation", {
 
     spec_path <- create_item(
       item_name = "new_specification",
-      type = "specification",
+      type = "requirements",
       pkg = ".")
 
     test_case_path <- create_item(
       item_name = "new_test_case",
-      type = "test_case",
+      type = "test_cases",
       pkg = ".")
 
     test_code_path <- create_item(
@@ -21,10 +21,10 @@ test_that("simple item creation", {
       pkg = ".")
 
     expect_true(
-      file.exists("vignettes/validation/specification/new_specification")
+      file.exists("vignettes/validation/requirements/new_specification")
     )
     expect_true(
-      file.exists("vignettes/validation/test_case/new_test_case")
+      file.exists("vignettes/validation/test_cases/new_test_case")
     )
     expect_true(
       file.exists("vignettes/validation/test_code/new_test_code")
@@ -39,12 +39,12 @@ test_that("simple item creation and adds a directory if missing", {
 
     spec_path <- create_item(
       item_name = "new_dir/new_specification",
-      type = "specification",
+      type = "requirements",
       pkg = ".")
 
     test_case_path <- create_item(
       item_name = "new_dir/new_test_case",
-      type = "test_case",
+      type = "test_cases",
       pkg = ".")
 
     test_code_path <- create_item(
@@ -53,10 +53,10 @@ test_that("simple item creation and adds a directory if missing", {
       pkg = ".")
 
     expect_true(
-      file.exists("vignettes/validation/specification/new_dir/new_specification")
+      file.exists("vignettes/validation/requirements/new_dir/new_specification")
     )
     expect_true(
-      file.exists("vignettes/validation/test_case/new_dir/new_test_case")
+      file.exists("vignettes/validation/test_cases/new_dir/new_test_case")
     )
     expect_true(
       file.exists("vignettes/validation/test_code/new_dir/new_test_code")
@@ -71,7 +71,7 @@ test_that("Throw an error if the validation directory has not been set up", {
    expect_error(
      create_item(
       item_name = "new_dir/new_specification",
-      type = "specification",
+      type = "requirements",
       pkg = "."),
      "No validation structure found."
    )

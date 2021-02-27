@@ -8,7 +8,7 @@
 #' @importFrom rlang abort inform
 #'
 #' @noRd
-create_item <- function(pkg, type = c("specification","test_case","test_code"), item_name){
+create_item <- function(pkg, type = c("requirements","test_cases","test_code"), item_name){
 
   type <- match.arg(type)
 

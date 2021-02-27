@@ -1,12 +1,6 @@
 # The rest of this documentation is in case.R
-#' @param name The name/path of the test code. Codes can be named with your
-#'   file system separator and will be organized as a directory structure. Codes
-#'   are located at `./inst/validation/test_code/{name}`.
-#'
 #' @export
-#'
 #' @rdname new_item
-#' @importFrom usethis edit_file
 vt_use_test_code <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
 
   name <- vt_set_ext(name, ext = "R")
