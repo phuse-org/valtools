@@ -17,10 +17,13 @@ Suggests:
     covr,
     testthat,
     glue,
-    knitr
+    knitr,
+    bookdown,
+    pdftools
 Imports:
     desc,
     devtools,
+    R6,
     roxygen2,
     lubridate,
     rlang,
