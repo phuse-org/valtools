@@ -18,8 +18,7 @@ render_template <- function(template, output = template, data = list()){
     template)
 
   if(!file.exists(template_path)){
-    abort(paste0(c("Error during creation of template `",template,"`. Error: ",
-                   e, sep = "\n")),
+    abort(paste0("Template `",template,"` does not exist."),
           class = "vt.template_exist_fail")
   }
 
@@ -32,6 +31,7 @@ render_template <- function(template, output = template, data = list()){
       data = data)
 
     file_con <- file(output)
+    on.exit(close(file_con))
 
     writeLines(
       output_text,
