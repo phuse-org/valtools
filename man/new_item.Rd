@@ -51,11 +51,11 @@ Create a validation requirement, test case, or test code file
 \examples{
 withr::with_tempdir({
 
-vt_create_package(package_dir)
+vt_create_package()
 # Create req at the cases top level `inst/validation/cases/case1`
-vt_use_test_case("case1", pkg = package_dir, open = FALSE)
+vt_use_test_case("case1", open = FALSE)
 # Create req at `inst/validation/cases/regTests/Update2/case2`
-vt_use_test_case("regTests/Update2/case2", pkg = package_dir, open = FALSE)
+vt_use_test_case("regTests/Update2/case2", open = FALSE)
 
 })
 }

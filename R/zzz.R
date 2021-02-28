@@ -1,4 +1,5 @@
 #' @importFrom usethis edit_file
+#' @importFrom whisker whisker.render
 NULL
 .onLoad <- function(libname, pkgname) {
   options("vt.validation_directory" = "vignettes/validation")
