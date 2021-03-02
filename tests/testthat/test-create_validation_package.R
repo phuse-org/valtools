@@ -2,15 +2,15 @@ test_that("Able to create package with validated package basics", {
   withr::with_tempdir({
 
     quite <- capture.output({
-     vt_create_package("temp.package")
+     vt_create_package(".", open = FALSE)
     })
 
     expect_true(
-      devtools::is.package(devtools::as.package("temp.package"))
+      devtools::is.package(devtools::as.package("."))
     )
 
     expect_true(
-      dir.exists("temp.package/vignettes/validation")
+      dir.exists("vignettes/validation")
     )
 
   })
