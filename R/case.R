@@ -13,6 +13,8 @@
 #'
 #' @rdname new_item
 #'
+#' @importFrom usethis edit_file
+#'
 #' @examples
 #' withr::with_tempdir({
 #'
