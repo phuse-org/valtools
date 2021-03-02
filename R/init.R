@@ -16,8 +16,9 @@ vt_use_validation <- function(pkg = ".") {
   validation_directory <- getOption("vt.validation_directory",default = "vignettes/validation")
 
   tryCatch({
+
     dir.create(file.path(pkg, validation_directory),recursive = TRUE)
-    use_git_ignore("!*", directory =  getOption("vt.validation_directory"))
+    use_git_ignore2("!*", dir =  file.path(pkg, getOption("vt.validation_directory")))
 
     inform(paste("Created",validation_directory," in package structure"),
            class = "vt.init")
@@ -53,5 +54,14 @@ vt_create_package <- function(pkg = ".", ...) {
 
   })
 
-  vt_use_validation(pkg)
+  ## set up validation structure in package
+  vt_use_validation(pkg = pkg)
+
+}
+
+#' valtools clone of use_git_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_git_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".gitignore"), ignores)
 }
