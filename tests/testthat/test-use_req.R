@@ -1,27 +1,27 @@
-test_that("Creating specifications and set user/title", {
+test_that("Creating requirements and set user/title", {
 
   withr::with_tempdir({
 
     dir.create("vignettes/validation", recursive = TRUE)
 
-    spec_path <- vt_use_spec(
-      name = "spec001.md",
+    req_path <- vt_use_req(
+      name = "req001.md",
       username = "New User",
-      title = "Specification 001",
+      title = "Requirement 001",
       pkg = ".",
       open = FALSE
       )
 
     expect_true(
-      file.exists(spec_path)
+      file.exists(req_path)
     )
 
-    content <- readLines(spec_path)
+    content <- readLines(req_path)
 
     expect_equal(
       content,
       c(
-        "#' @title Specification 001",
+        "#' @title Requirement 001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
         "",
@@ -34,28 +34,28 @@ test_that("Creating specifications and set user/title", {
 
 })
 
-test_that("Creating specifications and not setting user takes username", {
+test_that("Creating requirements and not setting user takes username", {
 
   withr::with_tempdir({
 
     dir.create("vignettes/validation", recursive = TRUE)
 
-    spec_path <- vt_use_spec(
-      name = "spec001.md",
+    req_path <- vt_use_req(
+      name = "req001.md",
       pkg = ".",
       open = FALSE
     )
 
     expect_true(
-      file.exists(spec_path)
+      file.exists(req_path)
     )
 
-    content <- readLines(spec_path)
+    content <- readLines(req_path)
 
     expect_equal(
       content,
       c(
-        "#' @title spec001",
+        "#' @title req001",
         paste("#' @editor",vt_username()),
         paste ("#' @editDate",as.character(Sys.Date())),
         "",
@@ -68,31 +68,31 @@ test_that("Creating specifications and not setting user takes username", {
 })
 
 
-test_that("Creating specifications adds correct extension", {
+test_that("Creating requirements adds correct extension", {
 
   withr::with_tempdir({
 
     dir.create("vignettes/validation", recursive = TRUE)
 
-    spec_path <- vt_use_spec(
-      name = "spec001",
+    req_path <- vt_use_req(
+      name = "req001",
       pkg = ".",
       open = FALSE
     )
 
-    spec_path2 <- vt_use_spec(
-      name = "spec001.badext",
+    req_path2 <- vt_use_req(
+      name = "req001.badext",
       pkg = ".",
       open = FALSE
     )
 
     expect_equal(
-      tools::file_ext(spec_path),
+      tools::file_ext(req_path),
       "md"
     )
 
     expect_equal(
-      tools::file_ext(spec_path2),
+      tools::file_ext(req_path2),
       "md"
     )
 

@@ -34,5 +34,6 @@ Imports:
     rmarkdown,
     withr,
     callr,
-    here
+    here,
+    whisker
 VignetteBuilder: knitr

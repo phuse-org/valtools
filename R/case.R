@@ -1,35 +1,37 @@
-#' Create a validation specification, test case, or test code file
+#' Create a validation requirement, test case, or test code file
 #'
-#' @param name The name/path of the test case. Cases can be named with your
-#'   file system separator and will be organized as a directory structure. Cases
-#'   are located at `./inst/validation/test_case/{name}`.
-#' @param username the username to insert into the specification as the author.
-#' @param open should the newly make specification open for editing.
+#' @param name The name/path of the validation item. These can be named with your
+#'   file system separator and will be organized as a directory structure. Items
+#'   are located at `./inst/validation/<ItemType>/{name}`.
+#' @param username The username to insert into the validation item as the author.
+#' @param open Should the newly made file be opened for editing.
 #' @param pkg Top-level of package
+#'
+#' @return Path to the newly created validation item file, invisibly.
 #'
 #' @export
 #'
 #' @rdname new_item
 #'
-#' @examples
-#' \dontrun{
-#' # TODO: error during devtools::check
-#' package_dir <- tempdir()
-#'
-#' vt_use_validation(package_dir)
-#' # Create spec at the cases top level `inst/validation/cases/spec1`
-#' vt_use_test_case("spec1", package_dir)
-#' # Create spec at `inst/validation/cases/regTests/Update2/spec2`
-#' vt_use_test_case("regTests/Update2/spec2", package_dir)
-#' }
 #' @importFrom usethis edit_file
+#'
+#' @examples
+#' withr::with_tempdir({
+#'
+#' vt_create_package()
+#' # Create req at the cases top level `inst/validation/cases/case1`
+#' vt_use_test_case("case1", open = FALSE)
+#' # Create req at `inst/validation/cases/regTests/Update2/case2`
+#' vt_use_test_case("regTests/Update2/case2", open = FALSE)
+#'
+#' })
 vt_use_test_case <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
 
   name <- vt_set_ext(name, ext = "md")
 
   is_valid_name(name)
 
-  case_name <- create_item(pkg, "test_case", name)
+  case_name <- create_item(pkg, "test_cases", name)
 
   ## if the file didnt exist before, populate with contents
   if (file.size(case_name) == 0){
