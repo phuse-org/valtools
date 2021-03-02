@@ -1,11 +1,10 @@
 test_that("Able to create package with validated package basics", {
   withr::with_tempdir({
 
-    # quite <- capture.output({
-    #  vt_create_package("temp.package")
-    # })
+    quiet <- capture.output({
+     vt_create_package("temp.package")
+    })
 
-    skip("fails")
     expect_true(
       devtools::is.package(devtools::as.package("temp.package"))
     )
