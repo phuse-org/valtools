@@ -30,7 +30,6 @@ Imports:
     rlang,
     yaml,
     whoami,
-    stringr,
     usethis,
     rmarkdown,
     withr,

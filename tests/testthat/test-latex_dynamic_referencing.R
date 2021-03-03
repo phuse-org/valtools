@@ -1,4 +1,5 @@
 test_that("latex Number Referencing across rmarkdown chunks", {
+  skip_if_not_installed("valtools")
   ## this test demonstrates how to use native latex + rmarkdown::render for dynamic labeling
   ## does not depend on valtools dynamic labeling
 
@@ -91,7 +92,7 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 test_that("latex Number Referencing across rmarkdown chunks", {
   ## this test demonstrates how to use native latex + bookdown::render_book for dynamic labeling
   ## does not depend on valtools dynamic labeling
-
+ skip_if_not_installed("valtools")
  withr::with_tempdir({
 
   ## Create test files
@@ -145,11 +146,8 @@ test_that("latex Number Referencing across rmarkdown chunks", {
     sep = "\n",
     c(
       'book_filename: "Validation_report_V1.0"',
-      'rmd_files: [',
-      basename(test_report), ",",
-      basename(test_req1), ",",
-      basename(test_req2), ",",
-      ']',
+      paste0('rmd_files: [','"', basename(test_report), '", "', basename(test_req1), '", "',
+      basename(test_req2), '"',  ']'),
       'output_dir: "docs"'
 
     ))
