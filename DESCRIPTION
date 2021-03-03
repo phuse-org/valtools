@@ -3,6 +3,11 @@ Title: Automate Validated Package Creation
 Version: 0.0.0.9000
 Authors@R: 
     c(
+    person(given = "Ellis",
+           family = "Hughes",
+           role = c("aut","cre"),
+           email = "ehhughes@scharp.org",
+           comment = c(ORCID = "0000-0003-0637-4436")),
     person(given = "Eli",
            family = "Miller",
            role = "aut",
