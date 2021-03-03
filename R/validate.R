@@ -11,6 +11,7 @@
 #' @param package installed package name
 #' @param ... Additional argument passed to `devtools::build()`
 #' @param open should the validation report be opened after it is built?
+#' @param install_verbose should the installation be verbose?
 #'
 #'
 #' @return path to either the validation report or the bundled package
@@ -143,10 +144,10 @@ vt_validate_build <- function(pkg = ".",...) {
 #'
 #' @rdname validate
 #'
-vt_validate_install <- function(pkg = ".", ...){
+vt_validate_install <- function(pkg = ".", ..., install_verbose = TRUE){
   bundle <- vt_validate_build(pkg = ".", ...)
   on.exit({unlink(bundle)})
-  install.packages(bundle, type = "source", repos = NULL)
+  install.packages(bundle, type = "source", repos = NULL, verbose = install_verbose, quiet = !install_verbose)
   inform("validated package installed")
   return(TRUE)
 }

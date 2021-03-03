@@ -175,9 +175,10 @@ test_that("test building a validated bundle from source", {
     valtools::vt_use_test_code("sample_test_code.R", username = "NewUser", open = FALSE)
 
     ## validate source & create bundle.
+    suppressMessages({
     quiet <- capture.output({
     validated_bundle <- vt_validate_build(pkg = ".")
-    })
+    })})
 
     ## check bundle
     expect_equal(
@@ -280,8 +281,9 @@ test_that("test installing a validated bundle from source and rerunning report",
     old_pkgs <- rownames(installed.packages(lib.loc = .libPaths()[1]))
 
     ## validate source & create bundle.
-    suppressMessages({quiet <- capture.output({
-    vt_validate_install(pkg = ".")
+    suppressMessages({
+      quiet <- capture.output({
+    vt_validate_install(pkg = ".", install_verbose = FALSE)
     })})
 
     new_pkg <- rownames(installed.packages(lib.loc = .libPaths()[1]))
