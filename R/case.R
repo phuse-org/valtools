@@ -37,19 +37,11 @@ vt_use_test_case <- function(name, username = vt_username(), open = interactive(
   if (file.size(case_name) == 0){
 
     # Create the content to write
-    content <- paste0(c(
-      paste0("#' @editor ", username),
-      paste0("#' @editDate ", as.character(Sys.Date())),
-      "",
-      "+ _Test Case_",
-      "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-      "",
-      "    + Start documenting test case here!",
-      collapse = "",
-      sep = "\n"
-    ))
-
-    writeLines(content, con = case_name)
+    render_template("test_cases", output = case_name,
+                     data = list(
+                       username = username,
+                       editDate = as.character(Sys.Date())
+                     ))
 
   }
 

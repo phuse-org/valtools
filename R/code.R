@@ -14,22 +14,11 @@ vt_use_test_code <- function(name, username = vt_username(), open = interactive(
   if (file.size(code_name) == 0){
 
     # Create the content to write
-    content <- paste0(c(
-      "",
-      "# Test setup",
-      "",
-      "",
-      paste0("#' @editor ", username),
-      paste0("#' @editDate ", as.character(Sys.Date())),
-      "test_that(\"TESTNUMBER\", {",
-      "  #TEST CODE HERE",
-      "",
-      "})",
-      collapse = "",
-      sep = "\n"
-    ))
-
-    writeLines(content, con = code_name)
+    render_template("test_code", output = code_name,
+                    data = list(
+                      username = username,
+                      editDate = as.character(Sys.Date())
+                    ))
   }
 
   if(open){

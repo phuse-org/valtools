@@ -1,0 +1,13 @@
+
+# Test setup
+
+
+#' @editor {{ username }}
+#' @editDate {{ editDate }}
+test_that("TESTNUMBER", {
+  #TEST CODE HERE
+
+})
+
+
+
