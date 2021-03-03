@@ -89,7 +89,7 @@ evaluate_filename <- function(pkg = ".", package, version){
   filename_format <- get_config_report_naming_format(pkg = pkg)
 
   if(is.null(filename_format)){
-    filename_format <- "validation_report_{package}_v{version}_{date}"
+    filename_format <- "Validation_Report_{package}_v{version}_{date}"
   }
 
   if(missing(package)){
@@ -100,7 +100,7 @@ evaluate_filename <- function(pkg = ".", package, version){
     version <- desc::desc_get_field("Version",file = pkg)
   }
 
-  date <- format(Sys.Date(),"%Y%d%m")
+  date <- format(Sys.Date(),"%Y%m%d")
 
   glue(filename_format)
 

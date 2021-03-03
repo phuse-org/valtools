@@ -25,13 +25,10 @@
 #'
 vt_validate_source <- function(pkg = ".", open = interactive()){
 
-  validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
-  validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
-
   tryCatch({
 
     with_temp_libpaths(
-      validation_report_path <- r( function(pkg, validation_directory, working_dir, output_dir, output_file){
+      validation_report_path <- r( function(pkg, working_dir, output_dir, output_file){
 
         ## install R package to temporary libpath
         devtools::install(
@@ -53,9 +50,8 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
 
       },args = list(
         pkg = pkg,
-        validation_directory = validation_directory,
         working_dir = get_config_working_dir(pkg),
-        output_dir = get_config_output_dir(pkg),
+        output_dir = file.path(get_config_output_dir(pkg = "."),"validation"),
         output_file = evaluate_filename(pkg = pkg)
       )
       ))
@@ -148,6 +144,7 @@ vt_validate_install <- function(pkg = ".", ...){
   on.exit({unlink(bundle)})
   install.packages(bundle, type = "source", repos = NULL)
   inform("validated package installed")
+  return(TRUE)
 }
 
 #' Validate an installed package
@@ -164,15 +161,12 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
 
   validation_directory <- system.file("validation", package = package)
 
-  output_directory <- file.path(getwd(),output_directory)
-
   if(validation_directory == ""){
     abort(paste0(c("Package ", package, " was not built with `vt_validated_build()")),
           class = "vt.packageMissingValidation")
   }
 
   tryCatch({
-
 
     validation_report_path <- r( function(package, validation_directory, output_directory){
 
