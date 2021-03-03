@@ -203,7 +203,7 @@ test_that("test building a validated bundle from source", {
     ## validation report rendered properly
     validation_report_output_rendered <-
       strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
-               pdftools::pdf_text(validation_report_output))[[1]]
+               pdftools::pdf_text(validation_report_output)))[[1]]
 
     expect_equal(
       trimws(validation_report_output_rendered),
