@@ -11,7 +11,7 @@ vt_validate_source(pkg = ".", open = interactive())
 
 vt_validate_build(pkg = ".", ...)
 
-vt_validate_install(pkg = ".", ...)
+vt_validate_install(pkg = ".", ..., install_verbose = TRUE)
 
 vt_validate_installed_package(
   package,
@@ -25,6 +25,8 @@ vt_validate_installed_package(
 \item{open}{should the validation report be opened after it is built?}
 
 \item{...}{Additional argument passed to \code{devtools::build()}}
+
+\item{install_verbose}{should the installation be verbose?}
 
 \item{package}{installed package name}
 

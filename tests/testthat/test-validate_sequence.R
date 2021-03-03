@@ -58,8 +58,8 @@ test_that("test running validation.Rmd from source", {
     )
 
     validation_report_output_rendered <-
-      strsplit(split = "\r\n",
-               pdftools::pdf_text(validation_report_output))[[1]]
+      strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
+           pdftools::pdf_text(validation_report_output)))[[1]]
 
     expect_equal(
       trimws(validation_report_output_rendered),
@@ -202,7 +202,7 @@ test_that("test building a validated bundle from source", {
 
     ## validation report rendered properly
     validation_report_output_rendered <-
-      strsplit(split = "\r\n",
+      strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
                pdftools::pdf_text(validation_report_output))[[1]]
 
     expect_equal(
@@ -306,10 +306,10 @@ test_that("test installing a validated bundle from source and rerunning report",
 
     ## validation report rendered properly
     validation_report_output_rendered <-
-      strsplit(split = "\r\n",
-               pdftools::pdf_text(validation_report_output))[[1]]
+      strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
+               pdftools::pdf_text(validation_report_output)))[[1]]
 
-    cat(validation_report_output_rendered)
+    print(validation_report_output_rendered)
 
     expect_equal(
       trimws(validation_report_output_rendered),
