@@ -71,15 +71,16 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
 #' @importFrom whoami username
 #' @export
 #' @examples
-#' \dontrun{
+#' temp_dir <- tempdir()
 #' vt_use_validation_config(
-#'     usename_list = list(vt_user(
+#'     pkg = temp_dir,
+#'     username_list = list(vt_user(
 #'       username = whoami::username(),
 #'       name = "test",
 #'       title = "title",
 #'       role = "role")))
-#' vt_username()
-#' }
+#' vt_username( pkg = temp_dir)
+#'
 #' @importFrom whoami username
 vt_username <- function(pkg = "."){
   user <- username(fallback = "")
