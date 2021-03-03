@@ -22,7 +22,7 @@ Suggests:
     rmarkdown,
     XML,
     pdftools,
-    bookdown
+    bookdown,
     knitr,
     bookdown,
     pdftools
