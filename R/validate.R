@@ -1,14 +1,22 @@
-#' Validate a package source
+#' Validate a package
 #'
 #' @param pkg Top-level directory of the package to validate
+#' @param package installed package name
 #' @param ... Additional argument passed to `devtools::build()`
+#' @param open should the validation report be opened after it is built?
 #'
-#' @importFrom devtools build install
+#'
+#' @return path to either the validation report or the bundled package
+#'
+#' @importFrom devtools install
 #' @importFrom withr with_temp_libpaths
 #' @importFrom callr r
 #'
 #' @export
-vt_validated_build <- function(pkg = ".",...) {
+#'
+#' @rdname validate
+#'
+vt_validate_source <- function(pkg = ".", open = interactive()){
 
   validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
   validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
@@ -16,26 +24,34 @@ vt_validated_build <- function(pkg = ".",...) {
   tryCatch({
 
     with_temp_libpaths(
-      r( function(pkg, validation_directory){
+      validation_report_path <- r( function(pkg, validation_directory, working_dir, output_dir, output_file){
 
         ## install R package to temporary libpath
-        install(
+        devtools::install(
           pkg = pkg,
           quick = TRUE,
           build = FALSE,
           upgrade = "never",
           force = TRUE,
-          )
+        )
 
         ## render validation report
-        render_validation_report(
-          report_path = file.path(pkg, "vignettes", "validation.Rmd"),
-          output_dir = file.path(pkg, validation_directory),
+        valtools::vt_render_validation_report(
+          report_path = file.path(pkg,working_dir, "validation.Rmd"),
+          output_dir = file.path(pkg,output_dir),
+          output_file = output_file,
           render_time = "build",
           package = ""
         )
 
-      },args = list(pkg = pkg, validation_directory = validation_directory)))
+      },args = list(
+        pkg = pkg,
+        validation_directory = validation_directory,
+        working_dir = get_config_working_dir(pkg),
+        output_dir = get_config_output_dir(pkg),
+        output_file = evaluate_filename(pkg = pkg),
+      )
+      ))
 
     inform("Validation Report Generated", class = "vt.validation")
 
@@ -44,6 +60,29 @@ vt_validated_build <- function(pkg = ".",...) {
                    e, sep = "\n")),
           class = "vt.validationFail")
   })
+
+  if(open){
+    file.show(validation_report_path)
+  }
+
+  return(validation_report_path)
+}
+
+#' Validate a package source an Build package
+#'
+#' @importFrom devtools build
+#' @importFrom callr r
+#'
+#' @export
+#'
+#' @rdname validate
+#'
+vt_validate_build <- function(pkg = ".",...) {
+
+  validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
+  validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
+
+  vt_validate_source(pkg = ".", open = FALSE)
 
   tryCatch({
 
@@ -83,6 +122,8 @@ vt_validated_build <- function(pkg = ".",...) {
           class = "vt.buildFail")
   })
 
+  return(build_path)
+
 }
 
 #' Validate an installed package
@@ -90,41 +131,40 @@ vt_validated_build <- function(pkg = ".",...) {
 #' Rerun the validation report that is contained within a package that was built
 #' by `valtools::vt_validated_built()`. Saves the new report in the current directory.
 #'
-#' @param pkg Name of installed package
 #' @param output_directory Location of directory to output validation report
-#' @param open open the validation report after the rendering is completed
-#'
-#' @returns Returns the path of the regenerated validation report
 #'
 #' @importFrom callr r
 #'
 #' @export
-vt_validate_installed_package <- function(pkg, output_directory = ".", open = interactive()) {
+#'
+#' @rdname validate
+#'
+vt_validate_installed_package <- function(package, output_directory = ".", open = interactive()) {
 
-  validation_directory <- system.file("validation", package = pkg)
+  validation_directory <- system.file("validation", package = package)
 
   output_directory <- file.path(getwd(),output_directory)
 
   if(validation_directory == ""){
-    abort(paste0(c("Package ", pkg, " was not built with `vt_validated_build()")),
+    abort(paste0(c("Package ", package, " was not built with `vt_validated_build()")),
           class = "vt.packageMissingValidation")
   }
 
   tryCatch({
 
 
-    validation_report_path <- r( function(pkg, validation_directory, output_directory){
+    validation_report_path <- r( function(package, validation_directory, output_directory){
 
         ## render validation report
-        render_validation_report(
+        valtools::vt_render_validation_report(
           report_path = file.path(validation_directory, "validation.Rmd"),
           output_dir = output_directory,
           render_time = "installed",
-          package = pkg
+          package = package
         )
 
       },args = list(
-        pkg = pkg,
+        package = package,
         validation_directory = validation_directory,
         output_directory = output_directory
       ))
@@ -182,4 +222,33 @@ directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
   ))
 }
 
+#' evaluate validation report output name
+#'
+#' @param pkg base path to use as reference
+#' @param package package name
+#' @param version package version
+#'
+#' @importFrom desc desc_get_field
+#' @importFrom glue glue
+#'
+evaluate_filename <- function(pkg = ".", package, version){
 
+  filename_format <- get_config_report_naming_format(pkg = pkg)
+
+  if(is.null(filename_format)){
+    filename_format <- "validation_report_{package}_v{version}_{date}"
+  }
+
+  if(missing(package)){
+    package <- desc::desc_get_field("Package",file = pkg)
+  }
+
+  if(missing(version)){
+    version <- desc::desc_get_field("version",file = pkg)
+  }
+
+  date <- format(Sys.Date(),"%Y%d%m")
+
+  glue(filename_format)
+
+}

@@ -20,10 +20,9 @@ Use to set dynamic file paths in a validation.
 \examples{
 \dontrun{
 vt_path()
-\dontrun{
 vt_path("some", "reqs", "req01.md")
 vt_path("some/reqs/req01.md")
 }
-}
+
 
 }
