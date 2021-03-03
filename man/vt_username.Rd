@@ -4,7 +4,10 @@
 \alias{vt_username}
 \title{Get current username}
 \usage{
-vt_username()
+vt_username(pkg = ".")
+}
+\arguments{
+\item{pkg}{path to base directory of working project}
 }
 \value{
 \verb{[character]} Username of the person that called the function
@@ -13,6 +16,13 @@ vt_username()
 Wrapper for whoami::username
 }
 \examples{
+\dontrun{
+vt_use_validation_config(
+    usename_list = list(vt_user(
+      username = whoami::username(),
+      name = "test",
+      title = "title",
+      role = "role")))
 vt_username()
-
+}
 }

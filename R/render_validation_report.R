@@ -36,29 +36,36 @@ render_validation_report <- function(report_path, output_dir = dirname(report_pa
 #'   Path components below the validation folder, can be empty.
 #'   Each argument should be a string containing one or more
 #'   path components separated by a forward slash `"/"`.
+#' @param pkg path to base directory of package
 #'
 #' @export
 #'
 #' @importFrom here here
 #'
 #' @examples
+#' \dontrun{
 #' vt_path()
 #' \dontrun{
 #' vt_path("some", "reqs", "req01.md")
 #' vt_path("some/reqs/req01.md")
 #' }
+#' }
 #'
-#'
-vt_path <- function(...){
+vt_path <- function(..., pkg = "."){
 
   state <- Sys.getenv("vt_validation_state")
   package <- Sys.getenv("vt_validation_package")
 
-  ## default and if building (state == "build") uses the same path
-  path <- switch (state,
-                  "installed" = file.path(system.file(package = package), getOption("vt.validate_install_directory", default = "validation")),
-                  here(getOption("vt.validation_directory",default = "vignettes/validation"))
-  )
+
+  if(state == "installed"){
+    ## if testing an installed package via `vt_validate_installed_package()`,
+    ## state == "installed",
+    package_dir <- system.file(package = package)
+    path <- file.path(package_dir,"validation") ## users have no choice if output_dir is set to "inst"
+  }else{
+    ## default and if building (state == "build") uses the same path
+    path <- here(get_config_working_dir(pkg = here(pkg)), "validation")
+  }
 
   file.path(path, ...)
 

@@ -67,6 +67,9 @@ vt_use_validation_config <- function(pkg = ".",
     )
   }
 
+  ## add ".here" ref if not a package
+  set_dir_ref(pkg = pkg)
+
   if(length(username_list) > 0 ){
     user_entries <- sapply(username_list, is_vt_user)
     non_users <- sum(!user_entries)
@@ -432,7 +435,12 @@ get_config_working_dir <- function(pkg = "."){
 }
 
 get_config_output_dir <- function(pkg = "."){
-  read_validation_config(pkg = pkg)$output_dir
+  config <- read_validation_config(pkg = pkg)
+  if("output_dir" %in% names(config)){
+    return(config$output_dir)
+  }else{
+    return(config$working_dir)
+  }
 }
 
 get_config_report_naming_format <- function(pkg = "."){

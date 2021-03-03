@@ -2,6 +2,14 @@ test_that("Creating test code and set user", {
 
   withr::with_tempdir({
 
+    writeLines(c(
+      "working_dir: vignettes",
+      "usernames:",
+      "  New User:",
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      ".validation")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_code_path <- vt_use_test_code(
@@ -43,6 +51,14 @@ test_that("Creating test code and not setting user takes username", {
 
   withr::with_tempdir({
 
+    writeLines(c(
+      "working_dir: vignettes",
+      "usernames:",
+      paste0("  ",username(fallback = ""),":"),
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      ".validation")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_code_path <- vt_use_test_code(
@@ -82,6 +98,14 @@ test_that("Creating test codes adds correct extension", {
 
   withr::with_tempdir({
 
+    writeLines(c(
+      "working_dir: vignettes",
+      "usernames:",
+      paste0("  ",username(fallback = ""),":"),
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      ".validation")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_code_path <- vt_use_test_code(
