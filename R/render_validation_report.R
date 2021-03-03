@@ -97,7 +97,7 @@ evaluate_filename <- function(pkg = ".", package, version){
   }
 
   if(missing(version)){
-    version <- desc::desc_get_field("version",file = pkg)
+    version <- desc::desc_get_field("Version",file = pkg)
   }
 
   date <- format(Sys.Date(),"%Y%d%m")
