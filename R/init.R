@@ -48,7 +48,14 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
                               roxygen = TRUE, check_name = TRUE, open = rlang::is_interactive()) {
 
   tryCatch({
-    create_package(path = pkg, ...)
+    create_package(
+      path = pkg,
+      fields = fields,
+      rstudio = rstudio,
+      roxygen = roxygen,
+      check_name = check_name,
+      open = open
+    )
 
     inform("Created package structure",
            class = "vt.initPackage")
