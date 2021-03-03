@@ -309,8 +309,6 @@ test_that("test installing a validated bundle from source and rerunning report",
       strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
                pdftools::pdf_text(validation_report_output)))[[1]]
 
-    print(validation_report_output_rendered)
-
     expect_equal(
       trimws(validation_report_output_rendered),
       c(
@@ -340,8 +338,8 @@ test_that("test installing a validated bundle from source and rerunning report",
       open = FALSE)
 
     new_validation_report_output_rendered <-
-      strsplit(split = "\r\n",
-               pdftools::pdf_text(new_validation_report_output))[[1]]
+      strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
+            pdftools::pdf_text(new_validation_report_output)))[[1]]
 
     expect_equal(
       trimws(new_validation_report_output_rendered),
