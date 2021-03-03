@@ -3,12 +3,15 @@
 \name{vt_validate_source}
 \alias{vt_validate_source}
 \alias{vt_validate_build}
+\alias{vt_validate_install}
 \alias{vt_validate_installed_package}
 \title{Validate a package}
 \usage{
 vt_validate_source(pkg = ".", open = interactive())
 
 vt_validate_build(pkg = ".", ...)
+
+vt_validate_install(pkg = ".", ...)
 
 vt_validate_installed_package(
   package,

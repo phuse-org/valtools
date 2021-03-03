@@ -56,7 +56,7 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
         validation_directory = validation_directory,
         working_dir = get_config_working_dir(pkg),
         output_dir = get_config_output_dir(pkg),
-        output_file = evaluate_filename(pkg = pkg),
+        output_file = evaluate_filename(pkg = pkg)
       )
       ))
 
@@ -133,9 +133,23 @@ vt_validate_build <- function(pkg = ".",...) {
 
 }
 
-#' Validate an installed package
-#'
 
+
+#' Validate and install package and Build package
+#'
+#' @importFrom rlang inform
+#' @export
+#'
+#' @rdname validate
+#'
+vt_validate_install <- function(pkg = ".", ...){
+  bundle <- vt_validate_build(pkg = ".", ...)
+  on.exit({unlink(bundle)})
+  install.packages(bundle, type = "source", repos = NULL)
+  inform("validated package installed")
+}
+
+#' Validate an installed package
 #'
 #' @param output_directory Location of directory to output validation report
 #'
