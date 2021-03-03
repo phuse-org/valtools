@@ -1,0 +1,71 @@
+---
+title: "Starting New Validation Project"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Starting New Validation Project}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval=FALSE
+)
+```
+
+```{r setup, warning=FALSE}
+library(valtools)
+library(usethis)
+library(knitr)
+```
+
+## Intro
+
+This vignette steps through adding validation to a new project, by extending `usethis` 
+functionality via `valtools::use_*` functions.
+
+## Option A: Adding validation at start of package creation
+
+- Create a new R package skeleton
+- Add requirements
+- Add test cases
+
+```{r}
+vt_create_package()
+vt_use_spec("Requirement_1")
+vt_use_spec("Requirement_2")
+vt_use_test_case("Test_Case_1")
+vt_use_test_code("Test_Code_1")
+#vt_use_validation("Validation Report")
+```
+
+## Option B:Adding validation to exsiting package or specified location
+
+```{r}
+setOption(vt.validation_directory = "PATH_TO_VALIDATION_DIRECTORY")
+vt_create_validation()
+vt_use_spec("Requirement_1")
+vt_use_spec("Requirement_2")
+vt_use_test_case("Test_Case_1")
+vt_use_test_code("Test_Code_1")
+vt_use_validation("Validation Report")
+```
+
+## Running a validation report
+
+### Validation Mode: Validate at build
+
+```{r }
+vt_validated_build()
+```
+
+### Validation Mode: Validate after install
+
+This assumes that the validation structure exists via the `inst/` directory of 
+an installed package.
+
+```{r}
+vt_validate_installed_package(myValidPackage)
+```

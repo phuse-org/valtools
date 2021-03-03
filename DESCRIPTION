@@ -34,16 +34,24 @@ RoxygenNote: 7.1.1
 Suggests: 
     covr,
     testthat,
-    here,
     glue,
-    usethis,
-    withr,
     knitr,
-    rmarkdown
+    bookdown,
+    pdftools
 Imports:
     desc,
     devtools,
+    R6,
     roxygen2,
-    lubridate
+    lubridate,
+    rlang,
+    yaml,
+    whoami,
+    stringr,
+    usethis,
+    rmarkdown,
+    withr,
+    callr,
+    here,
+    whisker
 VignetteBuilder: knitr
-
