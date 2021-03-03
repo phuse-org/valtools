@@ -17,15 +17,10 @@ Suggests:
     covr,
     testthat,
     glue,
-    usethis,
-    withr,
-    rmarkdown,
     XML,
     pdftools,
     bookdown,
-    knitr,
-    bookdown,
-    pdftools
+    knitr
 Imports:
     desc,
     devtools,

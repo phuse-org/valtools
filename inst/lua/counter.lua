@@ -1,18 +1,35 @@
 local utils = require 'pandoc.utils'
-local counter = 0
 local a = {}
 
-function Code (code)
-  if string.find(utils.stringify(code), '@@') then
-    ref_id = string.gsub(utils.stringify(code), "@@(.)", "\\%1")
-    if(a[ref_id] == nil) then
-      counter = counter + 1
-      ref_id =  string.gsub(utils.stringify(code), "@@(.)", "\\%1")
-      a[ref_id] = counter
 
-    end
-  end
+return {
+  {
+    Str = function (elem)
+      if string.find(elem.text, "^##") then
+        if string.find(elem.text, "^##(.+):(.+)") then
+          this_grp = string.gsub(elem.text, "^##(.+):(.+)", "%1")
+          this_ref = string.gsub(elem.text, "^##(.+):(.+)", "%2")
+        else
+          this_grp = "all"
+          this_ref = string.gsub(elem.text, "^##(.+)", "%1")
+        end
 
-  return pandoc.Str(a[ref_id])
+        if(a[this_grp] == nil) then
+          a[this_grp] = {}
+          a[this_grp][this_ref] = 1
+        elseif(a[this_grp][this_ref] == nil) then
+          num_items = 0
+          for k,v in pairs(a[this_grp]) do
+            num_items = num_items + 1
+          end
+          a[this_grp][this_ref] = num_items + 1
+        end
 
-end
+        return pandoc.Str(a[this_grp][this_ref])
+      end
+
+
+end,
+  }
+}
+

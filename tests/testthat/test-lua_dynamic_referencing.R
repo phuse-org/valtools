@@ -1,4 +1,6 @@
 test_that("lua numbering for pdf", {
+  ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
+  ## does not depend on valtools functions for dynamic labeling
   withr::with_tempdir({
 
   ## create test files
@@ -9,7 +11,6 @@ test_that("lua numbering for pdf", {
     sep = "\n",
     c('---',
       'title: "Lua filter counter"',
-      'author: "An author"',
       'output:',
       '  pdf_document:',
       '    pandoc_args:',
@@ -17,12 +18,21 @@ test_that("lua numbering for pdf", {
       paste0('    - ', system.file(package = "valtools", "lua/counter.lua")),
       '---',
       '\n\n',
-      'Reference No. `@@Ref-1`\n\n',
-      'Second call to same ref `@@Ref-1`\n\n',
-      'Some other code block `something else`\n\n',
-      'Ref no. `@@Ref-2`\n\n',
-      'First ref: `@@Ref-1`\n\n',
-      'Second ref: `@@Ref-2`\n\n'
+      '1. A label `##tc:refA` with a group: ##tc:refA',
+      '2. A label `##refB` without a group: ##refB',
+      '3. Add second label to the first group using `##tc:refB` : ##tc:refB',
+      '4. Another label `##refC` without a group: ##refC',
+      '5. A label with a second group using `##req:refC` : ##req:refC',
+      '6. Add third label to the first group using `##tc:refC`: ##tc:refC',
+      '7. Add a second label to the second group using `##req:refD`: ##req:refD',
+      '\n\n',
+      'Later reference to (1) - ##tc:refA\n',
+      'Later reference to (6) - ##tc:refC\n',
+      'Later reference to (2) - ##refB\n',
+      'Later reference to (7) - ##req:refD\n',
+      'Later reference to (4) - ##refC\n',
+      'Later reference to (5) - ##req:refC\n',
+      'Later reference to (3) - ##tc:refB\n'
     ))
 
 
@@ -31,14 +41,22 @@ test_that("lua numbering for pdf", {
     test_output_rendered <-
       strsplit(split = "\r\n",
                pdftools::pdf_text(gsub(test_input, pattern = ".md", replacement = ".pdf")))[[1]]
-    expect_equal("Reference No. 1", test_output_rendered[3])
-    expect_equal("Second call to same ref 1", test_output_rendered[4])
-    expect_equal("Ref no. 2", test_output_rendered[6])
-    expect_equal("First ref: 1", test_output_rendered[7])
-    expect_equal("Second ref: 2", test_output_rendered[8])
+
+    expect_equal(c(1, 1, 2, 2, 1, 3, 2),
+                 unlist(lapply(strsplit(trimws(test_output_rendered[2:8]), split = ": "),
+                               FUN = function(x){as.numeric(trimws(x[2]))})))
+    expect_equal(c(1, 3, 1, 2, 2, 1, 2), as.numeric(gsub(test_output_rendered[9:15],
+              pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
+              replacement = "\\2")))
+    expect_equal(c(1, 6, 2, 7, 4, 5, 3), as.numeric(gsub(test_output_rendered[9:15],
+              pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
+              replacement = "\\1")))
 })})
 
 test_that("lua numbering for html", {
+  ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
+  ## does not depend on valtools functions for dynamic labeling
+
   withr::with_tempdir({
   ## create test files
   test_input <- tempfile(fileext = ".md", tmpdir = getwd())
@@ -48,7 +66,6 @@ test_that("lua numbering for html", {
     sep = "\n",
     c('---',
       'title: "Lua filter counter"',
-      'author: "An Author"',
       'output:',
       '  html_document:',
       '    pandoc_args:',
@@ -56,25 +73,39 @@ test_that("lua numbering for html", {
       paste0('    - ', system.file(package = "valtools", "lua/counter.lua")),
       '---',
       '\n\n',
-      'Reference Number `@@Ref-1`\n\n',
-      'Second call to same ref `@@Ref-1`\n\n',
-      'Some other code block `something else`\n\n',
-      'Ref no. `@@Ref-2`\n\n',
-      'First ref: `@@Ref-1`\n\n',
-      'Second ref: `@@Ref-2`\n\n'
+      '1. A label `##tc:refA` with a group: ##tc:refA',
+      '2. A label `##refB` without a group: ##refB',
+      '3. Add second label to the first group using `##tc:refB` : ##tc:refB',
+      '4. Another label `##refC` without a group: ##refC',
+      '5. A label with a second group using `##req:refC` : ##req:refC',
+      '6. Add third label to the first group using `##tc:refC`: ##tc:refC',
+      '7. Add a second label to the second group using `##req:refD`: ##req:refD',
+      '\n\n',
+      'Later reference to (1) - ##tc:refA\n',
+      'Later reference to (6) - ##tc:refC\n',
+      'Later reference to (2) - ##refB\n',
+      'Later reference to (7) - ##req:refD\n',
+      'Later reference to (4) - ##refC\n',
+      'Later reference to (5) - ##req:refC\n',
+      'Later reference to (3) - ##tc:refB\n'
     ))
 
   rmarkdown::render(input = test_input, clean = FALSE)
-  test_output_rendered <-
-    unlist(XML::xpathApply(XML::htmlTreeParse(gsub(test_input, pattern = ".md", replacement = ".html"),
-                                useInternal = TRUE), "//p", XML::xmlValue,
+  test_output_rendered <- XML::htmlTreeParse(gsub(test_input, pattern = ".md", replacement = ".html"),
+                                            useInternal = TRUE)
+  text_rendered <- unlist(XML::xpathApply(test_output_rendered, "//p", XML::xmlValue,
                            recursive = FALSE, trim = TRUE))
+  list_rendered <- unlist(XML::xpathApply(test_output_rendered, "//li", XML::xmlValue,
+                                          recursive = FALSE, trim = TRUE))
 
 
+  expect_equal(c(1, 3, 1, 2, 2, 1, 2), as.numeric(gsub(text_rendered,
+                          pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
+                          replacement = "\\2")))
+  expect_equal(c(1, 6, 2, 7, 4, 5, 3), as.numeric(gsub(text_rendered,
+                          pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
+                          replacement = "\\1")))
+  expect_equal(c(1, 1, 2, 2, 1, 3, 2),
+               as.numeric(unlist(lapply(strsplit(list_rendered, ": "), FUN = function(x){x[2]}))))
 
-  expect_equal("Reference Number 1", test_output_rendered[1])
-  expect_equal("Second call to same ref 1", test_output_rendered[2])
-  expect_equal("Ref no. 2", test_output_rendered[4])
-  expect_equal("First ref: 1", test_output_rendered[5])
-  expect_equal("Second ref: 2", test_output_rendered[6])
 })})
