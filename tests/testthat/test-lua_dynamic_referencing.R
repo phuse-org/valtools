@@ -2,6 +2,7 @@ test_that("lua numbering for pdf", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
   ## does not depend on valtools functions for dynamic labeling
   skip_if_not_installed("valtools")
+  skip_on_os("mac") # not sure if it is os or gh action config
   withr::with_tempdir({
 
   ## create test files
@@ -58,6 +59,7 @@ test_that("lua numbering for html", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
   ## does not depend on valtools functions for dynamic labeling
   skip_if_not_installed("valtools")
+  skip_on_os("mac") # not sure if it is os or gh action config
   withr::with_tempdir({
   ## create test files
   test_input <- tempfile(fileext = ".md", tmpdir = getwd())
