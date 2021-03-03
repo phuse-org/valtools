@@ -309,6 +309,8 @@ test_that("test installing a validated bundle from source and rerunning report",
       strsplit(split = "\r\n",
                pdftools::pdf_text(validation_report_output))[[1]]
 
+    cat(validation_report_output_rendered)
+
     expect_equal(
       trimws(validation_report_output_rendered),
       c(
