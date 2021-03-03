@@ -73,6 +73,59 @@ test_that("test running validation.Rmd from source", {
 
 })})
 
+test_that("test running validation.Rmd from source for failure", {
+  withr::with_tempdir({
+
+    ## create blank package
+    quiet <- capture.output({
+      usethis::create_package("example.package")
+    })
+
+    setwd("example.package")
+
+    ## create config file
+    writeLines(text = c(
+      "working_dir: vignettes",
+      "output_dir: inst",
+      "usernames:",
+      "  NewUser:",
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      con = ".validation")
+
+    ## make vignette
+    dir.create("vignettes")
+    writeLines( text = c(
+      "---",
+      "title: \"Validation Report\"",
+      "output: rmarkdown::pdf_document",
+      "vignette: >",
+      "  %\\VignetteIndexEntry{validation}",
+      "  %\\VignetteEngine{knitr::rmarkdown}",
+      "  %\\VignetteEncoding{UTF-8}",
+      "---",
+      "",
+      "```{r}",
+      "",
+      "stop(\"hammer time\")",
+      "",
+      "```",
+      ""),
+      con = "vignettes/validation.Rmd"
+    )
+
+    ## validate source.
+    quiet <- capture.output({
+      expect_error(
+        vt_validate_source(pkg = ".", open = FALSE),
+        "Error during validation of package. Error: ",
+        fixed = TRUE
+      )
+    })
+
+  })})
+
 test_that("test building a validated bundle from source", {
   withr::with_tempdir({
 
@@ -227,9 +280,9 @@ test_that("test installing a validated bundle from source and rerunning report",
     old_pkgs <- rownames(installed.packages(lib.loc = .libPaths()[1]))
 
     ## validate source & create bundle.
-    quiet <- capture.output({
+    suppressMessages({quiet <- capture.output({
     vt_validate_install(pkg = ".")
-    })
+    })})
 
     new_pkg <- rownames(installed.packages(lib.loc = .libPaths()[1]))
 
@@ -297,3 +350,16 @@ test_that("test installing a validated bundle from source and rerunning report",
     )
 
   })})})
+
+test_that("Attempting rerunning report for package not built for validation throws error", {
+
+  expect_error(
+    vt_validate_installed_package(
+        package = "utils",
+        open = FALSE),
+    "Package utils was not built with `vt_validated_build()",
+    fixed = TRUE
+  )
+
+})
+

@@ -30,6 +30,8 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
     with_temp_libpaths(
       validation_report_path <- r( function(pkg, working_dir, output_dir, output_file){
 
+        # nocov start
+
         ## install R package to temporary libpath
         devtools::install(
           pkg = pkg,
@@ -48,6 +50,8 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
           package = ""
         )
 
+        # nocov end
+
       },args = list(
         pkg = pkg,
         working_dir = get_config_working_dir(pkg),
@@ -65,7 +69,7 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
   })
 
   if(open){
-    file.show(validation_report_path)
+    file.show(validation_report_path) # nocov
   }
 
   return(validation_report_path)
@@ -162,14 +166,14 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
   validation_directory <- system.file("validation", package = package)
 
   if(validation_directory == ""){
-    abort(paste0(c("Package ", package, " was not built with `vt_validated_build()")),
+    abort(paste0("Package ", package, " was not built with `vt_validated_build()"),
           class = "vt.packageMissingValidation")
   }
 
   tryCatch({
 
     validation_report_path <- r( function(package, validation_directory, output_directory){
-
+      # nocov start
         ## render validation report
         valtools::vt_render_validation_report(
           report_path = file.path(validation_directory, "validation.Rmd"),
@@ -177,7 +181,7 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
           render_time = "installed",
           package = package
         )
-
+      # nocov end
       },args = list(
         package = package,
         validation_directory = validation_directory,
@@ -193,7 +197,7 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
   })
 
   if(open){
-    file.show(validation_report_path)
+    file.show(validation_report_path) # nocov
   }
 
   invisible(validation_report_path)
