@@ -29,6 +29,7 @@
 #' @export vt_dynamic_referencer
 #' @aliases Dynamic Referencing
 #' @importFrom R6 R6Class
+#' @importFrom rlang abort
 #' @examples
 #'
 #' reference <- vt_dynamic_referencer$new()
@@ -48,12 +49,16 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' ref$scrape_references("@@new_reference")
           #' ref$list_references()
 
-          scrape_references = function(text, type = c("spec","test_case","test_code")){
-            type <- match.arg(type)
+          scrape_references = function(text){
 
             reference_locations <-
               gregexpr(
-                paste0("(?:(",private$reference_indicator_regex,")","(([[:alnum:]]|[_]|[-])*))"),
+                paste0(
+                  "(?:(",
+                  private$reference_indicator_regex,
+                  ")",
+                  "(([[:alnum:]]|[_]|[-])*:(([[:alnum:]]|[_]|[-])*)))"
+                ),
                 text,
                 perl = TRUE)
 
@@ -62,18 +67,22 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
             for( line_idx in seq_along(reference_locations)){
 
               reference_location <- reference_locations[[line_idx]]
+
               if(reference_location[[1]] != -1){
                 start_match <- as.numeric(reference_location)
                 end_match <- start_match + attr(reference_location, "match.length") -1
 
                 for(matching in seq_along(start_match)){
-                  references <- c(references,gsub(
-                  pattern = private$reference_indicator,
-                  replacement = "",
-                  substr(text[[line_idx]],
-                         start_match[[matching]],
-                         end_match[[matching]]),
-                  fixed = TRUE))
+
+                  ref <- gsub(
+                    pattern = private$reference_indicator,
+                    replacement = "",
+                    substr(text[[line_idx]],
+                           start_match[[matching]],
+                           end_match[[matching]]),
+                    fixed = TRUE)
+
+                  references <- c(references,ref)
                 }
               }
             }
@@ -84,7 +93,19 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
             if(length(new_references) > 0){
               for(new_ref in new_references){
-                private$add_reference(new_ref, type)
+
+                type <- strsplit(new_ref, ":")[[1]][1]
+
+                if(type %in% c("spec","test_code","test_case")){
+                  private$add_reference(new_ref, type)
+                }else{
+                  abort(
+                    paste0(
+                      "Invalid reference at: ", private$reference_indicator,new_ref,"\n",
+                      "Reference type indicator can only be one of: `spec`,`test_case`,`test_code`!"
+                      )
+                  )
+                }
               }
             }
 
@@ -133,7 +154,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
           #' @description
           #' create a new dynamic reference object
-          #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "@@"
+          #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "@@type:reference"
           #' @return a new `vt_dynamic_reference` object
           initialize = function(reference_indicator = "@@"){
             private$references <- list()
@@ -180,20 +201,17 @@ dynamic_referencer <- vt_dynamic_referencer$new(
 #' @description enable dynamic referencing by reading file and converting any dynamic references
 #' into their values for rendering in the validation report.
 #' @param file path to the file to convert dynamic referencing to values
-#' @param type type of file being converted; a specification ('spec'), test case ('test_case') or
-#' test code ('test_code')
 #' @param reference which dynamic referencer to use. When NULL, uses internal dynamic referencer.
 #' @return text of file with dynamic referencing evaluated
 #' @export
-dynamic_reference_rendering <- function(file, type = c("spec","test_case","test_code"), reference = NULL){
-  type <- match.arg(type)
+dynamic_reference_rendering <- function(file, reference = NULL){
   file_text <- readLines(file)
 
   if(is.null(reference)){
     reference <- dynamic_referencer
   }
 
-  reference$scrape_references(file_text, type)
+  reference$scrape_references(file_text)
   reference$reference_insertion(file_text)
 
 }

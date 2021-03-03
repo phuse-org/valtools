@@ -87,10 +87,7 @@ ref$list_references()
 \subsection{Method \code{scrape_references()}}{
 collect references from text.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{vt_dynamic_referencer$scrape_references(
-  text,
-  type = c("spec", "test_case", "test_code")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{vt_dynamic_referencer$scrape_references(text)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -177,7 +174,7 @@ create a new dynamic reference object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{reference_indicator}}{character vector that indicates the start of the dynamic references. defaults to "@"}
+\item{\code{reference_indicator}}{character vector that indicates the start of the dynamic references. defaults to "@type:reference"}
 }
 \if{html}{\out{</div>}}
 }

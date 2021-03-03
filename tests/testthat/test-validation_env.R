@@ -17,6 +17,7 @@ test_that("works on valtools (no Depends)", {
 
 
 test_that("temp", {
+
   withr::with_tempdir({
 
   capture_output <- capture.output({usethis::create_package(path = ".", open = FALSE,
