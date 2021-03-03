@@ -138,6 +138,7 @@ vt_validate_build <- function(pkg = ".",...) {
 #' Validate and install package and Build package
 #'
 #' @importFrom rlang inform
+#' @importFrom utils install.packages
 #' @export
 #'
 #' @rdname validate
