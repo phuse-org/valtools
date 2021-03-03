@@ -1,5 +1,12 @@
 #' Validate a package
 #'
+#' `vt_validate_source` runs the validation on the current source, temporarily
+#' installing the source to properly evaluate the report. `vt_validate_build()`
+#' runs the same step, then compiles a bundle that includes th the validation
+#' report and any other contents that are required for validation. Finally,
+#' `vt_validate_installed_package` run rerun the validation report for packages
+#' that were built and then installed using the`vt_validate_build()`.
+#'
 #' @param pkg Top-level directory of the package to validate
 #' @param package installed package name
 #' @param ... Additional argument passed to `devtools::build()`
@@ -128,8 +135,7 @@ vt_validate_build <- function(pkg = ".",...) {
 
 #' Validate an installed package
 #'
-#' Rerun the validation report that is contained within a package that was built
-#' by `valtools::vt_validated_built()`. Saves the new report in the current directory.
+
 #'
 #' @param output_directory Location of directory to output validation report
 #'
@@ -220,35 +226,4 @@ directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
     to = file.path(to,list_files_from),
     overwrite = overwrite
   ))
-}
-
-#' evaluate validation report output name
-#'
-#' @param pkg base path to use as reference
-#' @param package package name
-#' @param version package version
-#'
-#' @importFrom desc desc_get_field
-#' @importFrom glue glue
-#'
-evaluate_filename <- function(pkg = ".", package, version){
-
-  filename_format <- get_config_report_naming_format(pkg = pkg)
-
-  if(is.null(filename_format)){
-    filename_format <- "validation_report_{package}_v{version}_{date}"
-  }
-
-  if(missing(package)){
-    package <- desc::desc_get_field("Package",file = pkg)
-  }
-
-  if(missing(version)){
-    version <- desc::desc_get_field("version",file = pkg)
-  }
-
-  date <- format(Sys.Date(),"%Y%d%m")
-
-  glue(filename_format)
-
 }
