@@ -70,6 +70,11 @@ vt_use_validation_config <- function(pkg = ".",
   ## add ".here" ref if not a package
   set_dir_ref(pkg = pkg)
 
+  ## add ".validation" to .Rbuildignore if is a package
+  if(is_package(pkg = pkg)){
+    use_build_ignore2(ignores = "^\\.validation$",dir = pkg)
+  }
+
   if(length(username_list) > 0 ){
     user_entries <- sapply(username_list, is_vt_user)
     non_users <- sum(!user_entries)

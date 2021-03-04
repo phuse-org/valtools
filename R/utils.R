@@ -133,6 +133,20 @@ is_valid_name <- function(filename){
   }
 }
 
+#' valtools clone of use_git_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_git_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".gitignore"), ignores)
+}
+
+#' valtools clone of use_build_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_build_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".Rbuildignore"), ignores)
+}
+
 #' @importFrom devtools as.package as.package
 is_package <- function(pkg = "."){
   tryCatch({
