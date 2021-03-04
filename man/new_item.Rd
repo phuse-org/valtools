@@ -50,8 +50,14 @@ Create a validation requirement, test case, or test code file
 }
 \examples{
 withr::with_tempdir({
-
-vt_create_package()
+vt_create_package("example.package")
+setwd("example.package")
+vt_add_user_to_config(
+  username = whoami::username(),
+  name = "Sample Name",
+  title = "Sample",
+  role = "example"
+ )
 # Create req at the cases top level `inst/validation/cases/case1`
 vt_use_test_case("case1", open = FALSE)
 # Create req at `inst/validation/cases/regTests/Update2/case2`

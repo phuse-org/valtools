@@ -2,6 +2,14 @@ test_that("Creating requirements and set user/title", {
 
   withr::with_tempdir({
 
+    writeLines(c(
+      "working_dir: vignettes",
+      "usernames:",
+      "  NewUser:",
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      ".validation")
     dir.create("vignettes/validation", recursive = TRUE)
 
     req_path <- vt_use_req(
@@ -38,6 +46,14 @@ test_that("Creating requirements and not setting user takes username", {
 
   withr::with_tempdir({
 
+    writeLines(c(
+      "working_dir: vignettes",
+      "usernames:",
+      paste0("  ",username(fallback = ""),":"),
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      ".validation")
     dir.create("vignettes/validation", recursive = TRUE)
 
     req_path <- vt_use_req(
@@ -56,7 +72,7 @@ test_that("Creating requirements and not setting user takes username", {
       content,
       c(
         "#' @title req001",
-        paste("#' @editor",vt_username()),
+        "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
         "",
         "+ Start documenting requirements here!",
@@ -72,6 +88,14 @@ test_that("Creating requirements adds correct extension", {
 
   withr::with_tempdir({
 
+    writeLines(c(
+      "working_dir: vignettes",
+      "usernames:",
+      paste0("  ",username(fallback = ""),":"),
+      "    name: New User",
+      "    title: new",
+      "    role: user"),
+      ".validation")
     dir.create("vignettes/validation", recursive = TRUE)
 
     req_path <- vt_use_req(

@@ -8,11 +8,11 @@
 #' @importFrom rlang abort inform
 #'
 #' @noRd
-create_item <- function(pkg, type = c("requirements","test_cases","test_code"), item_name){
+create_item <- function(pkg = ".", type = c("requirements","test_cases","test_code"), item_name){
 
   type <- match.arg(type)
 
-  validation_directory <- getOption("vt.validation_directory", default = "vignettes/validation")
+  validation_directory <- file.path(get_config_working_dir(pkg = pkg),"validation")
 
   # Error out if no validation skeleton
   if(!dir.exists(file.path(pkg, validation_directory))) {
@@ -64,16 +64,27 @@ create_item <- function(pkg, type = c("requirements","test_cases","test_code"), 
 #'
 #' Wrapper for whoami::username
 #'
+#' @param pkg path to base directory of working project
+#'
 #' @returns `[character]` Username of the person that called the function
 #'
 #' @importFrom whoami username
 #' @export
 #' @examples
-#' vt_username()
+#' temp_dir <- tempdir()
+#' vt_use_validation_config(
+#'     pkg = temp_dir,
+#'     username_list = list(vt_user(
+#'       username = whoami::username(),
+#'       name = "test",
+#'       title = "title",
+#'       role = "role")))
+#' vt_username( pkg = temp_dir)
 #'
 #' @importFrom whoami username
-vt_username <- function(){
-  getOption("vt_username",default = whoami::username(fallback = ""))
+vt_username <- function(pkg = "."){
+  user <- username(fallback = "")
+  get_config_user_name(username = user,pkg = pkg)
 }
 
 
@@ -119,5 +130,34 @@ is_valid_name <- function(filename){
   if(!valid_file_name(filename)){
     ui_stop(c("{ui_value(filename)} is not a valid file name. It should:",
               "* Contain only ASCII letters, numbers, '-','_', or file path delimeters (`\`,'//`)."))
+  }
+}
+
+#' valtools clone of use_git_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_git_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".gitignore"), ignores)
+}
+
+#' valtools clone of use_build_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_build_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".Rbuildignore"), ignores)
+}
+
+#' @importFrom devtools as.package as.package
+is_package <- function(pkg = "."){
+  tryCatch({
+    isTRUE(devtools::is.package(devtools::as.package(x = pkg)))
+  }, error = function(e){
+    FALSE
+  })
+}
+
+set_dir_ref <- function(pkg = "."){
+  if(!is_package(pkg) & !file.exists(file.path(pkg, ".here"))){
+    file.create(file.path(pkg, ".here"))
   }
 }
