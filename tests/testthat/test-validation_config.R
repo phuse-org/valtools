@@ -251,6 +251,34 @@ test_that("Test overwriting of the config file", {
 
 })
 
+test_that("Test when in a package .validation is added to .Rbuildignore of the config file", {
+
+  withr::with_tempdir({
+
+    capture_output <- capture.output({usethis::create_package(path = ".", open = FALSE,
+                                                              rstudio = TRUE,)})
+
+
+    vt_use_validation_config(pkg = ".",
+                             username_list = list(vt_user(
+                               name = "test",
+                               title = "test",
+                               role = "tester",
+                               username = "test"
+                             )))
+
+
+
+    r_build_ignore<- readLines(".Rbuildignore")
+
+    expect_true(
+      "^\\.validation$" %in% r_build_ignore
+    )
+
+  })
+
+})
+
 test_that("Attempting to read when a config file does not exist is informative", {
   withr::with_tempdir({
 
