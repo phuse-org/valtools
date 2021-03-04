@@ -279,6 +279,45 @@ test_that("Test when in a package .validation is added to .Rbuildignore of the c
 
 })
 
+test_that("Test removal of individual from config file", {
+
+  withr::with_tempdir({
+
+    vt_use_validation_config(pkg = ".",
+                             username_list = list(vt_user(
+                               name = "test",
+                               title = "test",
+                               role = "tester",
+                               username = "test"
+                             ),vt_user(
+                               name = "test2",
+                               title = "test2",
+                               role = "tester",
+                               username = "test2"
+                             )))
+
+
+    expect_equal(
+      get_config_user_name("test2"),
+      "test2"
+    )
+
+    vt_drop_user_from_config("test2")
+
+    expect_error(
+      get_config_user_name("test2")
+    )
+
+    expect_warning(
+      vt_drop_user_from_config("test2"),
+      "User `test2` does not exist in the validation config file.",
+      fixed = TRUE
+    )
+
+  })
+
+})
+
 test_that("Attempting to read when a config file does not exist is informative", {
   withr::with_tempdir({
 

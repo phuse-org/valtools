@@ -252,8 +252,8 @@ vt_drop_user_from_config <- function(username, pkg = "."){
         "User `",
         username,
         "` ",
-        "did not exist in the " ,
-        " validation config file."
+        "does not exist in the " ,
+        "validation config file."
       ),
       class = "vt.validation_config_drop_did_not_exist")
   }else{
