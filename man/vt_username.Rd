@@ -16,13 +16,14 @@ vt_username(pkg = ".")
 Wrapper for whoami::username
 }
 \examples{
-\dontrun{
+temp_dir <- tempdir()
 vt_use_validation_config(
-    usename_list = list(vt_user(
+    pkg = temp_dir,
+    username_list = list(vt_user(
       username = whoami::username(),
       name = "test",
       title = "title",
       role = "role")))
-vt_username()
-}
+vt_username( pkg = temp_dir)
+
 }

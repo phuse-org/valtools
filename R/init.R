@@ -48,7 +48,14 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
                               roxygen = TRUE, check_name = TRUE, open = rlang::is_interactive()) {
 
   tryCatch({
-    create_package(path = pkg, ...)
+    create_package(
+      path = pkg,
+      fields = fields,
+      rstudio = rstudio,
+      roxygen = roxygen,
+      check_name = check_name,
+      open = open
+    )
 
     inform("Created package structure",
            class = "vt.initPackage")
@@ -68,18 +75,5 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
 
 }
 
-#' valtools clone of use_git_ignore to remove here dependency
-#' @noRd
-#' @importFrom usethis write_union
-use_git_ignore2 <- function(ignores, dir = "."){
-  write_union(file.path(dir, ".gitignore"), ignores)
-}
-
-#' valtools clone of use_build_ignore to remove here dependency
-#' @noRd
-#' @importFrom usethis write_union
-use_build_ignore2 <- function(ignores, dir = "."){
-  write_union(file.path(dir, ".Rbuildignore"), ignores)
-}
 
 

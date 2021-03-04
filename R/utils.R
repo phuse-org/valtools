@@ -71,15 +71,16 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
 #' @importFrom whoami username
 #' @export
 #' @examples
-#' \dontrun{
+#' temp_dir <- tempdir()
 #' vt_use_validation_config(
-#'     usename_list = list(vt_user(
+#'     pkg = temp_dir,
+#'     username_list = list(vt_user(
 #'       username = whoami::username(),
 #'       name = "test",
 #'       title = "title",
 #'       role = "role")))
-#' vt_username()
-#' }
+#' vt_username( pkg = temp_dir)
+#'
 #' @importFrom whoami username
 vt_username <- function(pkg = "."){
   user <- username(fallback = "")
@@ -130,6 +131,20 @@ is_valid_name <- function(filename){
     ui_stop(c("{ui_value(filename)} is not a valid file name. It should:",
               "* Contain only ASCII letters, numbers, '-','_', or file path delimeters (`\`,'//`)."))
   }
+}
+
+#' valtools clone of use_git_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_git_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".gitignore"), ignores)
+}
+
+#' valtools clone of use_build_ignore to remove here dependency
+#' @noRd
+#' @importFrom usethis write_union
+use_build_ignore2 <- function(ignores, dir = "."){
+  write_union(file.path(dir, ".Rbuildignore"), ignores)
 }
 
 #' @importFrom devtools as.package as.package
