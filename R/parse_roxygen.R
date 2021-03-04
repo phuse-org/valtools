@@ -1,29 +1,70 @@
 #' Scrape Roxygen blocks
-#' 
-#' valtools uses roxygen across multiple file types to provide documentation. 
-#'     this function provides the tooling necessary to scrape from the 
+#'
+#' valtools uses roxygen across multiple file types to provide documentation.
+#'     this function provides the tooling necessary to scrape from the
 #'     major file types that we use ( R, R test code, markdown, Rmarkdown)
 #'     and provides a consistent output type to capture the information
 #'     necessary to help high level functions make assumptions.
-#' 
+#'
 #' @param file file to scrape roxygen block from
 #' @param ... These dots are for future extensions and must be empty.
 #' @param type method of parse_roxygen to use if other that file extension
-#' 
-#' @returns a list of roxygen blocks found in the file. 
+#'
+#' @returns a list of roxygen blocks found in the file.
 
 vt_scrape_roxygen <- function(file, ..., type = tools::file_ext(file)){
-  
+
   text <- readLines(file)
-  
+
   text <- roxy_text(
     text,
     file = file,
     class = tolower(type)
   )
-  
+
   parse_roxygen(text)
-  
+
+}
+
+write_roxygen_block <- function(roxy_list, path, append = FALSE, only_with_tags = c()){
+
+  if (length(only_with_tags) > 0) {
+    roxy_list <- subset_blocks(roxy_list, tags = only_with_tags)
+  }
+
+  if (length(roxy_list) > 0) {
+    content <- do.call('c', lapply(roxy_list, function(block) {
+      tags <- do.call('c', lapply(block$tags, function(tag) {
+        if (!is.na(tag$line)) {
+          paste0("#' @", tag$tag, " ", gsub("\n", "\n#'", tag$raw))
+        }
+      }))
+
+      var <-
+        paste0(as.character(as.list(block$call)[[2]]), "<- function(){}")
+
+      c(tags, var, "")
+    }))
+
+
+    file_con <- file(description = path,
+                     open = ifelse(append, "at", "wt"))
+
+    on.exit(close(file_con))
+
+    writeLines(content,
+               sep = "\n",
+               con = file_con)
+  }
+
+}
+
+subset_blocks <- function(roxy_list, tags){
+  lapply(roxy_list, function(block){
+    if(block_has_tags(block, tags = only_with_tags)){
+      return(block)
+    }
+  })
 }
 
 roxy_text <- function(text, file = "text", class){
@@ -52,39 +93,39 @@ parse_roxygen <- function(text){
 #' @importFrom rlang abort
 #' @export
 parse_roxygen.r <- function(text){
-  
+
   roxyblocks <- roxygen2::parse_text(text)
-  
+
   roxyblocks <- cleanup_section_last_update(roxyblocks)
-  
+
   ## set "NULL" functions to their title
   roxyblocks <- lapply(roxyblocks, function(block){
-    
+
     if(is.null(block$call)){
-      
+
       if(!block_has_tags(block,"title")){
-        
+
         abort(
           paste0(
             "NULL/deprecated functions must have a title.\n",
             "Review file `",roxy_text_file(text),"`, line ", block$line),
           class = "vt.deprecated_null_function_missing_title"
         )
-        
+
       }
-      
+
       title <- block_get_tag_value(block, tag = "title")
-      
+
       block$object <- structure(
-        list(alias = title, 
+        list(alias = title,
              topic = title,
              value = "Deprecated",
              methods = NULL
         ),
         class = c("deprecated_function","function","object"))
-      
+
     }
-    
+
     block
   })
 
@@ -96,35 +137,35 @@ parse_roxygen.r <- function(text){
 
 #' @export
 parse_roxygen.r_test_code <- function(text){
-  
+
   roxyblocks <- roxygen2::parse_text(text,env = environment())
   roxyblocks <- cleanup_section_last_update(roxyblocks)
-  
+
   roxyblocks <- lapply(roxyblocks,function(block){
-    
+
     test <- as.list(block$call)[[2]]
-    
+
     block$object <- structure(
-      list(alias = test, 
+      list(alias = test,
            topic = test,
            value = block$call,
            methods = NULL
            ),
       class = c("test_code","function","object"))
-    
+
     block
-    
+
   })
-  
+
   ## confirm no duplicated test names
   roxy_test_names <- sapply(roxyblocks, function(block) block$object$alias)
-  
+
   if(any(duplicated(roxy_test_names))){
-    
+
     test_table <- table(roxy_test_names)
-    
+
     dup_test_names <- test_table[test_table > 1]
-    
+
     locs <- sapply(
       names(dup_test_names),
       function(test_name){
@@ -134,15 +175,15 @@ parse_roxygen.r_test_code <- function(text){
         collapse = ",")
       }
     )
-    
+
     dup_table <- capture.output(
       print(data.frame(
       `Test Name` = names(dup_test_names),
        Lines = locs
       ),
       row.names = FALSE))
-    
-    
+
+
     abort(paste(c(
       paste0(
         "Duplicated Test Code names in `",
@@ -154,26 +195,26 @@ parse_roxygen.r_test_code <- function(text){
     ), collapse = "\n"),
     class = "vt.duplicated_test_code_names")
   }
-  
+
   return(roxyblocks)
 }
 
 #' @importFrom roxygen2 parse_text block_has_tags block_get_tag_value
 #' @export
 parse_roxygen.md <- function(text){
-  
+
   ## subset to keep only the roxygen comments
-  
+
   text2 <- roxy_text(
     c(text[grepl("^#'",text)], "NULL"),
     file = roxy_text_file(text),
     class = roxy_text_class(text)
   )
-  
+
   roxyblocks <- roxygen2::parse_text(text2)
-  
+
   roxyblocks <- cleanup_section_last_update(roxyblocks)
-  
+
   ## Clean up to set title to object alias and topic
   roxyblocks <- lapply(roxyblocks, function(block) {
     if (!block_has_tags(block, "title")) {
@@ -186,11 +227,11 @@ parse_roxygen.md <- function(text){
         ),
         class = "vt.md_missing_title"
       )
-      
+
     }
-    
+
     title <- block_get_tag_value(block, tag = "title")
-    
+
     block$object <- structure(
       list(
         alias = title,
@@ -200,11 +241,11 @@ parse_roxygen.md <- function(text){
       ),
       class = c("md_file", "function", "object")
     )
-    
+
     block
-    
+
   })
-  
+
   return(roxyblocks)
 }
 
@@ -215,31 +256,31 @@ parse_roxygen.rmd <- parse_roxygen.md
 #' @importFrom rlang warn
 #' @importFrom roxygen2 block_has_tags block_get_tags roxy_tag roxy_tag_parse
 cleanup_section_last_update <- function(blocks){
-  
+
   ## cleanup if using old @section Last Update(d) By/Date
   lapply(blocks, function(block){
     if (block_has_tags(block = block, tags = c("editor", "editDate"))) {
       return(block)
-      
+
     } else if (block_has_tags(block = block, tags = c("section"))) {
-      
+
       section_tags <- block_get_tags(block = block, tags = "section")
-      
+
       content <- do.call('c',lapply(section_tags, function(tags){
         section_split <- strsplit(tags[["val"]],":\n",fixed = TRUE)[[1]]
         selection <- section_split[[2]]
         names(selection) <- section_split[[1]]
         selection
       }))
-      
+
       last_by <- grepl("last update(d)* by",names(content),ignore.case = TRUE)
       last_date <- grepl("last update(d)* date",names(content),ignore.case = TRUE)
-      
+
       if(any(last_by)){
-        
+
         which_editor <- which(last_by)
         editor <- content[which_editor]
-        
+
         block$tags <- c(
           block$tags,
           list(roxy_tag_parse(roxy_tag(
@@ -249,7 +290,7 @@ cleanup_section_last_update <- function(blocks){
             line = section_tags[[which_editor]]$line
           )))
         )
-        
+
         warn(
           paste0(
             "`@section ",names(content[which_editor]),":`",
@@ -258,14 +299,14 @@ cleanup_section_last_update <- function(blocks){
           ),
           class = "vt.superseded_last_updated_by"
         )
-        
+
       }
-      
+
       if(any(last_date)){
-        
+
         which_editDate <- which(last_date)
         editDate <- content[which_editDate]
-        
+
         block$tags <- c(
           block$tags,
           list(roxy_tag_parse(roxy_tag(
@@ -275,7 +316,7 @@ cleanup_section_last_update <- function(blocks){
             line = section_tags[[which_editDate]]$line
           )))
         )
-        
+
         warn(
           paste0(
             "`@section ",names(content[which_editDate]),":`",
@@ -285,12 +326,13 @@ cleanup_section_last_update <- function(blocks){
           class = "vt.superseded_last_update_date"
         )
       }
-      
+
       return(block)
-      
+
     } else{
       return(block)
     }
   })
-  
+
 }
+
