@@ -7,11 +7,11 @@
 \alias{vt_validate_installed_package}
 \title{Validate a package}
 \usage{
-vt_validate_source(pkg = ".", open = interactive())
+vt_validate_source(pkg = ".", src = pkg, open = interactive())
 
-vt_validate_build(pkg = ".", ...)
+vt_validate_build(pkg = ".", src = pkg, ...)
 
-vt_validate_install(pkg = ".", ..., install_verbose = TRUE)
+vt_validate_install(pkg = ".", src = pkg, ..., install_verbose = TRUE)
 
 vt_validate_installed_package(
   package,
@@ -21,6 +21,8 @@ vt_validate_installed_package(
 }
 \arguments{
 \item{pkg}{Top-level directory of the package to validate}
+
+\item{src}{location of the source code. Assumed to be the same location as "pkg"}
 
 \item{open}{should the validation report be opened after it is built?}
 

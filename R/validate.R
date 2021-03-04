@@ -8,6 +8,7 @@
 #' that were built and then installed using the`vt_validate_build()`.
 #'
 #' @param pkg Top-level directory of the package to validate
+#' @param src location of the source code. Assumed to be the same location as "pkg"
 #' @param package installed package name
 #' @param ... Additional argument passed to `devtools::build()`
 #' @param open should the validation report be opened after it is built?
@@ -24,18 +25,18 @@
 #'
 #' @rdname validate
 #'
-vt_validate_source <- function(pkg = ".", open = interactive()){
+vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 
   tryCatch({
 
     with_temp_libpaths(
-      validation_report_path <- r( function(pkg, working_dir, output_dir, output_file){
+      validation_report_path <- r( function(pkg, src, working_dir, output_dir, output_file){
 
         # nocov start
 
         ## install R package to temporary libpath
         devtools::install(
-          pkg = pkg,
+          pkg = src,
           quick = TRUE,
           build = FALSE,
           upgrade = "never",
@@ -55,6 +56,7 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
 
       },args = list(
         pkg = pkg,
+        src = src,
         working_dir = get_config_working_dir(pkg),
         output_dir = file.path(get_config_output_dir(pkg = "."),"validation"),
         output_file = evaluate_filename(pkg = pkg)
@@ -85,12 +87,12 @@ vt_validate_source <- function(pkg = ".", open = interactive()){
 #'
 #' @rdname validate
 #'
-vt_validate_build <- function(pkg = ".",...) {
+vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 
   validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
   validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
 
-  vt_validate_source(pkg = ".", open = FALSE)
+  vt_validate_source(pkg = ".", src = src, open = FALSE)
 
   tryCatch({
 
@@ -144,8 +146,8 @@ vt_validate_build <- function(pkg = ".",...) {
 #'
 #' @rdname validate
 #'
-vt_validate_install <- function(pkg = ".", ..., install_verbose = TRUE){
-  bundle <- vt_validate_build(pkg = ".", ...)
+vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE){
+  bundle <- vt_validate_build(pkg = ".", src = src, ...)
   on.exit({unlink(bundle)})
   install.packages(bundle, type = "source", repos = NULL, verbose = install_verbose, quiet = !install_verbose)
   inform("validated package installed")
