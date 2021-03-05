@@ -271,7 +271,7 @@ test_that("Dynamic Number Referencing Works on files", {
 
 test_that("Dynamic Number Referencing across rmarkdown chunks", {
   # need to alter test such that does not need `valtools` installed to test
-  if(FALSE){
+  # if(FALSE){
 
   ## Create test files
   test_req1 <- tempfile(fileext = ".md")
@@ -323,7 +323,7 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
       '\n\n',
       '```{r setup}',
       '#library(valtools)',
-      '#test_referencer <- vt_dynamic_referencer$new(reference_indicator = "##")',
+      'test_referencer <- vt_dynamic_referencer$new(reference_indicator = "##")',
       '```',
       '\n\n',
       '```{r require-1, echo=FALSE}',
@@ -331,7 +331,6 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
       paste0('  file = "', gsub(pattern = "\\\\",
                                 replacement = "\\\\\\\\",
                                 normalizePath(test_req1)), '",'),
-      '  type = "test_case",',
       '  reference = test_referencer',
       ')',
       '```',
@@ -341,7 +340,6 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
       paste0('  file = "', gsub(pattern = "\\\\",
                                 replacement = "\\\\\\\\",
                                 normalizePath(test_req2)), '",'),
-      '  type = "test_case",',
       '  reference = test_referencer',
       ')',
       '```'
@@ -372,7 +370,7 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
     "",
     "",
     "```r",
-    "library(valtools)",
+    "#library(valtools)",
     "test_referencer <- vt_dynamic_referencer$new(reference_indicator = \"##\")",
     "```",
     "",
@@ -404,5 +402,5 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
     "## [8] \"\"",
     "```"
   ))
-}
+# }
 })

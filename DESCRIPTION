@@ -44,6 +44,7 @@ Imports:
     R6,
     roxygen2,
     lubridate,
+    fs,
     rlang,
     yaml,
     whoami,
