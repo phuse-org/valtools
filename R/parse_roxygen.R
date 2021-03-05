@@ -60,11 +60,11 @@ write_roxygen_block <- function(roxy_list, path, append = FALSE, only_with_tags 
 }
 
 subset_blocks <- function(roxy_list, tags){
-  lapply(roxy_list, function(block){
-    if(block_has_tags(block, tags = only_with_tags)){
-      return(block)
+  do.call('c',lapply(roxy_list, function(block){
+    if(block_has_tags(block, tags = tags)){
+      return(list(block))
     }
-  })
+  }))
 }
 
 roxy_text <- function(text, file = "text", class){
