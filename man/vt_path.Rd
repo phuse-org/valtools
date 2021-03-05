@@ -4,23 +4,26 @@
 \alias{vt_path}
 \title{Use to set dynamic file paths in a validation.}
 \usage{
-vt_path(...)
+vt_path(..., pkg = ".")
 }
 \arguments{
 \item{...}{\verb{[character]}\cr
 Path components below the validation folder, can be empty.
 Each argument should be a string containing one or more
 path components separated by a forward slash \code{"/"}.}
+
+\item{pkg}{path to base directory of package}
 }
 \description{
 Use to set dynamic file paths in a validation.
 }
 \examples{
+\dontrun{
 vt_path()
 \dontrun{
 vt_path("some", "reqs", "req01.md")
 vt_path("some/reqs/req01.md")
 }
-
+}
 
 }

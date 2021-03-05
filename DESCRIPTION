@@ -1,13 +1,31 @@
 Package: valtools
-Title: What the Package Does (One Line, Title Case)
+Title: Automate Validated Package Creation
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    c(
+    person(given = "Ellis",
+           family = "Hughes",
+           role = c("aut","cre"),
+           email = "ehhughes@scharp.org",
+           comment = c(ORCID = "0000-0003-0637-4436")),
+    person(given = "Eli",
+           family = "Miller",
+           role = "aut",
+           email = "elimillera@gmail.com",
+           comment = c(ORCID = "0000-0002-2127-9456")),
+    person(given = "Marie",
+           family = "Vendettuoli",
+           role = "aut",
+           email = "mvendett@scharp.org",
+           comment = c(ORCID = "0000-0001-9321-1410")),
+    person(given = "PHUSE",
+           role = "cph")
+    )
+Description: Automate the steps necessary to create a validation ready package
+    to make the process of validation simple. This includes setting up the 
+    specifications, test cases, test code, and validation report. Also provides
+    tools to be able to execute the validation report from a variety of 
+    situations to provide documentation for validation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -27,6 +45,7 @@ Imports:
     R6,
     roxygen2,
     lubridate,
+    fs,
     rlang,
     yaml,
     whoami,

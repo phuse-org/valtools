@@ -22,18 +22,12 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
     }
 
     # Create the content to write
-    content <- paste0(c(
-      paste0("#' @title ", title),
-      paste0("#' @editor ", username),
-      paste0("#' @editDate ", as.character(Sys.Date())),
-      "",
-      "+ Start documenting requirements here!"
-      ),
-      collapse = "",
-      sep = "\n"
-    )
-
-    writeLines(content, con = req_name)
+    render_template("requirements", output = req_name,
+                    data = list(
+                      username = username,
+                      title = title,
+                      editDate = as.character(Sys.Date())
+                    ))
   }
 
   if(open){

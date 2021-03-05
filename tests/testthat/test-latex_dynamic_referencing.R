@@ -1,9 +1,6 @@
 test_that("latex Number Referencing across rmarkdown chunks", {
-  skip_if_not_installed("valtools")
-  skip_on_os("mac") # not sure if it is os or gh action config
-  ## this test demonstrates how to use native latex + rmarkdown::render for dynamic labeling
-  ## does not depend on valtools dynamic labeling
 
+  skip_if_not_installed("valtools")
   withr::with_tempdir({
 
   ## Create test files
@@ -11,8 +8,6 @@ test_that("latex Number Referencing across rmarkdown chunks", {
   test_req2 <- tempfile(fileext = ".tex", tmpdir = getwd())
   test_report <- tempfile(fileext = ".Rmd", tmpdir = getwd())
   test_output <- tempfile(fileext = ".pdf", tmpdir = getwd())
-
-
 
   cat(
     file = test_req1,
@@ -70,23 +65,22 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 
     ))
 
-  rmarkdown::render(input = test_report, clean = FALSE)
+  quiet <- capture.output({
+    test_output <- rmarkdown::render(input = test_report, clean = FALSE)
+  })
 
-  test_output_rendered <-
-    strsplit(split = "\r\n",
-             pdftools::pdf_text(gsub(test_report, pattern = ".Rmd", replacement = ".pdf")))[[1]]
+  test_output_rendered <-trimws(strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
+       pdftools::pdf_text(test_output)))[[1]])
 
   expect_equal("1", substr(test_output_rendered[4], 1,1))
-  expect_equal("S1.1", substr(trimws(test_output_rendered[6]), 3, 6))
+  expect_equal("S1.1", substr(test_output_rendered[6], 3, 6))
   expect_equal("S1.1.1", substr(trimws(test_output_rendered[7]), 3, 8))
 
   expect_equal("2", substr(test_output_rendered[8], 1, 1))
   expect_equal("S2.1", substr(trimws(test_output_rendered[10]), 3, 6))
   expect_equal("S2.1.1", substr(trimws(test_output_rendered[11]), 3, 8))
 
-
-})
-
+ })
 })
 
 

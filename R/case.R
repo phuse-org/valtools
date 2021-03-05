@@ -17,8 +17,14 @@
 #'
 #' @examples
 #' withr::with_tempdir({
-#'
-#' vt_create_package()
+#' vt_create_package("example.package")
+#' setwd("example.package")
+#' vt_add_user_to_config(
+#'   username = whoami::username(),
+#'   name = "Sample Name",
+#'   title = "Sample",
+#'   role = "example"
+#'  )
 #' # Create req at the cases top level `inst/validation/cases/case1`
 #' vt_use_test_case("case1", open = FALSE)
 #' # Create req at `inst/validation/cases/regTests/Update2/case2`
@@ -37,19 +43,11 @@ vt_use_test_case <- function(name, username = vt_username(), open = interactive(
   if (file.size(case_name) == 0){
 
     # Create the content to write
-    content <- paste0(c(
-      paste0("#' @editor ", username),
-      paste0("#' @editDate ", as.character(Sys.Date())),
-      "",
-      "+ _Test Case_",
-      "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-      "",
-      "    + Start documenting test case here!",
-      collapse = "",
-      sep = "\n"
-    ))
-
-    writeLines(content, con = case_name)
+    render_template("test_cases", output = case_name,
+                     data = list(
+                       username = username,
+                       editDate = as.character(Sys.Date())
+                     ))
 
   }
 

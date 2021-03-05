@@ -10,8 +10,8 @@
 #' @export
 vt_validated_build <- function(pkg = ".",...) {
 
-  validation_directory <- getOption("vt.validation_directory",default = "vignettes/validation")
-  validation_output_directory <- getOption("vt.validation_output_directory",default = "inst/validation")
+  validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
+  validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
 
   tryCatch({
 
@@ -52,7 +52,7 @@ vt_validated_build <- function(pkg = ".",...) {
     }
 
     ## copy validation contents to validation output dir
-    vt_directory_copy(
+    directory_copy(
       from = file.path(pkg, validation_directory),
       to = file.path(pkg, validation_output_directory),
       recursive = TRUE,
@@ -67,7 +67,7 @@ vt_validated_build <- function(pkg = ".",...) {
 
 
     ## TODO: copy code documentation to validation output dir
-    # vt_roxygen_copy(
+    # roxygen_copy(
     #   from = file.path(pkg, "R"),
     #   to = file.path(pkg, validation_output_directory),
     #   recursive = TRUE,
@@ -158,7 +158,7 @@ vt_validate_installed_package <- function(pkg, output_directory = ".", open = in
 #'
 #' @returns boolean as to whether the copying completed successfully
 #'
-vt_directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
+directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
 
   ## list all files to copy
   list_files_from <- list.files(
