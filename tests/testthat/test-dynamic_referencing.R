@@ -3,15 +3,15 @@
 test_that("Dynamic Number Referencer can initialize and identify patterns ", {
 
   references <- vt_dynamic_referencer$new()
-  references$initialize(reference_indicator = "@@")
+  references$initialize(reference_indicator = "##")
 
   ## simple single matches
-  simple <- c("test @@spec:first_match")
+  simple <- c("test ##req:first_match")
   references$scrape_references(simple)
 
   expect_equal(
     names(references$list_references()),
-    "spec:first_match"
+    "req:first_match"
   )
 
   ## string replacement
@@ -21,13 +21,13 @@ test_that("Dynamic Number Referencer can initialize and identify patterns ", {
   )
 
   ## Add new simple matching
-  simple_new <- c("test @@spec:second_match")
+  simple_new <- c("test ##req:second_match")
 
   references$scrape_references(simple_new)
 
   expect_equal(
     names(references$list_references()),
-    c("spec:first_match","spec:second_match")
+    c("req:first_match","req:second_match")
   )
 
   ## string replacement
@@ -37,13 +37,13 @@ test_that("Dynamic Number Referencer can initialize and identify patterns ", {
   )
 
   ## Add new simple matching, alphanumeric with dashes
-  simple_alphanum <- c("test @@spec:3rd-match")
+  simple_alphanum <- c("test ##req:3rd-match")
 
   references$scrape_references(simple_alphanum)
 
   expect_equal(
     names(references$list_references()),
-    c("spec:first_match","spec:second_match","spec:3rd-match")
+    c("req:first_match","req:second_match","req:3rd-match")
   )
 
   ## string replacement
@@ -53,18 +53,18 @@ test_that("Dynamic Number Referencer can initialize and identify patterns ", {
   )
 
   ## Add new multi matching
-  multi <- c("test @@spec:fourth_match some text @@spec:fifth_match")
+  multi <- c("test ##req:fourth_match some text ##req:fifth_match")
 
   references$scrape_references(multi)
 
   expect_equal(
     names(references$list_references()),
     c(
-      "spec:first_match",
-      "spec:second_match",
-      "spec:3rd-match",
-      "spec:fourth_match",
-      "spec:fifth_match"
+      "req:first_match",
+      "req:second_match",
+      "req:3rd-match",
+      "req:fourth_match",
+      "req:fifth_match"
     )
   )
 
@@ -78,16 +78,16 @@ test_that("Dynamic Number Referencer can initialize and identify patterns ", {
 test_that("Dynamic Number Referencer can initialize and identify patterns in multi-line text", {
 
   references <- vt_dynamic_referencer$new()
-  references$initialize(reference_indicator = "@@")
+  references$initialize(reference_indicator = "##")
 
   ## Add new multi string
-  multi_line <- c("test @@spec:string1","text @@spec:string2")
+  multi_line <- c("test ##req:string1","text ##req:string2")
 
   references$scrape_references(multi_line)
 
   expect_equal(
     names(references$list_references()),
-    c("spec:string1","spec:string2")
+    c("req:string1","req:string2")
   )
 
   ## string replacement
@@ -103,13 +103,13 @@ test_that("Dynamic Number Referencer can use any reference identifier including 
   references <- vt_dynamic_referencer$new()
   references$initialize(reference_indicator = "^^")
 
-  sample_text <- "test ^^spec:string1"
+  sample_text <- "test ^^req:string1"
 
   references$scrape_references(sample_text)
 
   expect_equal(
     names(references$list_references()),
-    c("spec:string1")
+    c("req:string1")
   )
   ## string replacement
   expect_equal(
@@ -120,13 +120,13 @@ test_that("Dynamic Number Referencer can use any reference identifier including 
   references2 <- vt_dynamic_referencer$new()
   references2$initialize(reference_indicator = "\\%%&&")
 
-  sample_text <- "test \\%%&&spec:string1"
+  sample_text <- "test \\%%&&req:string1"
 
   references2$scrape_references(sample_text)
 
   expect_equal(
     names(references2$list_references()),
-    c("spec:string1")
+    c("req:string1")
   )
   ## string replacement
   expect_equal(
@@ -137,13 +137,13 @@ test_that("Dynamic Number Referencer can use any reference identifier including 
   references3 <- vt_dynamic_referencer$new()
   references3$initialize(reference_indicator = "...")
 
-  sample_text <- "test ...spec:string1"
+  sample_text <- "test ...req:string1"
 
   references3$scrape_references(sample_text)
 
   expect_equal(
     names(references3$list_references()),
-    c("spec:string1")
+    c("req:string1")
   )
   ## string replacement
   expect_equal(
@@ -156,7 +156,7 @@ test_that("Dynamic Number Referencer can use any reference identifier including 
 test_that("Dynamic Number Referencing Works on files", {
 
   test_referencer <- vt_dynamic_referencer$new(
-    reference_indicator = "@@"
+    reference_indicator = "##"
   )
 
   ## Create test files
@@ -168,31 +168,31 @@ test_that("Dynamic Number Referencing Works on files", {
     file = test_spec,
     sep = "\n",
     c(
-    "#' @title Spec @@spec:dynamic_numbering",
+    "#' @title Spec ##req:dynamic_numbering",
     "#' @section Last updated by:",
     "#' User One",
     "#' @section Last update date:",
     "#' 2021-02-15",
     "",
     "#' + _Specifications_",
-    "#'   + S@@spec:dynamic_numbering.1 User is able to reference numbers dynamically",
-    "#'     + S@@spec:dynamic_numbering.1.1 Numbers will automatically update on rendering",
+    "#'   + S##req:dynamic_numbering.1 User is able to reference numbers dynamically",
+    "#'     + S##req:dynamic_numbering.1.1 Numbers will automatically update on rendering",
     ""))
 
   cat(
     file = test_test_case,
     sep = "\n",
     c(
-      "#' @title Test Case @@test_case:dynamic_numbering_testcase",
+      "#' @title Test Case ##tc:dynamic_numbering_testcase",
       "#' @section Last updated by:",
       "#' User One",
       "#' @section Last update date:",
       "#' 2021-02-15",
       "#' @section Specification coverage:",
-      "#' @@test_case:dynamic_numbering_testcase.1: @@spec:dynamic_numbering.1, @@spec:dynamic_numbering.2",
+      "#' ##tc:dynamic_numbering_testcase.1: ##req:dynamic_numbering.1, ##req:dynamic_numbering.2",
       "",
       "#' + _Test Cases_",
-      "#'   + T@@test_case:dynamic_numbering_testcase.1 Create a sample spec with a unique reference number. Ensure the output matches 1 on rendering",
+      "#'   + T##tc:dynamic_numbering_testcase.1 Create a sample spec with a unique reference number. Ensure the output matches 1 on rendering",
       ""))
 
   cat(
@@ -204,7 +204,7 @@ test_that("Dynamic Number Referencing Works on files", {
       "#' @section Last update date:",
       "#' 2021-02-15",
       "",
-      "test_that(\"T@@test_case:dynamic_numbering_testcase.1\", {",
+      "test_that(\"T##tc:dynamic_numbering_testcase.1\", {",
       "   + expect_true(TRUE)",
       "})",
       ""))
@@ -284,26 +284,26 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
     file = test_req1,
     sep = "\n",
     c(
-      "#' @title Test Requirement @@spec:Req_1",
+      "#' @title Test Requirement ##req:Req_1",
       "#' @editor An Author",
       "#' @editDate 2021-02-15",
       "",
       "+ _Requirements_",
-      "  + S@@spec:Req_1.1 User is able to reference numbers dynamically",
-      "    + S@@spec:Req_1.1.1 Numbers will automatically update on rendering",
+      "  + S##req:Req_1.1 User is able to reference numbers dynamically",
+      "    + S##req:Req_1.1.1 Numbers will automatically update on rendering",
       ""))
 
   cat(
     file = test_req2,
     sep = "\n",
     c(
-      "#' @title Test Requirement @@spec:Req_2",
+      "#' @title Test Requirement ##req:Req_2",
       "#' @editor Another Author",
       "#' @editDate 2021-02-20",
       "",
       "+ _Requirements_",
-      "  + S@@spec:Req_2.1 User is able to reference numbers dynamically",
-      "     + S@@spec:Req_2.1.1 Numbers will automatically update on rendering",
+      "  + S##req:Req_2.1 User is able to reference numbers dynamically",
+      "     + S##req:Req_2.1.1 Numbers will automatically update on rendering",
       ""))
 
   cat(
@@ -323,7 +323,7 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
       '\n\n',
       '```{r setup}',
       '#library(valtools)',
-      'test_referencer <- vt_dynamic_referencer$new(reference_indicator = "@@")',
+      'test_referencer <- vt_dynamic_referencer$new(reference_indicator = "##")',
       '```',
       '\n\n',
       '```{r require-1, echo=FALSE}',
@@ -371,7 +371,7 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
     "",
     "```r",
     "#library(valtools)",
-    "test_referencer <- vt_dynamic_referencer$new(reference_indicator = \"@@\")",
+    "test_referencer <- vt_dynamic_referencer$new(reference_indicator = \"##\")",
     "```",
     "",
     "",
