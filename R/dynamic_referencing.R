@@ -1,7 +1,7 @@
 #' Manage dynamic refrerencing
 #'
 #' The job of the dynamic referencer is to aggregate the references that exist from
-#' specifications, test cases, test code and in the validation report and
+#' requirements, test cases, test code and in the validation report and
 #' update them accordingly. This helps with the painful cases where a new reference
 #' may be added between existing numbering and all subsequent references need to be
 #' updated
@@ -9,17 +9,17 @@
 #' The user should not need to use this object directly, it will be called upon
 #' on rendering of the contents in the validation report.
 #'
-#' By default, the expected indicator for a reference is "@@", though this can be
-#' changed. A reference starts with the indicator (@@) and can then be any
+#' By default, the expected indicator for a reference is "##", though this can be
+#' changed. A reference starts with the indicator (##) and can then be any
 #' contiguous (no white spaces or special characters) alphanumeric sequence, or include
-#' an underscore or dash. ie. @@THISIS_A-reference1234 is valid for the entire string,
-#' but @@THISIS_A-reference.12345 is a dynamic reference up to the ".".
+#' an underscore or dash. ie. ##req:THISIS_A-reference1234 is valid for the entire string,
+#' but ##req:THISIS_A-reference.12345 is a dynamic reference up to the ".".
 #'
 #' The method 'scrape_references' takes in a vector of strings, and an indicator whether
-#' the input file text is a specification ('spec'), test case ('test_case') or
-#' test code ('test_code'). This allows numbering to increase independently for each.
-#' However, every reference must be unique. ie. @@reference whether it shows up in a
-#' test case or spec will be the same reference.
+#' the input file text is a requirement ('req'), test case or
+#' test code ('tc'). This allows numbering to increase independently for each.
+#' However, every reference must be unique. ie. ##reference whether it shows up in a
+#' test case or requirement will be the same reference.
 #'
 #' The method 'reference_insertion' takes a vector of strings and replaces references
 #' with their numeric values.
@@ -41,12 +41,12 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' @description
           #' collect references from text.
           #' @param text character vector to collect references from.
-          #' @param type type of file being converted; a specification ('spec'), test case ('test_case') or
-          #' test code ('test_code')
+          #' @param type type of file being converted; a requirement ('req'),
+          #' test case  or test code ('tc')
           #' @examples
           #' ref <- vt_dynamic_referencer$new()
           #' ref$list_references()
-          #' ref$scrape_references("@@new_reference")
+          #' ref$scrape_references("##req:new_reference")
           #' ref$list_references()
 
           scrape_references = function(text){
@@ -96,13 +96,13 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
                 type <- strsplit(new_ref, ":")[[1]][1]
 
-                if(type %in% c("spec","test_code","test_case")){
+                if(type %in% c("req","tc")){
                   private$add_reference(new_ref, type)
                 }else{
                   abort(
                     paste0(
                       "Invalid reference at: ", private$reference_indicator,new_ref,"\n",
-                      "Reference type indicator can only be one of: `spec`,`test_case`,`test_code`!"
+                      "Reference type indicator can only be one of: `req` or `tc`!"
                       )
                   )
                 }
@@ -118,9 +118,9 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' @examples
           #' ref <- vt_dynamic_referencer$new()
           #' ref$list_references()
-          #' ref$scrape_references("@@new_reference")
+          #' ref$scrape_references("##new_reference")
           #' ref$list_references()
-          #' ref$reference_insertion("This is my @@new_reference")
+          #' ref$reference_insertion("This is my ##new_reference")
           reference_insertion = function(text){
 
             ## ensure ordering to try to prevent accdentally replacing strings that are subs of the other
@@ -146,7 +146,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' @examples
           #' ref <- vt_dynamic_referencer$new()
           #' ref$list_references()
-          #' ref$scrape_references("@@new_reference")
+          #' ref$scrape_references("##new_reference")
           #' ref$list_references()
           list_references = function(){
             private$references
@@ -154,14 +154,13 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
           #' @description
           #' create a new dynamic reference object
-          #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "@@type:reference"
+          #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "##type:reference"
           #' @return a new `vt_dynamic_reference` object
-          initialize = function(reference_indicator = "@@"){
+          initialize = function(reference_indicator = "##"){
             private$references <- list()
             private$ref_iter_number <- list(
-              spec = 0,
-              test_case = 0,
-              test_code = 0
+              req = 0,
+              tc = 0
             )
 
             private$reference_indicator <- reference_indicator
@@ -172,18 +171,18 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
         private = list(
           references = list(),
           ref_iter_number = list(
-            spec = 0,
+            req = 0,
             test_case = 0,
             test_code = 0
           ),
           reference_indicator = NULL,
           reference_indicator_regex = NULL,
-          advance_reference = function( type = c("spec","test_case","test_code")){
+          advance_reference = function( type = c("req","tc")){
             type <- match.arg(type)
             private$ref_iter_number[[type]] <- private$ref_iter_number[[type]] + 1
             private$ref_iter_number[[type]]
           },
-          add_reference = function(reference_id, type = c("spec","test_case","test_code")){
+          add_reference = function(reference_id, type = c("req","tc")){
             type <- match.arg(type)
             reference_value = private$advance_reference(type)
             private$references[[reference_id]] <- reference_value
@@ -192,7 +191,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
 ##
 dynamic_referencer <- vt_dynamic_referencer$new(
-  reference_indicator = "@@"
+  reference_indicator = "##"
 )
 
 

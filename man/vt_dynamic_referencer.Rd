@@ -12,7 +12,7 @@ Manage dynamic refrerencing
 }
 \details{
 The job of the dynamic referencer is to aggregate the references that exist from
-specifications, test cases, test code and in the validation report and
+requirements, test cases, test code and in the validation report and
 update them accordingly. This helps with the painful cases where a new reference
 may be added between existing numbering and all subsequent references need to be
 updated
@@ -20,17 +20,17 @@ updated
 The user should not need to use this object directly, it will be called upon
 on rendering of the contents in the validation report.
 
-By default, the expected indicator for a reference is "@", though this can be
-changed. A reference starts with the indicator (@) and can then be any
+By default, the expected indicator for a reference is "##", though this can be
+changed. A reference starts with the indicator (##) and can then be any
 contiguous (no white spaces or special characters) alphanumeric sequence, or include
-an underscore or dash. ie. @THISIS_A-reference1234 is valid for the entire string,
-but @THISIS_A-reference.12345 is a dynamic reference up to the ".".
+an underscore or dash. ie. ##req:THISIS_A-reference1234 is valid for the entire string,
+but ##req:THISIS_A-reference.12345 is a dynamic reference up to the ".".
 
 The method 'scrape_references' takes in a vector of strings, and an indicator whether
-the input file text is a specification ('spec'), test case ('test_case') or
-test code ('test_code'). This allows numbering to increase independently for each.
-However, every reference must be unique. ie. @reference whether it shows up in a
-test case or spec will be the same reference.
+the input file text is a requirement ('req'), test case or
+test code ('tc'). This allows numbering to increase independently for each.
+However, every reference must be unique. ie. ##reference whether it shows up in a
+test case or requirement will be the same reference.
 
 The method 'reference_insertion' takes a vector of strings and replaces references
 with their numeric values.
@@ -48,7 +48,7 @@ reference
 
 ref <- vt_dynamic_referencer$new()
 ref$list_references()
-ref$scrape_references("@new_reference")
+ref$scrape_references("##req:new_reference")
 ref$list_references()
 
 ## ------------------------------------------------
@@ -57,9 +57,9 @@ ref$list_references()
 
 ref <- vt_dynamic_referencer$new()
 ref$list_references()
-ref$scrape_references("@new_reference")
+ref$scrape_references("##new_reference")
 ref$list_references()
-ref$reference_insertion("This is my @new_reference")
+ref$reference_insertion("This is my ##new_reference")
 
 ## ------------------------------------------------
 ## Method `vt_dynamic_referencer$list_references`
@@ -67,7 +67,7 @@ ref$reference_insertion("This is my @new_reference")
 
 ref <- vt_dynamic_referencer$new()
 ref$list_references()
-ref$scrape_references("@new_reference")
+ref$scrape_references("##new_reference")
 ref$list_references()
 }
 \keyword{internal}
@@ -95,8 +95,8 @@ collect references from text.
 \describe{
 \item{\code{text}}{character vector to collect references from.}
 
-\item{\code{type}}{type of file being converted; a specification ('spec'), test case ('test_case') or
-test code ('test_code')}
+\item{\code{type}}{type of file being converted; a requirement ('req'),
+test case  or test code ('tc')}
 }
 \if{html}{\out{</div>}}
 }
@@ -104,7 +104,7 @@ test code ('test_code')}
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{ref <- vt_dynamic_referencer$new()
 ref$list_references()
-ref$scrape_references("@new_reference")
+ref$scrape_references("##req:new_reference")
 ref$list_references()
 }
 \if{html}{\out{</div>}}
@@ -132,9 +132,9 @@ replace references in text with values
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{ref <- vt_dynamic_referencer$new()
 ref$list_references()
-ref$scrape_references("@new_reference")
+ref$scrape_references("##new_reference")
 ref$list_references()
-ref$reference_insertion("This is my @new_reference")
+ref$reference_insertion("This is my ##new_reference")
 }
 \if{html}{\out{</div>}}
 
@@ -154,7 +154,7 @@ list references available and their value
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{ref <- vt_dynamic_referencer$new()
 ref$list_references()
-ref$scrape_references("@new_reference")
+ref$scrape_references("##new_reference")
 ref$list_references()
 }
 \if{html}{\out{</div>}}
@@ -168,13 +168,13 @@ ref$list_references()
 \subsection{Method \code{new()}}{
 create a new dynamic reference object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{vt_dynamic_referencer$new(reference_indicator = "@@")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{vt_dynamic_referencer$new(reference_indicator = "##")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{reference_indicator}}{character vector that indicates the start of the dynamic references. defaults to "@type:reference"}
+\item{\code{reference_indicator}}{character vector that indicates the start of the dynamic references. defaults to "##type:reference"}
 }
 \if{html}{\out{</div>}}
 }
