@@ -34,7 +34,6 @@ RoxygenNote: 7.1.1
 Suggests: 
     covr,
     testthat,
-    glue,
     knitr,
     bookdown,
     pdftools
@@ -54,5 +53,6 @@ Imports:
     withr,
     callr,
     here,
-    whisker
+    whisker,
+    glue
 VignetteBuilder: knitr
