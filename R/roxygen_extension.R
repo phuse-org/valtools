@@ -8,7 +8,7 @@ roxy_tag_parse.roxy_tag_editor <- function(x) {
 #' @importFrom lubridate parse_date_time
 #' @importFrom roxygen2  roxy_tag_parse
 roxy_tag_parse.roxy_tag_editDate <- function(x) {
-  x$val <- as.character(parse_date_time(x$raw, orders = c("ymd", "mdy", "dmy")))
+  x$val <- as.character(parse_date_time(x$raw, orders = c("Ymd", "mdY", "dbY")))
   x
 }
 
