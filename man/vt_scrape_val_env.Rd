@@ -30,3 +30,13 @@ Retrieves dependencies used in validation report.
 Includes: OS, R version, packages listed in the validation package DESCRIPTION (Depends/Imports/Suggests), packages
 present in current session.
 }
+\section{Last updated by}{
+
+Marie Vendettuoli
+}
+
+\section{Last updated date}{
+
+2021-02-03
+}
+

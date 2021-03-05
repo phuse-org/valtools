@@ -17,6 +17,10 @@
 #' \item \code{detail} OS or version details
 #'
 #' }
+#' @section Last updated by:
+#' Marie Vendettuoli
+#' @section Last updated date:
+#' 2021-02-03
 #' @importFrom devtools package_file
 #' @importFrom utils packageVersion sessionInfo
 #' @importFrom desc desc
