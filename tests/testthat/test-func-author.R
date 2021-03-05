@@ -2,11 +2,14 @@ context("function author table")
 
 
 test_that("dummy case in temp dir", {
-  temp_path <- tempdir()
 
-  capture_output <- usethis::create_package(path = temp_path, open = FALSE,
-                                            rstudio = TRUE)
-  this_file1 <- file.path(temp_path, "R/hello_world.R")
+  withr::with_tempdir({
+
+  capture_output <- capture.output({
+    usethis::create_package(path = "example.package", open = FALSE,rstudio = TRUE)
+  })
+
+  this_file1 <- file.path("example.package", "R/hello_world.R")
   fs::file_create(path = this_file1)
   cat(file = this_file1, append = FALSE,
       "#' @title Hello World!\n#' @description A description\n#' @param Param1",
@@ -19,7 +22,7 @@ test_that("dummy case in temp dir", {
   # ignores extra spaces
   # accommodates minor variation in date format
   # accommodates minor variation in formatting of last update date
-  this_file2 <- file.path(temp_path, "R/second_func.R")
+  this_file2 <- file.path("example.package", "R/second_func.R")
   fs::file_create(path = this_file2)
   cat(file = this_file2, append = FALSE,
       "#' @title Second Function\n#' @description A description\n#' @param Param1",
@@ -34,7 +37,7 @@ test_that("dummy case in temp dir", {
 
   # pulls function authorship from roxygen2 block, even if no function included
   # ignores stray comments
-  this_file3 <- file.path(temp_path, "R/null_doc.R")
+  this_file3 <- file.path("example.package", "R/null_doc.R")
   fs::file_create(path = this_file3)
   cat(file = this_file3, append = FALSE,
       "#' @name Fourth_Function\n#' @description A description\n#' @param Param1",
@@ -44,14 +47,12 @@ test_that("dummy case in temp dir", {
       "function authorship\n#' @param Param1",
       "definition\n#' @param Param2 definiion\nNULL\n\n# some stray comment")
 
-  func_info <- vt_scrape_function_authors(temp_path)
+  func_info <- vt_scrape_function_authors("example.package")
   testthat::expect_equal(func_info,
                              data.frame(title = c("Fourth_Function", "second_func", "third_func"),
                                         author = c("Author Name", "Author Name", "Author2 Name"),
                                         last_updated_date = lubridate::ymd(c("2021-12-01", "2021-01-01", "2021-12-01"))))
-  unlink(temp_path,
-         recursive = TRUE,
-         force = TRUE
-  )
+
+  })
 
 })
