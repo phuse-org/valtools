@@ -13,6 +13,7 @@
 #' @param ... Additional argument passed to `devtools::build()`
 #' @param open should the validation report be opened after it is built?
 #' @param install_verbose should the installation be verbose?
+#' @param install_tests should the installation include installation of package-specific tests (if any)?
 #'
 #'
 #' @return path to either the validation report or the bundled package
@@ -89,10 +90,11 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 #'
 vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 
+  vt_validate_source(pkg = ".", src = src, open = FALSE)
+
   validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
   validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
 
-  vt_validate_source(pkg = ".", src = src, open = FALSE)
 
   tryCatch({
 
@@ -146,10 +148,24 @@ vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 #'
 #' @rdname validate
 #'
-vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE){
+vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE, install_tests = TRUE){
   bundle <- vt_validate_build(pkg = ".", src = src, ...)
   on.exit({unlink(bundle)})
-  install.packages(bundle, type = "source", repos = NULL, verbose = install_verbose, quiet = !install_verbose)
+
+  INSTALL_opts <- character()
+  if(install_tests){
+    INSTALL_opts <- c("--install-tests")
+  }
+
+  install.packages(
+    bundle,
+    type = "source",
+    repos = NULL,
+    verbose = install_verbose,
+    quiet = !install_verbose,
+    INSTALL_opts = INSTALL_opts
+  )
+
   inform("validated package installed")
   return(TRUE)
 }

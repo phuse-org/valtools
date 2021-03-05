@@ -11,7 +11,13 @@ vt_validate_source(pkg = ".", src = pkg, open = interactive())
 
 vt_validate_build(pkg = ".", src = pkg, ...)
 
-vt_validate_install(pkg = ".", src = pkg, ..., install_verbose = TRUE)
+vt_validate_install(
+  pkg = ".",
+  src = pkg,
+  ...,
+  install_verbose = TRUE,
+  install_tests = TRUE
+)
 
 vt_validate_installed_package(
   package,
@@ -29,6 +35,8 @@ vt_validate_installed_package(
 \item{...}{Additional argument passed to \code{devtools::build()}}
 
 \item{install_verbose}{should the installation be verbose?}
+
+\item{install_tests}{should the installation include installation of package-specific tests (if any)?}
 
 \item{package}{installed package name}
 

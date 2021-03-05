@@ -37,6 +37,14 @@ vt_render_validation_report <- function(report_path, output_dir = dirname(report
 
 
 #' Use to set dynamic file paths in a validation.
+#'
+#' vt_path() allows access of files relative to the working directory identified
+#' in the config file. It is also required to be used in the validation report
+#' for cases where validation of installed packages is intended as it will
+#' shift access to the correct location for the installed package for access.
+
+#'
+#'
 #' @param ... `[character]`\cr
 #'   Path components below the validation folder, can be empty.
 #'   Each argument should be a string containing one or more
@@ -48,12 +56,16 @@ vt_render_validation_report <- function(report_path, output_dir = dirname(report
 #' @importFrom here here
 #'
 #' @examples
-#' \dontrun{
-#' vt_path()
-#' vt_path("some", "reqs", "req01.md")
-#' vt_path("some/reqs/req01.md")
-#' }
+#' withr::with_tempdir({callr::r(function(){
 #'
+#'  valtools::vt_use_validation_config()
+#'  valtools::vt_use_validation()
+#'
+#'  valtools::vt_path()
+#'  valtools::vt_path("some", "reqs", "req01.md")
+#'  valtools::vt_path("some/reqs/req01.md")
+#'
+#' })})
 #'
 vt_path <- function(..., pkg = "."){
 
@@ -93,11 +105,11 @@ evaluate_filename <- function(pkg = ".", package, version){
   }
 
   if(missing(package)){
-    package <- desc::desc_get_field("Package",file = pkg)
+    package <- desc_get_field("Package",file = pkg)
   }
 
   if(missing(version)){
-    version <- desc::desc_get_field("Version",file = pkg)
+    version <- desc_get_field("Version",file = pkg)
   }
 
   date <- format(Sys.Date(),"%Y%m%d")
