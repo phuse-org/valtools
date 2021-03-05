@@ -94,6 +94,8 @@ parse_roxygen <- function(text){
 
 #' @importFrom roxygen2 parse_text block_has_tags block_get_tag_value
 #' @importFrom rlang abort
+#' @noRd
+#'
 parse_roxygen.r <- function(text){
 
   roxyblocks <- roxygen2::parse_text(text)
@@ -137,6 +139,7 @@ parse_roxygen.r <- function(text){
 #' @importFrom roxygen2 parse_text
 #' @importFrom rlang abort
 #' @importFrom utils capture.output
+#' @noRd
 parse_roxygen.r_test_code <- function(text){
 
   roxyblocks <- roxygen2::parse_text(text,env = environment())
@@ -201,6 +204,8 @@ parse_roxygen.r_test_code <- function(text){
 }
 
 #' @importFrom roxygen2 parse_text block_has_tags block_get_tag_value
+#' @noRd
+#'
 parse_roxygen.md <- function(text){
 
   ## subset to keep only the roxygen comments
@@ -254,6 +259,8 @@ parse_roxygen.rmd <- parse_roxygen.md
 
 #' @importFrom rlang warn
 #' @importFrom roxygen2 block_has_tags block_get_tags roxy_tag roxy_tag_parse
+#' @noRd
+#'
 cleanup_section_last_update <- function(blocks){
 
   ## cleanup if using old @section Last Update(d) By/Date

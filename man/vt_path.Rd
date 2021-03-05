@@ -15,15 +15,21 @@ path components separated by a forward slash \code{"/"}.}
 \item{pkg}{path to base directory of package}
 }
 \description{
-Use to set dynamic file paths in a validation.
+vt_path() allows access of files relative to the working directory identified
+in the config file. It is also required to be used in the validation report
+for cases where validation of installed packages is intended as it will
+shift access to the correct location for the installed package for access.
 }
 \examples{
-\dontrun{
-vt_path()
-\dontrun{
-vt_path("some", "reqs", "req01.md")
-vt_path("some/reqs/req01.md")
-}
-}
+withr::with_tempdir({callr::r(function(){
+
+ valtools::vt_use_validation_config()
+ valtools::vt_use_validation()
+
+ valtools::vt_path()
+ valtools::vt_path("some", "reqs", "req01.md")
+ valtools::vt_path("some/reqs/req01.md")
+
+})})
 
 }

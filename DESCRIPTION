@@ -34,11 +34,10 @@ RoxygenNote: 7.1.1
 Suggests: 
     covr,
     testthat,
-    glue,
     XML,
     pdftools,
-    bookdown,
-    knitr
+    knitr,
+    bookdown
 Imports:
     desc,
     devtools,
@@ -54,7 +53,8 @@ Imports:
     withr,
     callr,
     here,
-    whisker
+    whisker,
+    glue
 VignetteBuilder: knitr
 SystemRequirements:
     lua
