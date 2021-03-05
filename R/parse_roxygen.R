@@ -84,14 +84,15 @@ roxy_text_class <- function(x){
 }
 
 #' parse the roxygen blocks from various file types
-#' @export
+#'
 parse_roxygen <- function(text){
-  UseMethod("parse_roxygen")
+  type <- class(text)[[1]]
+  func <- getFromNamespace(paste0("parse_roxygen.",type), "valtools")
+  func(text)
 }
 
 #' @importFrom roxygen2 parse_text block_has_tags block_get_tag_value
 #' @importFrom rlang abort
-#' @export
 parse_roxygen.r <- function(text){
 
   roxyblocks <- roxygen2::parse_text(text)
@@ -134,8 +135,6 @@ parse_roxygen.r <- function(text){
 
 #' @importFrom roxygen2 parse_text
 #' @importFrom rlang abort
-
-#' @export
 parse_roxygen.r_test_code <- function(text){
 
   roxyblocks <- roxygen2::parse_text(text,env = environment())
@@ -200,7 +199,6 @@ parse_roxygen.r_test_code <- function(text){
 }
 
 #' @importFrom roxygen2 parse_text block_has_tags block_get_tag_value
-#' @export
 parse_roxygen.md <- function(text){
 
   ## subset to keep only the roxygen comments
@@ -249,7 +247,6 @@ parse_roxygen.md <- function(text){
   return(roxyblocks)
 }
 
-#' @export
 parse_roxygen.rmd <- parse_roxygen.md
 
 
