@@ -40,8 +40,8 @@ test_that("lua numbering for pdf", {
     rmarkdown::render(input = test_input, clean = FALSE)
 
     test_output_rendered <-
-      strsplit(split = "\r\n",
-               pdftools::pdf_text(gsub(test_input, pattern = ".md", replacement = ".pdf")))[[1]]
+      strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+               pdftools::pdf_text(gsub(test_input, pattern = ".md", replacement = ".pdf"))))[[1]]
 
     expect_equal(c(1, 1, 2, 2, 1, 3, 2),
                  unlist(lapply(strsplit(trimws(test_output_rendered[2:8]), split = ": "),
