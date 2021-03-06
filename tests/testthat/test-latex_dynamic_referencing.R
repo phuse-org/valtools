@@ -64,9 +64,10 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 
     ))
 
+  warnings <- capture_warnings({
   quiet <- capture.output({
     test_output <- rmarkdown::render(input = test_report, clean = FALSE)
-  })
+  })})
 
   test_output_rendered <-trimws(strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
        pdftools::pdf_text(test_output)))[[1]])

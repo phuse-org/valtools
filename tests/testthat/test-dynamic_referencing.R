@@ -347,9 +347,10 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
 
       ))
 
+  warnings <- capture_warnings({
   quiet <- capture.output({
   rmarkdown::render(input = test_report, clean = FALSE)
-  })
+  })})
 
   test_output_rendered <-
     readLines(gsub(test_report, pattern = ".Rmd", replacement = ".knit.md"))
