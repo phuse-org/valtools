@@ -88,7 +88,6 @@ test_that("latex Number Referencing across rmarkdown chunks", {
   ## this test demonstrates how to use native latex + bookdown::render_book for dynamic labeling
   ## does not depend on valtools dynamic labeling
  skip_if_not_installed("valtools")
- skip_on_os("mac") # not sure if it is os or gh action config
  withr::with_tempdir({
 
   ## Create test files
