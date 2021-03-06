@@ -1,0 +1,32 @@
+---
+title: {{title}}
+author: {{author}}
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{ {{title}} }
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
+header-includes:
+  - \usepackage[dvipsnames, table]{xcolor}
+  - \usepackage{float}
+---
+
+```{r, setup, echo=FALSE}
+library(valtools)
+library(knitr)
+library(kableExtra)
+library({{pkg_name}})
+
+opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE,
+  echo = FALSE,
+  results = "asis",
+  message = FALSE,
+  tidy = FALSE
+)
+```
