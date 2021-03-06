@@ -4,12 +4,22 @@
 \alias{vt_use_report}
 \title{Create validation report from template}
 \usage{
-vt_use_report(pkg = ".", template = "validation_report.Rmd")
+vt_use_report(
+  dir = ".",
+  pkg_name = desc::desc_get_field("Package"),
+  template = "validation_report.Rmd",
+  open = FALSE
+)
 }
 \arguments{
-\item{pkg}{filepath to config file}
+\item{dir}{filepath to folder containing config file \code{.validation}}
 
-\item{template}{what validation report template to use, passed to \code{usethis::use_template}}
+\item{pkg_name}{name of package}
+
+\item{template}{what validation report template from {valtools} to use,
+passed to \code{usethis::use_template}}
+
+\item{open}{boolean whether to open the validation report, passed to \code{usetthis::use_template}}
 }
 \description{
 Create validation report from template
