@@ -157,13 +157,18 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 
     ))
   setwd(dirname(test_report))
+
   bookdown::render_book(basename(test_report))
 
+  pdf_report_name <- file.path(dirname(test_report),
+                               "docs",
+                               "Validation_report_V1.0.pdf")
+
   test_output_rendered <-
-    validation_report_output_rendered <-
-    trimws(strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
-                                 pdftools::pdf_text(validation_report_output)))[[1]])
-     expect_equal("1", substr(test_output_rendered[2], 1,1))
+    trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                 pdftools::pdf_text(pdf_report_name)))[[1]])
+
+  expect_equal("1", substr(test_output_rendered[2], 1,1))
   expect_equal("S1.1", substr(trimws(test_output_rendered[4]), 3, 6))
   expect_equal("S1.1.1", substr(trimws(test_output_rendered[5]), 3, 8))
 
