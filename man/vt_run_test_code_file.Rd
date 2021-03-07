@@ -4,14 +4,14 @@
 \alias{vt_run_test_code_file}
 \title{Evaluate the test code file}
 \usage{
-vt_run_test_code_file(path, test_env = new.env(), ...)
+vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
 }
 \arguments{
-\item{path}{full path to test code file.}
-
 \item{test_env}{environment to perform tests in}
 
 \item{...}{argument passed to \code{knitr::kable()}}
+
+\item{path}{full path to test code file.}
 }
 \value{
 a kable with variables: \code{Test}, \code{Expected}, \code{Results},
