@@ -11,6 +11,7 @@
 #' @param tags which tags to keep. defaults to editor and editDate
 #' @param pkg path to package
 #' @param src path to package source. defaults to the same path as pkg.
+#' @param ref reference path to use. defaults to vt_path()
 #' @section Last Updated by:
 #' Ellis Hughes
 #' @section Last updated date:
@@ -20,20 +21,24 @@
 #' @importFrom roxygen2  block_get_tag_value
 #' @importFrom stats setNames
 #' @importFrom rlang warn
-vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", src = pkg){
+vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", src = pkg, ref = vt_path()){
 
   types <- c("requirements","test_cases","test_code")
 
-  if(is_package(pkg) | is_package(src) ){
+  ## can scrape functions if:
+  ### - referencing source code
+  ### - running a validation report on a validated package 
+  if(is_package(pkg) | is_package(src) | Sys.getenv("vt_validation_state") == "installed" ){
     types <- c(types, "functions")
   }
 
   type <- match.arg(type,choices = types)
 
-  dir_ref <- if(type == "functions"){
+  ## Need this so that 
+  dir_ref <- if(type == "functions" && Sys.getenv("vt_validation_state") != "installed"){
       file.path(package_file(path = src),"R")
     }else{
-      file.path(pkg, get_config_working_dir(pkg = pkg),"validation", type)
+      file.path(ref, type)
     }
 
   dir_ref_files <- list.files(dir_ref,recursive = TRUE,full.names = TRUE)

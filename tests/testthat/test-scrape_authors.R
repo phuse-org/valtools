@@ -28,7 +28,8 @@ test_that("Scrape roxygen tags from reqs works", {
     ## scrape
     tag_list <- vt_scrape_tags_from(
       type = "requirements",
-      tags = c("editor","editDate"))
+      tags = c("editor","editDate"),
+      ref = "vignettes/validation")
 
 
     ## check values
@@ -85,7 +86,8 @@ test_that("Scrape roxygen tags from test cases works", {
     ## scrape
     tag_list <- vt_scrape_tags_from(
       type = "test_cases",
-      tags = c("editor","editDate"))
+      tags = c("editor","editDate"),
+      ref = "vignettes/validation")
 
 
     ## check values
@@ -111,7 +113,6 @@ test_that("Scrape roxygen tags from test cases works", {
     )
   })
 })
-
 
 test_that("Scrape roxygen tags from test code works", {
 
@@ -163,7 +164,8 @@ test_that("Scrape roxygen tags from test code works", {
     ## scrape
     tag_list <- vt_scrape_tags_from(
       type = "test_code",
-      tags = c("editor","editDate"))
+      tags = c("editor","editDate"),
+      ref = "vignettes/validation")
 
     ## check values
     expect_equal(
@@ -281,7 +283,8 @@ test_that("scrape functions from external dir", {
     tag_list <- vt_scrape_tags_from(
       type = "functions",
       tags = c("editor", "editDate"),
-      src = "example.package"
+      src = "example.package",
+      ref = "vignettes/validation"
       )
     })
 
@@ -317,3 +320,50 @@ test_that("scrape functions from external dir", {
 
 })
 
+test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
+  
+  withr::with_tempdir({
+    
+    ## test setup
+    vt_use_validation_config(
+      username_list = list(
+        vt_user(
+          username = "user1",
+          name = "Test User",
+          role = "sample",
+          title = "Req Writer"
+        ),
+        vt_user(
+          username = "user2",
+          name = "Test User 2",
+          role = "sample",
+          title = "Req Writer"
+        )
+      ))
+    
+    vt_use_validation()
+    
+    vt_use_test_case("test_case_001.md",username = "Test User")
+    
+    ## scrape
+    warn_val <- capture_warnings({
+      tag_list <- vt_scrape_tags_from(
+        type = "test_cases",
+        tags = c("fake_tag"),
+        ref = "vignettes/validation")
+    })
+    
+    
+    ## check values
+    expect_equal(
+      tag_list,
+      list()
+    )
+    
+    expect_equal(
+      warn_val,
+      "No blocks with tags `fake_tag`"
+    )
+    
+  })
+})

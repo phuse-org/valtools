@@ -4,7 +4,13 @@
 \alias{vt_scrape_tags_from}
 \title{Retrieve roxygen tags as a data.frame from requirements, test cases, test code and functions}
 \usage{
-vt_scrape_tags_from(type, tags = c("editor", "editDate"), pkg = ".", src = pkg)
+vt_scrape_tags_from(
+  type,
+  tags = c("editor", "editDate"),
+  pkg = ".",
+  src = pkg,
+  ref = vt_path()
+)
 }
 \arguments{
 \item{type}{type of scraping to be done. one of "requirements","test_cases","test_code","functions".
@@ -15,6 +21,8 @@ to call functions. working directory must be an R package, or path identified in
 \item{pkg}{path to package}
 
 \item{src}{path to package source. defaults to the same path as pkg.}
+
+\item{ref}{reference path to use. defaults to vt_path()}
 }
 \description{
 Looks for roxygen2 function documentation in /R for author details.
