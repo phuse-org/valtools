@@ -40,12 +40,19 @@ write_roxygen_block <- function(roxy_list, path, append = FALSE, only_with_tags 
         }
       }))
 
-      var <-
-        paste0(as.character(as.list(block$call)[[2]]), "<- function(){}")
+      if(!is.null(block$call)){
+        var <- paste0(as.character(as.list(block$call)[[2]]), " <- function(){}")
+      }else{
+        var <- "NULL"
+      }
 
       c(tags, var, "")
     }))
 
+    path_dir <- dirname(path)
+    if(!dir.exists(path_dir)){
+      dir.create(path_dir,recursive = TRUE)
+    }
 
     file_con <- file(description = path,
                      open = ifelse(append, "at", "wt"))
