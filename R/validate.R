@@ -116,13 +116,18 @@ vt_validate_build <- function(pkg = ".", src = pkg, ...) {
       overwrite = TRUE
     )
 
+    ## copy .validation config file
+    file.copy(
+      from = file.path(pkg, ".validation"),
+      to = file.path(pkg, validation_output_directory),
+      overwrite = TRUE
+    )
 
-    ## TODO: copy code documentation to validation output dir
-    # roxygen_copy(
-    #   from = file.path(pkg, "R"),
-    #   to = file.path(pkg, validation_output_directory),
-    #   recursive = TRUE,
-    #   overwrite = TRUE)
+    # copy and strip down code documentation to validation output dir
+    roxygen_copy(
+      from = file.path(pkg, "R"),
+      to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
+      overwrite = TRUE)
 
     ## build package
     build_path <- build(pkg, ...)
