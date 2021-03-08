@@ -395,7 +395,7 @@ test_that("writing the block list can subset to keep blocks with specific tags",
       "#' @editDate 1900-01-01",
       "#' @param name name printed",
       "#' @export ",
-      "hello_world<- function(){}",
+      "hello_world <- function(){}",
       ""
     )
   )
@@ -408,7 +408,7 @@ test_that("writing the block list can subset to keep blocks with specific tags",
       "#' @editDate 1900-01-01",
       "#' @param name name printed",
       "#' @export ",
-      "hello_world<- function(){}",
+      "hello_world <- function(){}",
       ""
     )
   )
