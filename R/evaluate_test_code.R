@@ -44,15 +44,20 @@ eval_test_code <- function(path, test_env = new.env()) {
                      do.call(rbind, lapply(seq_along(results[[i]]), function(x) {
                        outcome <- results[[i]][[x]]
                        
-                       pass_fail <- switch(class(outcome)[[1]],
-                                    expectation_success = "Pass",
-                                    expectation_skip    = "Skip",
-                                    expectation_failure = "Fail",
-                                    gsub("expectation_",class(outcome)[[1]]))
+                       outcome <- ""
+                       
+                       if(inherits(outcome,"expectation_success")){
+                         outcome <- "Pass"
+                       }else if(inherits(outcome,"expectation_skip")){
+                         outcome <- "Skip"
+                       }else{
+                         outcome <- "Fail"
+                       }
+
                        data.frame(
                          Test = outcome$test,
                          Results = capture_output(testthat:::print.expectation(outcome)),
-                         `Pass/Fail` = pass_fail,
+                         `Pass/Fail` = outcome,
                          stringsAsFactors = FALSE
                        )
                        
