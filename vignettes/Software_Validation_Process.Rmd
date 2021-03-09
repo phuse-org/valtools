@@ -1,0 +1,75 @@
+---
+title: "Software Validation Process"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Software_Validation_Process}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nomnoml)
+```
+
+
+
+```{r}
+
+nomnoml::nomnoml("
+[<frame>R Package Validation Framework |
+
+[<start> start]
+
+[<frame> Specifications | Requirement 01 | Requirement 02 | Requirement ...]
+
+[<frame> Risk Assessment | Probability Incorrect | Impact of Wrong Value ]
+
+[<frame> Package Development | Functions | Long Form Documentation | Manual Documentation ]
+
+[<frame> Test Cases | Every Requirement must;have at least one | Based on Risk | Automatable]
+
+[<frame> Test Code | Scripted | Automatable]
+
+[<frame> Validation Report | 
+  Validation Environment;
+  Authorship;
+  Specifications;
+  Test Cases;
+  Test Code Results;
+  ...
+]
+
+[<end> VALIDATION]
+
+[start] -:> [Specifications]
+
+[Specifications] -:> [Risk Assessment]
+
+[Specifications] -:> [Package Development]
+[Risk Assessment] -:> [Package Development]
+
+[Specifications] -:> [Test Cases]
+[Package Development] -:> [Test Cases]
+[Risk Assessment] -:> [Test Cases]
+
+[Test Cases] 1:1 -:> [Test Code]
+
+[Specifications] -:> [Validation Report]
+[Risk Assessment] -:> [Validation Report]
+[Package Development] -:> [Validation Report]
+[Test Cases] -:> [Validation Report]
+[Test Code] Results -:> [Validation Report]
+
+[Validation Report] -:> [VALIDATION]
+
+]
+")
+
+```
