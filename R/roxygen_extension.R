@@ -13,6 +13,13 @@ roxy_tag_parse.roxy_tag_editDate <- function(x) {
 }
 
 #' @export
+#' @importFrom lubridate parse_date_time
+#' @importFrom roxygen2  roxy_tag_parse
+roxy_tag_parse.roxy_tag_coverage<- function(x) {
+  tag_markdown(x)
+}
+
+#' @export
 #' @importFrom roxygen2 rd_section roxy_tag_rd
 roxy_tag_rd.roxy_tag_editor <- function(x, base_path, env) {
   rd_section("editor", x$val)
@@ -25,6 +32,13 @@ roxy_tag_rd.roxy_tag_editDate <- function(x, base_path, env) {
 }
 
 #' @export
+#' @importFrom roxygen2 roxy_tag_rd rd_section
+roxy_tag_rd.roxy_tag_coverage <- function(x, base_path, env) {
+  rd_section("coverage", x$val)
+}
+
+
+#' @export
 format.rd_section_editor <- function(x, ...) {
   paste0(
     "\\section{Last Edited By}{\n", x$value, "\n}\n"
@@ -35,5 +49,12 @@ format.rd_section_editor <- function(x, ...) {
 format.rd_section_editDate <- function(x, ...) {
   paste0(
     "\\section{Last Edit Date}{\n", x$value, "\n}\n"
+  )
+}
+
+#' @export
+format.rd_section_coverage <- function(x, ...) {
+  paste0(
+    "\\section{Test Coverage}{\n", x$value, "\n}\n"
   )
 }

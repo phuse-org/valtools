@@ -281,6 +281,7 @@ cleanup_section_last_update <- function(blocks){
 
       last_by <- grepl("last update(d)* by",names(content),ignore.case = TRUE)
       last_date <- grepl("last update(d)* date",names(content),ignore.case = TRUE)
+      spec_coverage <- grepl("specification coverage",names(content),ignore.case = TRUE)
 
       if(any(last_by)){
 
@@ -299,9 +300,9 @@ cleanup_section_last_update <- function(blocks){
 
         warn(
           paste0(
-            "`@section ",names(content[which_editor]),":`",
+            "`@section ",names(content[which_editor]),":` ",
             "is superseded.",
-            "\nUse `@editor ",editor,"` instead."
+            "\nUse `@editor ",trimws(editor),"` instead."
           ),
           class = "vt.superseded_last_updated_by"
         )
@@ -325,12 +326,41 @@ cleanup_section_last_update <- function(blocks){
 
         warn(
           paste0(
-            "`@section ",names(content[which_editDate]),":`",
+            "`@section ",names(content[which_editDate]),":` ",
             "is superseded.",
-            "\nUse `@editDate ",editDate,"` instead."
+            "\nUse `@editDate ",trimws(editDate),"` instead."
           ),
           class = "vt.superseded_last_update_date"
         )
+      }
+
+
+      if(any(spec_coverage)){
+
+        which_spec_cov <- which(spec_coverage)
+        coverage <- content[which_spec_cov]
+
+        block$tags <- c(
+          block$tags,
+          list(roxy_tag_parse(roxy_tag(
+            "coverage",
+            raw = unname(coverage),
+            file = block$file,
+            line = section_tags[[which_spec_cov]]$line
+          )))
+        )
+
+        warn(
+          paste0(
+            "`@section ",names(content[which_spec_cov]),":` ",
+            "is superseded.",
+            "Use the following instead:\n\n```\n",
+            paste("#'", c("@coverage",strsplit(coverage,"\n")[[1]]),collapse = "\n"),
+            "\n```"
+          ),
+          class = "vt.superseded_specification_coverage"
+        )
+
       }
 
       return(block)
