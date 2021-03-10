@@ -229,6 +229,9 @@ dynamic_reference_rendering <- function(file, reference = NULL){
 }
 
 
+## original method from:
+## https://stackoverflow.com/questions/181596
+
 numeric_to_letter_ref <- function(x){
   col_name <- c()
 
