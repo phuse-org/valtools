@@ -154,47 +154,8 @@ test_that("Test creation of the config file without passed values in a non-inter
       )
     )
 
-    vt_add_file_to_config(filename = "req1.Rmd")
-    validation_config4 <- readLines("validation.yml")
-    expect_equal(
-      validation_config4,
-      c(
-        "working_dir: vignettes",
-        "output_dir: inst" ,
-        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
-        "usernames:",
-        "  test:",
-        "    name: test",
-        "    title: test" ,
-        "    role: tester" ,
-        "  test2:",
-        "    name: test2",
-        "    title: tester2" ,
-        "    role: tester2",
-        "validation_files:",
-        "- req1.Rmd"
-      )
-    )
 
-    vt_add_file_to_config(filename = list("test_case1.Rmd", "test_code1.R"))
-    validation_config5 <- readLines("validation.yml")
-    expect_equal(
-      validation_config5,
-      c(
-        "working_dir: vignettes",
-        "output_dir: inst",
-        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
-        "usernames:",
-        "  test:",
-        "    name: test",
-        "    title: test",
-        "    role: tester",
-        "validation_files:",
-        "- req1.Rmd",
-        "- test_case1.Rmd",
-        "- test_code1.R"
-      )
-    )
+
   })
 
 })
@@ -426,8 +387,124 @@ test_that("ask_user_name_title_role only requests when missing information",{
 
 })
 
-test_that("add one or more validation files to list",{
-  withr::with_tempdir({
 
+test_that("adding and removing validation files from list", {
+  withr::with_tempdir({
+    vt_use_validation_config(pkg = ".",
+                             username_list = list(vt_user(
+                               name = "test",
+                               title = "test2",
+                               role = "tester2",
+                               username = "test"
+                             )))
+    validation_config <- readLines("validation.yml")
+    expect_equal(validation_config,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files: []"
+                 ))
+
+    expect_message(vt_add_file_to_config(filename = "req1.Rmd"),
+                   "Filename(s): req1.Rmd added to validation config file.", fixed = TRUE)
+
+    validation_config2 <- readLines("validation.yml")
+    expect_equal(validation_config2,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- req1.Rmd"
+                 ))
+
+    expect_message(vt_add_file_to_config(filename = c("test_case1.Rmd", "test_code1.R")),
+                   "Filename(s): test_case1.Rmd, test_code1.R added to validation config file.",
+                   fixed = TRUE)
+    validation_config3 <- readLines("validation.yml")
+    expect_equal(validation_config3,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- test_case1.Rmd",
+                   "- test_code1.R"
+                 ))
+    expect_error(
+      vt_add_file_to_config(filename = "test_case1.Rmd"),
+      "Filename(s): `test_case1.Rmd` already exists validation config file. Run `valtools::vt_drop_file_from_config(filename)` first!",
+      fixed = TRUE)
+
+    expect_message(vt_drop_file_from_config("test_case1.Rmd"),
+                   "Filename(s): test_case1.Rmd removed from validation config file.",
+                   fixed = TRUE)
+    validation_config4 <- readLines("validation.yml")
+    expect_equal(validation_config4,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- test_code1.R"
+                 ))
+    expect_error(vt_drop_file_from_config("test_case1.Rmd"),
+                   "Filename(s): `test_case1.Rmd` not present validation config file. Run `valtools::vt_add_file_to_config(filename)` first!",
+                   fixed = TRUE)
+
+    # make sure that playing with user entries doesn't break files list
+
+    vt_drop_user_from_config("test")
+    validation_config5 <- readLines("validation.yml")
+    expect_equal(validation_config5,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames: {}",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- test_code1.R"
+                 ))
+
+    vt_add_user_to_config(username = "test2", name = "a person", role = "a role", title = "title")
+    validation_config6 <- readLines("validation.yml")
+    expect_equal(validation_config6,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test2:",
+                   "    name: a person",
+                   "    title: title",
+                   "    role: a role",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- test_code1.R"
+                 ))
   })
 })

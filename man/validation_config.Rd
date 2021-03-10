@@ -6,6 +6,8 @@
 \alias{vt_add_user_to_config}
 \alias{vt_drop_user_from_config}
 \alias{vt_get_user_info}
+\alias{vt_add_file_to_config}
+\alias{vt_drop_file_from_config}
 \title{Validation Config}
 \usage{
 vt_use_validation_config(
@@ -14,6 +16,7 @@ vt_use_validation_config(
   output_dir = "inst",
   report_naming_format = "Validation_Report_{package}_v{version}_{date}",
   username_list = list(),
+  validation_files = list(),
   ...,
   overwrite = FALSE
 )
@@ -31,6 +34,10 @@ vt_add_user_to_config(
 vt_drop_user_from_config(username, pkg = ".")
 
 vt_get_user_info(username, type = c("name", "title", "role"), pkg = ".")
+
+vt_add_file_to_config(filename, pkg = ".")
+
+vt_drop_file_from_config(filename, pkg = ".")
 }
 \arguments{
 \item{pkg}{where to write config file}
@@ -50,6 +57,9 @@ capture the date the report was run.}
 contains entries for username, name, title, and role to be used for
 documentation.}
 
+\item{validation_files}{list of validation files: requirements, test cases and test code.
+Validation report content will be populated using this list in order.}
+
 \item{...}{additional information about the user to be passed into a list.}
 
 \item{overwrite}{\verb{[boolean]}If a validation file exists, should it be overwritten?
@@ -64,6 +74,8 @@ Defaults to FALSE.}
 \item{role}{role of the user. Can be more than one.}
 
 \item{type}{type of information to pull. select at least one: name, title, role}
+
+\item{filename}{character vector containing filenames in order}
 }
 \value{
 Used for side effect to create validation config file. Invisibly
@@ -79,6 +91,12 @@ file. Invisibly returns TRUE on success.
 
 a character vector length of types requested containing the user
 information from the validation config file.
+
+Used for side effect of adding validation file ordering to validation config
+file. Invisibly returns TRUE on success.
+
+Used for side effect of removing file ordering information from validation config
+file. Invisibly returns TRUE on success.
 }
 \description{
 Use a Validation Config File
@@ -93,6 +111,10 @@ Add user information to the projects validation config file to make for easier d
 Remove user information from the projects validation config file
 
 Get recorded user information from the validation config file to make for easier documentation
+
+Impose ordering of validation child files
+
+Remove validation file orderingfrom the projects validation config file
 }
 \examples{
 \dontrun{
@@ -157,4 +179,19 @@ vt_get_user_info(username = "ellis", type = c("name","title"))
 
 }
 
+\dontrun{
+
+vt_use_validation_config(pkg = ".")
+
+vt_add_file_to_config(filename = "myReqFile.Rmd")
+}
+\dontrun{
+
+vt_use_validation_config(pkg = ".")
+
+vt_add_file_to_config(filename = "myReqFile.Rmd")
+
+vt_drop_file_from_config(filename = "myReqFile.Rmd")
+
+}
 }
