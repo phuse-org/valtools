@@ -1,11 +1,13 @@
 #' helper function to copy roxygen blocks from functions into a single folder
 #' for parsing in an installed package
 #'
-#' @param from
-#' @param to
-#' @param overwrite
+#' @param from dir to copy R files from
+#' @param to file to compile Roxygen blocks to
+#' @param overwrite Should the file in `to` be overwritten?
 #'
-#' @returns boolean as to whether copying was completed successfully
+#' @returns invisibly returns TRUE when copying was completed successfully
+#'
+#' @noRd
 #'
 roxygen_copy <- function(from, to, overwrite = FALSE) {
 
