@@ -338,13 +338,13 @@ cleanup_section_last_update <- function(blocks){
       if(any(spec_coverage)){
 
         which_spec_cov <- which(spec_coverage)
-        coverage <- content[which_spec_cov]
+        coverage <- unname(content[which_spec_cov])
 
         block$tags <- c(
           block$tags,
           list(roxy_tag_parse(roxy_tag(
             "coverage",
-            raw = unname(coverage),
+            raw = coverage,
             file = block$file,
             line = section_tags[[which_spec_cov]]$line
           )))
