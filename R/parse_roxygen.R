@@ -83,10 +83,9 @@ roxy_text_class <- function(x){
   class(x)
 }
 
-#' parse the roxygen blocks from various file types
-#' @importFrom utils getFromNamespace
 #' @noRd
-#'
+#' @keywords internal
+#' @importFrom utils getFromNamespace
 parse_roxygen <- function(text){
   type <- class(text)[[1]]
   func <- getFromNamespace(paste0("parse_roxygen.",type), "valtools")
@@ -154,7 +153,6 @@ parse_roxygen.r <- function(text){
 #' @importFrom rlang abort
 #' @importFrom utils capture.output
 #' @noRd
-#'
 parse_roxygen.r_test_code <- function(text){
 
   roxyblocks <- roxygen2::parse_text(text,env = NULL)

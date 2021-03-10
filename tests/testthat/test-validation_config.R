@@ -10,7 +10,7 @@ test_that("Test creation of the config file", {
                                username = "test"
                              )))
 
-    validation_config <- readLines(".validation")
+    validation_config <- readLines("validation.yml")
 
     expect_equal(
       validation_config,
@@ -55,7 +55,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     vt_use_validation_config(pkg = ".")
 
-    validation_config <- readLines(".validation")
+    validation_config <- readLines("validation.yml")
 
 
     expect_equal(
@@ -77,7 +77,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     vt_use_validation_config(pkg = ".")
 
-    validation_config <- readLines(".validation")
+    validation_config <- readLines("validation.yml")
 
     expect_equal(
       validation_config,
@@ -93,7 +93,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       vt_add_user_to_config(username = "test", name = "test", title = "test", role = "tester")
     )
 
-    validation_config2 <- readLines(".validation")
+    validation_config2 <- readLines("validation.yml")
 
     expect_equal(
       add_user_message,
@@ -118,7 +118,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       vt_add_user_to_config(username = "test2", name = "test2", role = "tester2", title = "tester2")
     )
 
-    validation_config3 <- readLines(".validation")
+    validation_config3 <- readLines("validation.yml")
 
     expect_equal(
       add_user_message2,
@@ -159,7 +159,7 @@ test_that("Test creation of the config file without passed values in a non-inter
                                username = "test"
                              )))
 
-    validation_config <- readLines(".validation")
+    validation_config <- readLines("validation.yml")
 
 
     expect_equal(
@@ -180,7 +180,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       vt_add_user_to_config(username = "test", name = "test", role = "tester2", title = "test2")
     )
 
-    validation_config2 <- readLines(".validation")
+    validation_config2 <- readLines("validation.yml")
 
     expect_equal(
       add_user_message,
@@ -216,7 +216,7 @@ test_that("Test overwriting of the config file", {
                                username = "test"
                              )))
 
-    validation_config<- readLines(".validation")
+    validation_config<- readLines("validation.yml")
 
     expect_error(
       vt_use_validation_config(pkg = "."),
@@ -229,7 +229,7 @@ test_that("Test overwriting of the config file", {
 
     vt_use_validation_config(pkg = ".", overwrite = TRUE)
 
-    validation_config_new <- readLines(".validation")
+    validation_config_new <- readLines("validation.yml")
 
     expect_equal(
       validation_config_new,
@@ -251,7 +251,7 @@ test_that("Test overwriting of the config file", {
 
 })
 
-test_that("Test when in a package .validation is added to .Rbuildignore of the config file", {
+test_that("Test when in a package validation.yml is added to .Rbuildignore of the config file", {
 
   withr::with_tempdir({
 
@@ -272,7 +272,7 @@ test_that("Test when in a package .validation is added to .Rbuildignore of the c
     r_build_ignore<- readLines(".Rbuildignore")
 
     expect_true(
-      "^\\.validation$" %in% r_build_ignore
+      "^\\validation.yml$" %in% r_build_ignore
     )
 
   })

@@ -9,7 +9,7 @@ test_that("Creating test cases and set user", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_case_path <- vt_use_test_case(
@@ -56,7 +56,7 @@ test_that("Creating test cases and not setting user takes username", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_case_path <- vt_use_test_case(
@@ -101,7 +101,7 @@ test_that("Creating test cases adds correct extension", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_case_path <- vt_use_test_case(
