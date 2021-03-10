@@ -8,7 +8,10 @@ test_that("Test creation of the config file", {
                                title = "test",
                                role = "tester",
                                username = "test"
-                             )))
+                             )),
+                             validation_files = list("req1.Rmd",
+                                                     "test_case1.Rmd",
+                                                     "test_code1.R"))
 
     validation_config <- readLines("validation.yml")
 
@@ -22,7 +25,11 @@ test_that("Test creation of the config file", {
         "  test:",
         "    name: test",
         "    title: test",
-        "    role: tester"
+        "    role: tester",
+        "validation_files:",
+        "- req1.Rmd",
+        "- test_case1.Rmd",
+        "- test_code1.R"
       )
     )
 
@@ -64,7 +71,8 @@ test_that("Test creation of the config file without passed values in a non-inter
         "working_dir: vignettes",
         "output_dir: inst",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
-        "usernames: []"
+        "usernames: []",
+        "validation_files: []"
       )
     )
 
@@ -85,7 +93,8 @@ test_that("Test creation of the config file without passed values in a non-inter
         "working_dir: vignettes",
         "output_dir: inst" ,
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
-        "usernames: []"
+        "usernames: []",
+        "validation_files: []"
       )
     )
 
@@ -110,7 +119,8 @@ test_that("Test creation of the config file without passed values in a non-inter
         "  test:",
         "    name: test",
         "    title: test" ,
-        "    role: tester"
+        "    role: tester",
+        "validation_files: []"
       )
     )
 
@@ -139,10 +149,52 @@ test_that("Test creation of the config file without passed values in a non-inter
         "  test2:",
         "    name: test2",
         "    title: tester2" ,
-        "    role: tester2"
+        "    role: tester2",
+        "validation_files: []"
       )
     )
 
+    vt_add_file_to_config(filename = "req1.Rmd")
+    validation_config4 <- readLines("validation.yml")
+    expect_equal(
+      validation_config4,
+      c(
+        "working_dir: vignettes",
+        "output_dir: inst" ,
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test" ,
+        "    role: tester" ,
+        "  test2:",
+        "    name: test2",
+        "    title: tester2" ,
+        "    role: tester2",
+        "validation_files:",
+        "- req1.Rmd"
+      )
+    )
+
+    vt_add_file_to_config(filename = list("test_case1.Rmd", "test_code1.R"))
+    validation_config5 <- readLines("validation.yml")
+    expect_equal(
+      validation_config5,
+      c(
+        "working_dir: vignettes",
+        "output_dir: inst",
+        "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+        "usernames:",
+        "  test:",
+        "    name: test",
+        "    title: test",
+        "    role: tester",
+        "validation_files:",
+        "- req1.Rmd",
+        "- test_case1.Rmd",
+        "- test_code1.R"
+      )
+    )
   })
 
 })
@@ -157,7 +209,10 @@ test_that("Test creation of the config file without passed values in a non-inter
                                title = "test",
                                role = "tester",
                                username = "test"
-                             )))
+                             )),
+                             validation_files = list("req1.Rmd",
+                                                     "test_case1.Rmd",
+                                                     "test_code1.R"))
 
     validation_config <- readLines("validation.yml")
 
@@ -172,7 +227,11 @@ test_that("Test creation of the config file without passed values in a non-inter
         "  test:",
         "    name: test",
         "    title: test",
-        "    role: tester"
+        "    role: tester",
+        "validation_files:",
+        "- req1.Rmd",
+        "- test_case1.Rmd",
+        "- test_code1.R"
       )
     )
 
@@ -197,7 +256,11 @@ test_that("Test creation of the config file without passed values in a non-inter
         "  test:",
         "    name: test",
         "    title: test2" ,
-        "    role: tester2"
+        "    role: tester2",
+        "validation_files:",
+        "- req1.Rmd",
+        "- test_case1.Rmd",
+        "- test_code1.R"
       )
     )
 
@@ -214,7 +277,10 @@ test_that("Test overwriting of the config file", {
                                title = "test",
                                role = "tester",
                                username = "test"
-                             )))
+                             )),
+                             validation_files = list("req1.Rmd",
+                                                     "test_case1.Rmd",
+                                                     "test_code1.R"))
 
     validation_config<- readLines("validation.yml")
 
@@ -237,7 +303,8 @@ test_that("Test overwriting of the config file", {
         "working_dir: vignettes",
         "output_dir: inst",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
-        "usernames: []"
+        "usernames: []",
+        "validation_files: []"
       )
     )
 
@@ -265,7 +332,10 @@ test_that("Test when in a package validation.yml is added to .Rbuildignore of th
                                title = "test",
                                role = "tester",
                                username = "test"
-                             )))
+                             )),
+                             validation_files = list("req1.Rmd",
+                                                     "test_case1.Rmd",
+                                                     "test_code1.R"))
 
 
 
@@ -294,7 +364,10 @@ test_that("Test removal of individual from config file", {
                                title = "test2",
                                role = "tester",
                                username = "test2"
-                             )))
+                             )),
+                             validation_files = list("req1.Rmd",
+                                                     "test_case1.Rmd",
+                                                     "test_code1.R"))
 
 
     expect_equal(
@@ -303,6 +376,8 @@ test_that("Test removal of individual from config file", {
     )
 
     vt_drop_user_from_config("test2")
+    expect_equal(get_config_validation_files(),
+                 c("req1.Rmd", "test_case1.Rmd", "test_code1.R"))
 
     expect_error(
       get_config_user_name("test2")
@@ -349,4 +424,10 @@ test_that("ask_user_name_title_role only requests when missing information",{
       )
   )
 
+})
+
+test_that("add one or more validation files to list",{
+  withr::with_tempdir({
+
+  })
 })

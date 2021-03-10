@@ -17,6 +17,8 @@
 #' @param username_list list of user objects created by {make_user}. Each user
 #'     contains entries for username, name, title, and role to be used for
 #'     documentation.
+#' @param validation_files list of validation files: requirements, test cases and test code.
+#' Validation report content will be populated using this list in order.
 #' @param ... These dots are for future extensions and must be empty.
 #' @param overwrite `[boolean]`If a validation file exists, should it be overwritten?
 #'    Defaults to FALSE.
@@ -53,6 +55,7 @@ vt_use_validation_config <- function(pkg = ".",
                                      output_dir  = "inst",
                                      report_naming_format = "Validation_Report_{package}_v{version}_{date}",
                                      username_list = list(),
+                                     validation_files = list(),
                                      ...,
                                      overwrite = FALSE)
 {
@@ -96,6 +99,7 @@ vt_use_validation_config <- function(pkg = ".",
     output_dir = output_dir,
     report_naming_format = report_naming_format,
     username_list = username_list,
+    validation_files = validation_files,
     ...
   )
 
@@ -197,7 +201,8 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
     working_dir = validation_config$working_dir,
     output_directory = validation_config$output_directory,
     report_naming_format = validation_config$report_naming_format,
-    username_list = user_list
+    username_list = user_list,
+    validation_files = validation_config$validation_files
   )
 
   inform(paste0(
@@ -265,7 +270,9 @@ vt_drop_user_from_config <- function(username, pkg = "."){
     working_dir = validation_config$working_dir,
     output_directory = validation_config$output_directory,
     report_naming_format = validation_config$report_naming_format,
-    username_list = user_list
+    username_list = user_list,
+    validation_files = validation_config$validation_files
+
   )
 
     inform(paste0(
@@ -333,7 +340,37 @@ vt_get_user_info <- function(username, type = c("name","title","role"), pkg = ".
   return(output)
 }
 
+#' Add validation file ordering to  validation config file
+#'
+#' Impose ordering of validation child files
+#'
+#' @returns Used for side effect of adding user information to validation config
+#'     file. Invisibly returns TRUE on success.
+#'
+#' @rdname validation_config
+#'
+#' @examples
+#' \dontrun{
+#'
+#' vt_use_validation_config(pkg = ".")
+#'
+#' vt_add_file_to_config(filename = "myReqFile.Rmd")
+#' @export
+vt_add_file_to_config <- function(pkg = ".", filename){
 
+  validation_config <- read_validation_config(pkg = pkg)
+  validation_file_list <- c(validation_config$validation_files, as.list(filename))
+  write_validation_config(
+    path = pkg,
+    working_dir = validation_config$working_dir,
+    output_directory = validation_config$output_directory,
+    report_naming_format = validation_config$report_naming_format,
+    username_list = validation_config$usernames,
+    validation_files = validation_file_list
+
+  )
+  invisible(TRUE)
+}
 #' write validation config file
 #'
 #' validation configuration for directories and username-name-role key
@@ -348,12 +385,14 @@ write_validation_config <- function(path = ".",
                                     output_dir = "inst",
                                     report_naming_format = "Validation_Report_{package}_v{version}_{date}",
                                     username_list = list(),
+                                    validation_files = list(),
                                     ...) {
   config_contents <- list(
     working_dir = working_dir,
     output_dir = output_dir,
     report_naming_format = report_naming_format,
-    usernames = username_list
+    usernames = username_list,
+    validation_files = validation_files
   )
 
   tryCatch({
@@ -509,4 +548,8 @@ get_config_user_title <- function(username, pkg = "."){
 
 get_config_user_role <- function(username, pkg = "."){
   get_config_user(username, pkg = pkg)$role
+}
+
+get_config_validation_files <- function(dir = "."){
+  files <- read_validation_config(pkg = dir)$validation_files
 }
