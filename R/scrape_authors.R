@@ -27,14 +27,15 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", s
 
   ## can scrape functions if:
   ### - referencing source code
-  ### - running a validation report on a validated package 
+  ### - running a validation report on a validated package
   if(is_package(pkg) | is_package(src) | Sys.getenv("vt_validation_state") == "installed" ){
     types <- c(types, "functions")
   }
 
   type <- match.arg(type,choices = types)
 
-  ## Need this so that 
+  ## Need this so that we point to the correct folders depending on src vs pkg and running
+  ## inside an installed package or not.
   dir_ref <- if(type == "functions" && Sys.getenv("vt_validation_state") != "installed"){
       file.path(package_file(path = src),"R")
     }else{
@@ -51,7 +52,6 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", s
       )
     }, type = type))
 
-
   roxyblock_list <- subset_blocks(roxyblock_list,tags)
 
   if(length(roxyblock_list) > 0){
@@ -59,7 +59,17 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", s
     lapply(roxyblock_list,
       function(block, tags, type){
 
-        tag_values <- lapply(tags, function(tag, block) {block_get_tag_value(block, tag)}, block)
+        tag_values <- lapply(tags, function(tag, block) {
+
+          val <- block_get_tag_value(block, tag)
+
+          if(is.null(val)){
+            val <- NA
+          }
+
+          return(val)
+
+          }, block)
 
         item <- block$object$topic
 
