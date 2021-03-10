@@ -9,9 +9,8 @@
 #' @param type type of scraping to be done. one of "requirements","test_cases","test_code","functions".
 #'    to call functions. working directory must be an R package, or path identified in src must be an R package.
 #' @param tags which tags to keep. defaults to editor and editDate
-#' @param pkg path to package
-#' @param src path to package source. defaults to the same path as pkg.
-#' @param ref reference path to use. defaults to vt_path()
+#' @param src path to package source. defaults to the current directory.
+#' @param ref reference path to where validation documentation lives. defaults to vt_path()
 #' @section Last Updated by:
 #' Ellis Hughes
 #' @section Last updated date:
@@ -21,14 +20,14 @@
 #' @importFrom roxygen2  block_get_tag_value
 #' @importFrom stats setNames
 #' @importFrom rlang warn
-vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", src = pkg, ref = vt_path()){
+vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref = vt_path()){
 
   types <- c("requirements","test_cases","test_code")
 
   ## can scrape functions if:
   ### - referencing source code
   ### - running a validation report on a validated package
-  if(is_package(pkg) | is_package(src) | Sys.getenv("vt_validation_state") == "installed" ){
+  if(is_package(ref) | is_package(src) | Sys.getenv("vt_validation_state") == "installed" ){
     types <- c(types, "functions")
   }
 
@@ -36,11 +35,15 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"),pkg = ".", s
 
   ## Need this so that we point to the correct folders depending on src vs pkg and running
   ## inside an installed package or not.
-  dir_ref <- if(type == "functions" && Sys.getenv("vt_validation_state") != "installed"){
-      file.path(package_file(path = src),"R")
-    }else{
-      file.path(ref, type)
+  dir_ref <- if(type == "functions") {
+    if (Sys.getenv("vt_validation_state") != "installed") {
+      file.path(package_file(path = src), "R")
+    } else{
+      file.path(ref, "R")
     }
+  } else{
+    file.path(ref, type)
+  }
 
   dir_ref_files <- list.files(dir_ref,recursive = TRUE,full.names = TRUE)
 

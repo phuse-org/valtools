@@ -7,8 +7,7 @@
 vt_scrape_tags_from(
   type,
   tags = c("editor", "editDate"),
-  pkg = ".",
-  src = pkg,
+  src = ".",
   ref = vt_path()
 )
 }
@@ -18,11 +17,9 @@ to call functions. working directory must be an R package, or path identified in
 
 \item{tags}{which tags to keep. defaults to editor and editDate}
 
-\item{pkg}{path to package}
+\item{src}{path to package source. defaults to the current directory.}
 
-\item{src}{path to package source. defaults to the same path as pkg.}
-
-\item{ref}{reference path to use. defaults to vt_path()}
+\item{ref}{reference path to where validation documentation lives. defaults to vt_path()}
 }
 \description{
 Looks for roxygen2 function documentation in /R for author details.
