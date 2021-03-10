@@ -233,7 +233,8 @@ test_that("test building a validated bundle from source", {
         "requirements/sample_req.md",
         "test_cases/sample_test_case.md",
         "test_code/sample_test_code.R",
-        "validation.Rmd"
+        "validation.Rmd",
+        "validation.yml"
       ))
     )
 
@@ -361,7 +362,9 @@ test_that("test installing a validated bundle from source and rerunning report",
         "requirements/sample_req.md",
         "test_cases/sample_test_case.md",
         "test_code/sample_test_code.R",
-        "validation.Rmd"
+        "validation.Rmd",
+        "validation.yml"
+
       ))
     )
 
