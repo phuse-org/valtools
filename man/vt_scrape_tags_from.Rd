@@ -30,6 +30,10 @@ If using a dummy documentation file, looks for \code{@name} to capture
 function name, otherwise uses the actual function call. \cr \cr
 Exported or internal status does not affect scraping.
 }
+\note{
+At this time, this function does not retrieve documentation captured for functions dispatched
+within an R6 class. Tags at the class level documentation are retrieved.
+}
 \section{Last Updated by}{
 
 Ellis Hughes

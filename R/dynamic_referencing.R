@@ -160,6 +160,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' @description
           #' create a new dynamic reference object
           #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "##type:reference"
+          #' @param type "number" (arabic) or "letter" (latin uppercase) to use for counters
           #' @return a new `vt_dynamic_reference` object
           initialize = function(reference_indicator = "##", type = c("number","letter")){
 

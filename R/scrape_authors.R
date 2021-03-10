@@ -6,6 +6,8 @@
 #' If using a dummy documentation file, looks for \code{@name} to capture
 #' function name, otherwise uses the actual function call. \cr \cr
 #' Exported or internal status does not affect scraping.
+#' @note At this time, this function does not retrieve documentation captured for functions dispatched
+#' within an R6 class. Tags at the class level documentation are retrieved.
 #' @param type type of scraping to be done. one of "requirements","test_cases","test_code","functions".
 #'    to call functions. working directory must be an R package, or path identified in src must be an R package.
 #' @param tags which tags to keep. defaults to editor and editDate
