@@ -9,7 +9,7 @@ test_that("Creating requirements and set user/title", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     req_path <- vt_use_req(
@@ -53,7 +53,7 @@ test_that("Creating requirements and not setting user takes username", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     req_path <- vt_use_req(
@@ -95,7 +95,7 @@ test_that("Creating requirements adds correct extension", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     req_path <- vt_use_req(

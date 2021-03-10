@@ -17,7 +17,7 @@ test_that("test running validation.Rmd from source", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = ".validation")
+      con = "validation.yml")
 
     ## make vignette
     dir.create("vignettes")
@@ -92,7 +92,7 @@ test_that("test running validation.Rmd from source for failure", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = ".validation")
+      con = "validation.yml")
 
     ## make vignette
     dir.create("vignettes")
@@ -145,7 +145,7 @@ test_that("test building a validated bundle from source", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = ".validation")
+      con = "validation.yml")
 
     ## make vignette
     dir.create("vignettes")
@@ -249,7 +249,7 @@ test_that("test installing a validated bundle from source and rerunning report",
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = ".validation")
+      con = "validation.yml")
 
     ## make vignette
     dir.create("vignettes")

@@ -9,7 +9,7 @@ test_that("Creating test code and set user", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_code_path <- vt_use_test_code(
@@ -58,7 +58,7 @@ test_that("Creating test code and not setting user takes username", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_code_path <- vt_use_test_code(
@@ -105,7 +105,7 @@ test_that("Creating test codes adds correct extension", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      ".validation")
+      "validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     test_code_path <- vt_use_test_code(
