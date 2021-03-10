@@ -118,7 +118,7 @@ vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 
     ## copy .validation config file
     file.copy(
-      from = file.path(pkg, ".validation"),
+      from = file.path(pkg, "validation.yml"),
       to = file.path(pkg, validation_output_directory),
       overwrite = TRUE
     )
