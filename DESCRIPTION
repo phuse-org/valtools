@@ -36,7 +36,6 @@ Suggests:
     testthat,
     XML,
     pdftools,
-    knitr,
     bookdown
 Imports:
     desc,
@@ -54,7 +53,11 @@ Imports:
     callr,
     here,
     whisker,
-    glue
+    glue,
+    knitr,
+    kableExtra,
+    purrr,
+    magrittr
 VignetteBuilder: knitr
 SystemRequirements:
     lua

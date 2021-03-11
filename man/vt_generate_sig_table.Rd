@@ -4,14 +4,11 @@
 \alias{vt_generate_sig_table}
 \title{Generate a signature table for a validation report}
 \usage{
-vt_generate_sig_table(people)
-}
-\arguments{
-\item{people}{data frame with variables: role, name, and title}
+vt_generate_sig_table()
 }
 \value{
-A data frame with people info formatted for validation report with
-the
+A dataframe created from the validation config containing a row for
+each user with the columns: role, name_and_title, signature, and date.
 }
 \description{
 Generate a signature table for a validation report

@@ -4,11 +4,9 @@
 \alias{vt_render_sig_table}
 \title{Return the templated code for inclusion in the validation report}
 \usage{
-vt_render_sig_table(people, template = "sig_table.Rmd", output)
+vt_render_sig_table(template = "sig_table.Rmd", output)
 }
 \arguments{
-\item{people}{data frame with variables: role, name, and title}
-
 \item{template}{Name of the template to render}
 
 \item{output}{directory passed to \code{render_template()}}

@@ -1,14 +1,6 @@
 # Signatures
 
 ```{r, sig_table, echo = FALSE}
-{{ people }} %>%
-  vt_generate_sig_table() %>%
-  kable(col.names = c("Role", "Name and Title", "Signature", "Date"),
-        escape = FALSE, booktabs = FALSE) %>%
-  kable_styling(full_width = FALSE, position = "left") %>%
-  row_spec(0, background = rgb(184, 204, 228, maxColorValue = 255)) %>%
-  column_spec(1, width = "9em", border_left = TRUE) %>%
-  column_spec(2, width = "11em") %>%
-  column_spec(3, width = "15em") %>%
-  column_spec(4, width = "8em", border_right = TRUE)
+vt_generate_sig_table() %>%
+  vt_kable_sig_table()
 ```
