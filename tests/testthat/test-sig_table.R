@@ -50,6 +50,24 @@ test_that("`vt_render_sig_table` returns the expected RMD text", {
 
 })
 
+test_that("`vt_kable_sig_table` returns expected value", {
+
+  withr::with_tempdir({
+
+    vt_create_package(".", open = FALSE)
+
+    vt_add_user_to_config(username = "em", name = "Eli Miller", role = "dev", title = "Developer")
+    vt_add_user_to_config(username = "mv", name = "Marie", role = "dev", title = "Developer")
+    vt_add_user_to_config(username = "eh", name = "Ellis H", role = "dev", title = "Developer")
+
+    kable_output <- vt_generate_sig_table() %>%
+      vt_kable_sig_table()
+
+    expect_s3_class(kable_output, c("kableExtra", "knitr_kable"))
+
+  })
+})
+
 test_that("`vt_kable_sig_table` errors when not given expected columns", {
 
   expect_error({

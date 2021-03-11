@@ -34,7 +34,7 @@ vt_generate_sig_table <- function(){
 vt_kable_sig_table <- function(people) {
 
   # check that the tables have correct variables
-  if (!all(c("role", "Name and Title", "Signature", "Date") %in% tolower(names(people)))) {
+  if (!all(c("role", "name_and_title", "signature", "date") %in% tolower(names(people)))) {
     stop(paste0("people table must have variables: role, Name and Title, Signature, and Date ",
                 "Contains: ", paste0(tolower(names(people)), collapse = ", ")))
   }
