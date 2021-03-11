@@ -26,6 +26,41 @@ test_that("parsing R function files as expected", {
 
 })
 
+test_that("parsing R function files with methods as expected", {
+
+  file_content <- structure("
+    #' @title sample title
+    #' @editor Sample Editor
+    #' @editDate 1900-01-01
+    #' @param name name printed
+    #' @export
+    hello_world <- function(name){
+      UseMethod('hello_world')
+    }
+
+
+    #' @export
+    hello_world.character <- function(name){
+      print(\"hello,\",name)
+    }
+
+    ",
+    class = "r")
+
+  block_list <- parse_roxygen(file_content)
+
+  expect_equal(
+    roxygen2::block_get_tag(block_list[[1]],"editor")$val,
+    "Sample Editor"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+    "1900-01-01"
+  )
+
+})
+
 test_that("parsing R 'defunct' function files as expected", {
 
   file_content <- roxy_text(

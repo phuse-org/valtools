@@ -105,7 +105,7 @@ parse_roxygen <- function(text){
 #'
 parse_roxygen.r <- function(text){
 
-  roxyblocks <- roxygen2::parse_text(text)
+  roxyblocks <- roxygen2::parse_text(text, env = NULL)
 
   roxyblocks <- cleanup_section_last_update(roxyblocks)
 
@@ -135,6 +135,19 @@ parse_roxygen.r <- function(text){
         ),
         class = c("deprecated_function","function","object"))
 
+    }else{
+
+      call_as_list <- as.list(block$call)
+
+      title <- as.character(call_as_list[[2]])
+
+      block$object <- structure(
+        list(alias = title,
+             topic = title,
+             value = call_as_list[[3]],
+             methods = NULL
+        ),
+        class = c("function","object"))
     }
 
     block
@@ -149,7 +162,7 @@ parse_roxygen.r <- function(text){
 #' @noRd
 parse_roxygen.r_test_code <- function(text){
 
-  roxyblocks <- roxygen2::parse_text(text,env = environment())
+  roxyblocks <- roxygen2::parse_text(text,env = NULL)
   roxyblocks <- cleanup_section_last_update(roxyblocks)
 
   roxyblocks <- lapply(roxyblocks,function(block){
@@ -223,7 +236,7 @@ parse_roxygen.md <- function(text){
     class = roxy_text_class(text)
   )
 
-  roxyblocks <- roxygen2::parse_text(text2)
+  roxyblocks <- roxygen2::parse_text(text2, env = NULL)
 
   roxyblocks <- cleanup_section_last_update(roxyblocks)
 
