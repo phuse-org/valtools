@@ -65,9 +65,11 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 
     ))
 
+
+  suppressWarnings({
   quiet <- capture.output({
-    test_output <- rmarkdown::render(input = test_report, clean = FALSE)
-  })
+    test_output <- rmarkdown::render(input = test_report, clean = FALSE, quiet = TRUE)
+  })})
 
 
   test_output_rendered <-trimws(strsplit(split = "\r\n",gsub("((\r)|(\n))+","\r\n",
@@ -156,9 +158,13 @@ test_that("latex Number Referencing across rmarkdown chunks", {
         'keep_tex: yes'
 
     ))
+
   setwd(dirname(test_report))
 
-  bookdown::render_book(basename(test_report))
+  suppressWarnings({
+  quiet <- capture_output({
+  bookdown::render_book(basename(test_report), quiet = TRUE,)
+  })})
 
   pdf_report_name <- file.path(dirname(test_report),
                                "docs",
@@ -175,11 +181,6 @@ test_that("latex Number Referencing across rmarkdown chunks", {
   expect_equal("2", substr(test_output_rendered[6], 1, 1))
   expect_equal("S2.1", substr(trimws(test_output_rendered[8]), 3, 6))
   expect_equal("S2.1.1", substr(trimws(test_output_rendered[9]), 3, 8))
-
-
-
-
-
 
 })
 })

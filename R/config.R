@@ -57,7 +57,7 @@ vt_use_validation_config <- function(pkg = ".",
                                      overwrite = FALSE)
 {
 
-  if(file.exists(file.path(pkg,".validation")) & !overwrite){
+  if(file.exists(file.path(pkg,"validation.yml")) & !overwrite){
     abort(
       paste0(
       "Validation config file already exists.\n",
@@ -70,9 +70,9 @@ vt_use_validation_config <- function(pkg = ".",
   ## add ".here" ref if not a package
   set_dir_ref(pkg = pkg)
 
-  ## add ".validation" to .Rbuildignore if is a package
+  ## add "validation.yml" to .Rbuildignore if is a package
   if(is_package(pkg = pkg)){
-    use_build_ignore2(ignores = "^\\.validation$",dir = pkg)
+    use_build_ignore2(ignores = "^validation\\.yml$",dir = pkg)
   }
 
   if(length(username_list) > 0 ){
@@ -359,13 +359,13 @@ write_validation_config <- function(path = ".",
   tryCatch({
     write_yaml(
       x = config_contents,
-      file = file.path(path, ".validation")
+      file = file.path(path, "validation.yml")
     )
 
   }, error = function(e) {
     abort(paste0(
       c(
-        "Error during creation of .validation config file. Error: ",
+        "Error during creation of validation.yml config file. Error: ",
         e,
         sep = "\n"
       )
@@ -379,7 +379,7 @@ write_validation_config <- function(path = ".",
 #' @importFrom yaml read_yaml
 read_validation_config <- function(pkg = "."){
 
-  if(!file.exists(file.path(pkg,".validation"))){
+  if(!file.exists(file.path(pkg,"validation.yml"))){
     abort(
       paste0(
         "A validation config file does not exist.\n",
@@ -388,7 +388,7 @@ read_validation_config <- function(pkg = "."){
       class = "vt.validation_config_missing"
     )
   }
-  read_yaml(file = file.path(pkg,".validation"))
+  read_yaml(file = file.path(pkg,"validation.yml"))
 
 }
 

@@ -40,12 +40,19 @@ write_roxygen_block <- function(roxy_list, path, append = FALSE, only_with_tags 
         }
       }))
 
-      var <-
-        paste0(as.character(as.list(block$call)[[2]]), "<- function(){}")
+      if(!is.null(block$call)){
+        var <- paste0(as.character(as.list(block$call)[[2]]), " <- function(){}")
+      }else{
+        var <- "NULL"
+      }
 
       c(tags, var, "")
     }))
 
+    path_dir <- dirname(path)
+    if(!dir.exists(path_dir)){
+      dir.create(path_dir,recursive = TRUE)
+    }
 
     file_con <- file(description = path,
                      open = ifelse(append, "at", "wt"))
@@ -98,7 +105,7 @@ parse_roxygen <- function(text){
 #'
 parse_roxygen.r <- function(text){
 
-  roxyblocks <- roxygen2::parse_text(text)
+  roxyblocks <- roxygen2::parse_text(text, env = NULL)
 
   roxyblocks <- cleanup_section_last_update(roxyblocks)
 
@@ -128,6 +135,19 @@ parse_roxygen.r <- function(text){
         ),
         class = c("deprecated_function","function","object"))
 
+    }else{
+
+      call_as_list <- as.list(block$call)
+
+      title <- as.character(call_as_list[[2]])
+
+      block$object <- structure(
+        list(alias = title,
+             topic = title,
+             value = call_as_list[[3]],
+             methods = NULL
+        ),
+        class = c("function","object"))
     }
 
     block
@@ -142,7 +162,7 @@ parse_roxygen.r <- function(text){
 #' @noRd
 parse_roxygen.r_test_code <- function(text){
 
-  roxyblocks <- roxygen2::parse_text(text,env = environment())
+  roxyblocks <- roxygen2::parse_text(text,env = NULL)
   roxyblocks <- cleanup_section_last_update(roxyblocks)
 
   roxyblocks <- lapply(roxyblocks,function(block){
@@ -216,7 +236,7 @@ parse_roxygen.md <- function(text){
     class = roxy_text_class(text)
   )
 
-  roxyblocks <- roxygen2::parse_text(text2)
+  roxyblocks <- roxygen2::parse_text(text2, env = NULL)
 
   roxyblocks <- cleanup_section_last_update(roxyblocks)
 
@@ -281,6 +301,7 @@ cleanup_section_last_update <- function(blocks){
 
       last_by <- grepl("last update(d)* by",names(content),ignore.case = TRUE)
       last_date <- grepl("last update(d)* date",names(content),ignore.case = TRUE)
+      spec_coverage <- grepl("specification coverage",names(content),ignore.case = TRUE)
 
       if(any(last_by)){
 
@@ -299,9 +320,9 @@ cleanup_section_last_update <- function(blocks){
 
         warn(
           paste0(
-            "`@section ",names(content[which_editor]),":`",
+            "`@section ",names(content[which_editor]),":` ",
             "is superseded.",
-            "\nUse `@editor ",editor,"` instead."
+            "\nUse `@editor ",trimws(editor),"` instead."
           ),
           class = "vt.superseded_last_updated_by"
         )
@@ -325,12 +346,41 @@ cleanup_section_last_update <- function(blocks){
 
         warn(
           paste0(
-            "`@section ",names(content[which_editDate]),":`",
+            "`@section ",names(content[which_editDate]),":` ",
             "is superseded.",
-            "\nUse `@editDate ",editDate,"` instead."
+            "\nUse `@editDate ",trimws(editDate),"` instead."
           ),
           class = "vt.superseded_last_update_date"
         )
+      }
+
+
+      if(any(spec_coverage)){
+
+        which_spec_cov <- which(spec_coverage)
+        coverage <- unname(content[which_spec_cov])
+
+        block$tags <- c(
+          block$tags,
+          list(roxy_tag_parse(roxy_tag(
+            "coverage",
+            raw = coverage,
+            file = block$file,
+            line = section_tags[[which_spec_cov]]$line
+          )))
+        )
+
+        warn(
+          paste0(
+            "`@section ",names(content[which_spec_cov]),":` ",
+            "is superseded.",
+            "Use the following instead:\n\n```\n",
+            paste("#'", c("@coverage",strsplit(coverage,"\n")[[1]]),collapse = "\n"),
+            "\n```"
+          ),
+          class = "vt.superseded_specification_coverage"
+        )
+
       }
 
       return(block)

@@ -31,7 +31,7 @@
 #' vt_use_test_case("regTests/Update2/case2", open = FALSE)
 #'
 #' })
-vt_use_test_case <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
+vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(), pkg = ".") {
 
   name <- vt_set_ext(name, ext = "md")
 
@@ -42,9 +42,14 @@ vt_use_test_case <- function(name, username = vt_username(), open = interactive(
   ## if the file didnt exist before, populate with contents
   if (file.size(case_name) == 0){
 
+    if(is.null(title)){
+      title <- basename(file_path_sans_ext(case_name))
+    }
+
     # Create the content to write
     render_template("test_cases", output = case_name,
                      data = list(
+                       title = title,
                        username = username,
                        editDate = as.character(Sys.Date())
                      ))

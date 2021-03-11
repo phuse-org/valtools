@@ -51,6 +51,9 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
           scrape_references = function(text){
 
+            ## Drop roxygen comment headers from text for scraping references.
+            text <- text[!grepl("^#'", text)]
+
             reference_locations <-
               gregexpr(
                 paste0(
@@ -129,6 +132,8 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
             for(ref in names(references)){
               ref_value <- references[[ref]]
+
+
               text = gsub(
                 pattern = paste0(private$reference_indicator,ref),
                 replacement = ref_value,
@@ -155,13 +160,18 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' @description
           #' create a new dynamic reference object
           #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "##type:reference"
+          #' @param type "number" (arabic) or "letter" (latin uppercase) to use for counters
           #' @return a new `vt_dynamic_reference` object
-          initialize = function(reference_indicator = "##"){
+          initialize = function(reference_indicator = "##", type = c("number","letter")){
+
             private$references <- list()
+
             private$ref_iter_number <- list(
               req = 0,
               tc = 0
             )
+
+            private$type <- match.arg(type)
 
             private$reference_indicator <- reference_indicator
             private$reference_indicator_regex <- paste0("\\",strsplit(reference_indicator,"")[[1]], collapse = "")
@@ -169,6 +179,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           ),
 
         private = list(
+          type = NULL,
           references = list(),
           ref_iter_number = list(
             req = 0,
@@ -185,6 +196,9 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           add_reference = function(reference_id, type = c("req","tc")){
             type <- match.arg(type)
             reference_value = private$advance_reference(type)
+            if(private$type == "letter"){
+              reference_value <- numeric_to_letter_ref(reference_value)
+            }
             private$references[[reference_id]] <- reference_value
           }
         ))
@@ -215,4 +229,20 @@ dynamic_reference_rendering <- function(file, reference = NULL){
 
 }
 
+
+## original method from:
+## https://stackoverflow.com/questions/181596
+
+numeric_to_letter_ref <- function(x){
+  col_name <- c()
+
+  while(x > 0){
+    modulo <- (x) %% 26
+    col_name <- c(LETTERS[modulo], col_name)
+    x <- as.integer( (x - modulo) / 26)
+  }
+
+  paste(col_name,collapse = "")
+
+}
 
