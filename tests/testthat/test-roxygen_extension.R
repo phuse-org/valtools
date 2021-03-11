@@ -6,6 +6,8 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   #' @param pkg path to package
   #' @editor Sample Person
   #' @editDate 1900-01-01
+  #' @coverage
+  #' test1: req1, req2, req3
   #' @export
   #' @aliases testing
   hello_world <- function(name = \"\"){
@@ -16,7 +18,15 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   roxygen_block <- roxygen2::parse_text(simple_test_function_text)[[1]]
 
   expect_true(
-    roxygen2::block_has_tags(roxygen_block, tags = c("editor","editDate"))
+    roxygen2::block_has_tags(roxygen_block, tags = c("editor"))
+  )
+
+  expect_true(
+    roxygen2::block_has_tags(roxygen_block, tags = c("editDate"))
+  )
+
+  expect_true(
+    roxygen2::block_has_tags(roxygen_block, tags = c("coverage"))
   )
 
   expect_equal(
@@ -27,6 +37,11 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   expect_equal(
     roxygen2::block_get_tag_value(roxygen_block,"editDate"),
     "1900-01-01"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag_value(roxygen_block,"coverage"),
+    "test1: req1, req2, req3"
   )
 
 })

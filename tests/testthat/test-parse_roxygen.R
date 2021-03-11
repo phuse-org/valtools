@@ -26,6 +26,41 @@ test_that("parsing R function files as expected", {
 
 })
 
+test_that("parsing R function files with methods as expected", {
+
+  file_content <- structure("
+    #' @title sample title
+    #' @editor Sample Editor
+    #' @editDate 1900-01-01
+    #' @param name name printed
+    #' @export
+    hello_world <- function(name){
+      UseMethod('hello_world')
+    }
+
+
+    #' @export
+    hello_world.character <- function(name){
+      print(\"hello,\",name)
+    }
+
+    ",
+    class = "r")
+
+  block_list <- parse_roxygen(file_content)
+
+  expect_equal(
+    roxygen2::block_get_tag(block_list[[1]],"editor")$val,
+    "Sample Editor"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+    "1900-01-01"
+  )
+
+})
+
 test_that("parsing R 'defunct' function files as expected", {
 
   file_content <- roxy_text(
@@ -118,8 +153,8 @@ test_that("parsing R function files with old nomenclature as expected", {
   expect_equal(
     warnings,
     c(
-    "`@section last updated by:`is superseded.\nUse `@editor Sample Editor` instead.",
-    "`@section last update date:`is superseded.\nUse `@editDate 1900-01-01` instead."
+    "`@section last updated by:` is superseded.\nUse `@editor Sample Editor` instead.",
+    "`@section last update date:` is superseded.\nUse `@editDate 1900-01-01` instead."
     )
   )
 })
@@ -215,7 +250,7 @@ test_that("parsing R test code files with the same test name throws an error", {
 
 })
 
-test_that("parsing md function files as expected", {
+test_that("parsing md files as expected", {
 
   withr::with_tempdir({
 
@@ -225,6 +260,8 @@ test_that("parsing md function files as expected", {
     "#' @title sample title",
     "#' @editor Sample Editor",
     "#' @editDate 1900-01-01",
+    "#' @coverage",
+    "#' test_case_1: Req_2, Req_4",
     "",
     "_Markdown Content_!",
     ""),
@@ -261,6 +298,18 @@ test_that("parsing md function files as expected", {
     "1900-01-01"
   )
 
+  expect_equal(
+    roxygen2::block_get_tag(block_list[[1]],"coverage")$val,
+    "test_case_1: Req_2, Req_4"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
+    structure(
+      list(data.frame(test_case = "test_case_1", requirements= c("Req_2","Req_4"))),
+      class = "vt_test_req_coverage")
+  )
+
   expect_error(
     parse_roxygen(file_content_2),
     paste0("All markdown roxygen headers must have a title.\n",
@@ -268,6 +317,119 @@ test_that("parsing md function files as expected", {
   )
 
 
+  })
+
+})
+
+test_that("parsing md files with the old nomeclature as expected", {
+
+  withr::with_tempdir({
+
+    ## create sample md file
+    fil <- tempfile(fileext = ".md")
+    cat(c(
+      "#' @title sample title",
+      "#' @section Last Updated By:",
+      "#'  Sample Editor",
+      "#' @section Last Update Date:",
+      "#'  1900-01-01",
+      "#' @section Specification coverage:",
+      "#' test_case_1: Req_2, Req_4",
+      "",
+      "_Markdown Content_!",
+      ""),
+      sep = "\n",
+      file = fil)
+    file_content <- roxy_text(
+      readLines(fil),
+      file = fil,
+      class = "md")
+
+    warn_outputs <- capture_warnings({
+      block_list <- parse_roxygen(file_content)
+    })
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editor")$val,
+      "Sample Editor"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+      "1900-01-01"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$val,
+      "test_case_1: Req_2, Req_4"
+    )
+
+    browser()
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
+      structure(
+        list(data.frame(test_case = "test_case_1", requirements= c("Req_2","Req_4"))),
+        class = "vt_test_req_coverage")
+    )
+
+
+    expect_equal(
+      warn_outputs,
+      c(
+        "`@section Last Updated By:` is superseded.\nUse `@editor Sample Editor` instead.",
+        "`@section Last Update Date:` is superseded.\nUse `@editDate 1900-01-01` instead.",
+        "`@section Specification coverage:` is superseded.Use the following instead:\n\n```\n#' @coverage\n#' test_case_1: Req_2, Req_4\n```"
+        )
+    )
+
+  })
+
+})
+
+test_that("parsing deprecated md files as expected", {
+
+  withr::with_tempdir({
+
+    ## create sample md file
+    fil <- tempfile(fileext = ".md")
+    cat(c(
+      "#' @title sample title",
+      "#' @editor Sample Editor",
+      "#' @editDate 1900-01-01",
+      "#' @coverage",
+      "#' Deprecated",
+      ""),
+      sep = "\n",
+      file = fil)
+    file_content <- roxy_text(
+      readLines(fil),
+      file = fil,
+      class = "md")
+
+    block_list <- parse_roxygen(file_content)
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editor")$val,
+      "Sample Editor"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+      "1900-01-01"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$val,
+      "Deprecated"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
+      structure(
+        list(data.frame(test_case = "Deprecated", requirements= NA)),
+        class = "vt_test_req_coverage")
+    )
   })
 
 })

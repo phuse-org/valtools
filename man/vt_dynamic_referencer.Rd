@@ -168,13 +168,18 @@ ref$list_references()
 \subsection{Method \code{new()}}{
 create a new dynamic reference object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{vt_dynamic_referencer$new(reference_indicator = "##")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{vt_dynamic_referencer$new(
+  reference_indicator = "##",
+  type = c("number", "letter")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{reference_indicator}}{character vector that indicates the start of the dynamic references. defaults to "##type:reference"}
+
+\item{\code{type}}{"number" (arabic) or "letter" (latin uppercase) to use for counters}
 }
 \if{html}{\out{</div>}}
 }
