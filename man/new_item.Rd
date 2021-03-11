@@ -9,6 +9,7 @@
 vt_use_test_case(
   name,
   username = vt_username(),
+  title = NULL,
   open = interactive(),
   pkg = "."
 )
@@ -35,12 +36,12 @@ are located at \verb{./inst/validation/<ItemType>/\{name\}}.}
 
 \item{username}{The username to insert into the validation item as the author.}
 
+\item{title}{Title for the requirement defaults to be the base name passed
+sans file paths or extensions.}
+
 \item{open}{Should the newly made file be opened for editing.}
 
 \item{pkg}{Top-level of package}
-
-\item{title}{Title for the requirement defaults to be the base name passed
-sans file paths or extensions.}
 }
 \value{
 Path to the newly created validation item file, invisibly.

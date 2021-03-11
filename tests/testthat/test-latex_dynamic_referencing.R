@@ -65,6 +65,7 @@ test_that("latex Number Referencing across rmarkdown chunks", {
 
     ))
 
+
   suppressWarnings({
   quiet <- capture.output({
     test_output <- rmarkdown::render(input = test_report, clean = FALSE, quiet = TRUE)

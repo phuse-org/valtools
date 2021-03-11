@@ -11,6 +11,7 @@
 #     vt_render_validation_report
 #   used by:
 #     vt_path - determines whether path is to the system file or uses here::here
+#     vt_scrape_tags
 # vt_validation_package:
 #   description:
 #     environment variable that is which installed package is to have the validation
