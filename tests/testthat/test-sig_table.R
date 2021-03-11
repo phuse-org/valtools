@@ -31,7 +31,7 @@ test_that("`vt_render_sig_table` returns the expected RMD text", {
     )
 
     expect_equal(readLines("rendered_table"),
-                 c("# Signitures",
+                 c("# Signatures",
                    "",
                    "```{r, sig_table, echo = FALSE}",
                    "structure(list(name = c(&quot;Eli Miller&quot;, &quot;Marie&quot;, &quot;Ellis H&quot;), role = c(&quot;dev&quot;, &quot;dev&quot;, &quot;dev&quot;), title = c(&quot;Developer&quot;, &quot;Developer&quot;, &quot;Developer&quot;)), class = &quot;data.frame&quot;, row.names = c(NA, -3L)) %>%",
