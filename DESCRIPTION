@@ -36,7 +36,8 @@ Suggests:
     testthat,
     XML,
     pdftools,
-    bookdown
+    bookdown,
+    here
 Imports:
     desc,
     devtools,
@@ -51,7 +52,7 @@ Imports:
     rmarkdown,
     withr,
     callr,
-    here,
+    rprojroot,
     whisker,
     glue,
     knitr,

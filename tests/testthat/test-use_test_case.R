@@ -27,7 +27,7 @@ test_that("Creating test cases and set user", {
 
     expect_equal(
       content,
-      c(
+      c("#' @title testcase001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
         "",
@@ -73,7 +73,7 @@ test_that("Creating test cases and not setting user takes username", {
 
     expect_equal(
       content,
-      c(
+      c("#' @title testcase001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
         "",
