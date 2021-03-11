@@ -14,6 +14,7 @@
 #' @param open should the validation report be opened after it is built?
 #' @param install_verbose should the installation be verbose?
 #' @param install_tests should the installation include installation of package-specific tests (if any)?
+#' @param reload Should package be reloaded after install? defaults to TRUE
 #'
 #'
 #' @return path to either the validation report or the bundled package
@@ -90,54 +91,13 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 #'
 vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 
-  vt_validate_source(pkg = ".", src = src, open = FALSE)
+  vt_validate_source(pkg = pkg, src = src, open = FALSE)
 
-  validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
-  validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
+  copy_validation_content(pkg = pkg, src = src)
 
-
-  tryCatch({
-
-    if(!dir.exists(file.path(pkg, validation_output_directory))){
-      dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
-    }
-
-    ## copy validation contents to validation output dir
-    directory_copy(
-      from = file.path(pkg, validation_directory),
-      to = file.path(pkg, validation_output_directory),
-      recursive = TRUE,
-      overwrite = TRUE)
-
-    ## copy validation Rmd
-    file.copy(
-      from = file.path(pkg, "vignettes", "validation.Rmd"),
-      to = file.path(pkg, validation_output_directory),
-      overwrite = TRUE
-    )
-
-    ## copy .validation config file
-    file.copy(
-      from = file.path(pkg, "validation.yml"),
-      to = file.path(pkg, validation_output_directory),
-      overwrite = TRUE
-    )
-
-    # copy and strip down code documentation to validation output dir
-    roxygen_copy(
-      from = file.path(pkg, "R"),
-      to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
-      overwrite = TRUE)
-
-    ## build package
-    build_path <- build(pkg, ...)
-    inform("Validated package built", class = "vt.build")
-
-  },
-  error = function(e) {
-    abort(paste0(c("Error in validated build", e), sep = .Platform$file.sep),
-          class = "vt.buildFail")
-  })
+  ## build package
+  build_path <- build(src, ...)
+  inform("Validated package built", class = "vt.build")
 
   return(build_path)
 
@@ -153,13 +113,21 @@ vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 #'
 #' @rdname validate
 #'
-vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE, install_tests = TRUE){
+vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE, install_tests = TRUE, reload = TRUE){
+
+  pkg_src <- as.package(src)$package
+
   bundle <- vt_validate_build(pkg = ".", src = src, ...)
   on.exit({unlink(bundle)})
 
   INSTALL_opts <- character()
   if(install_tests){
     INSTALL_opts <- c("--install-tests")
+  }
+
+  was_loaded <- pkg_src %in% loadedNamespaces()
+  if ( was_loaded ) {
+    try(unloadNamespace(pkg_src), silent = TRUE)
   }
 
   install.packages(
@@ -172,6 +140,12 @@ vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRU
   )
 
   inform("validated package installed")
+
+  if(reload & was_loaded){
+    require(pkg_src, quietly = TRUE, character.only = TRUE)
+    inform("validated package loaded to namespace")
+  }
+
   return(TRUE)
 }
 
@@ -263,4 +237,51 @@ directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
     to = file.path(to,list_files_from),
     overwrite = overwrite
   ))
+}
+
+copy_validation_content <- function(pkg = ".", src = pkg){
+
+  validation_directory <- file.path(get_config_working_dir(pkg = pkg), "validation")
+  validation_output_directory <- file.path(get_config_output_dir(pkg = pkg),"validation")
+
+  tryCatch({
+
+    if(!dir.exists(file.path(pkg, validation_output_directory))){
+      dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
+    }
+
+    ## copy validation contents to validation output dir
+    directory_copy(
+      from = file.path(pkg, validation_directory),
+      to = file.path(pkg, validation_output_directory),
+      recursive = TRUE,
+      overwrite = TRUE)
+
+    ## copy validation Rmd
+    file.copy(
+      from = file.path(pkg, "vignettes", "validation.Rmd"),
+      to = file.path(pkg, validation_output_directory),
+      overwrite = TRUE
+    )
+
+    ## copy .validation config file
+    file.copy(
+      from = file.path(src, "validation.yml"),
+      to = file.path(pkg, validation_output_directory),
+      overwrite = TRUE
+    )
+
+    # copy and strip down code documentation to validation output dir
+    roxygen_copy(
+      from = file.path(pkg, "R"),
+      to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
+      overwrite = TRUE)
+
+  },
+  error = function(e) {
+    abort(paste0(c("Error in moving validated content", e), sep = .Platform$file.sep),
+          class = "vt.buildFail")
+  })
+
+  invisible(TRUE)
 }
