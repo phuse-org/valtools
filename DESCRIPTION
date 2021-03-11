@@ -57,7 +57,8 @@ Imports:
     knitr,
     kableExtra,
     purrr,
-    magrittr
+    magrittr,
+    dplyr
 VignetteBuilder: knitr
 SystemRequirements:
     lua
