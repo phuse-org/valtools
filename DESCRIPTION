@@ -37,7 +37,8 @@ Suggests:
     XML,
     pdftools,
     knitr,
-    bookdown
+    bookdown,
+    here
 Imports:
     desc,
     devtools,
@@ -52,7 +53,7 @@ Imports:
     rmarkdown,
     withr,
     callr,
-    here,
+    rprojroot,
     whisker,
     glue
 VignetteBuilder: knitr
