@@ -16,7 +16,8 @@ test_that("vt_generate_sig_table generates the expected dataframe", {
                            "Marie, Developer",
                            "Ellis H, Developer"),
         signature = NA,
-        date = NA
+        date = NA,
+        row.names = c("em", "mv", "eh")
       )
     )
 

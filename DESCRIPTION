@@ -56,9 +56,7 @@ Imports:
     glue,
     knitr,
     kableExtra,
-    purrr,
-    magrittr,
-    dplyr
+    magrittr
 VignetteBuilder: knitr
 SystemRequirements:
     lua

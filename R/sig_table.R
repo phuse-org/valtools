@@ -4,12 +4,10 @@
 #'   each user with the columns: role, name_and_title, signature, and date.
 #'
 #' @export
-#'
-#' @importFrom purrr map_dfr
 vt_generate_sig_table <- function(){
 
   # Pull all the usernames into a data.frame
-  people <- map_dfr(read_validation_config()$usernames, data.frame)
+  people <- do.call('rbind', lapply(read_validation_config()$usernames, data.frame))
 
   people$signature <- NA
   people$date <- NA
