@@ -15,7 +15,7 @@
 #'
 #' @export
 #'
-#' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project
+#' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project is_vcs_root
 #'
 #' @examples
 #' withr::with_tempdir({callr::r(function(){
