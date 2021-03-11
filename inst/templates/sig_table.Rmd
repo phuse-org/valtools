@@ -1,4 +1,4 @@
-# Signitures
+# Signatures
 
 ```{r, sig_table, echo = FALSE}
 {{ people }} %>%
