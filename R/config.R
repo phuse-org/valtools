@@ -72,7 +72,7 @@ vt_use_validation_config <- function(pkg = ".",
 
   ## add "validation.yml" to .Rbuildignore if is a package
   if(is_package(pkg = pkg)){
-    use_build_ignore2(ignores = "^\\validation.yml$",dir = pkg)
+    use_build_ignore2(ignores = "^validation\\.yml$",dir = pkg)
   }
 
   if(length(username_list) > 0 ){

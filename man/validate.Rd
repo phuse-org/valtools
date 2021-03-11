@@ -16,7 +16,8 @@ vt_validate_install(
   src = pkg,
   ...,
   install_verbose = TRUE,
-  install_tests = TRUE
+  install_tests = TRUE,
+  reload = TRUE
 )
 
 vt_validate_installed_package(
@@ -37,6 +38,8 @@ vt_validate_installed_package(
 \item{install_verbose}{should the installation be verbose?}
 
 \item{install_tests}{should the installation include installation of package-specific tests (if any)?}
+
+\item{reload}{Should package be reloaded after install? defaults to TRUE}
 
 \item{package}{installed package name}
 

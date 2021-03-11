@@ -272,7 +272,7 @@ test_that("Test when in a package validation.yml is added to .Rbuildignore of th
     r_build_ignore<- readLines(".Rbuildignore")
 
     expect_true(
-      "^\\validation.yml$" %in% r_build_ignore
+      "^validation\\.yml$" %in% r_build_ignore
     )
 
   })
