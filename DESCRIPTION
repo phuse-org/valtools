@@ -33,10 +33,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
     covr,
-    testthat,
     XML,
     pdftools,
-    knitr,
     bookdown,
     here
 Imports:
@@ -55,7 +53,10 @@ Imports:
     callr,
     rprojroot,
     whisker,
-    glue
+    glue,
+    testthat,
+    knitr,
+    kableExtra
 VignetteBuilder: knitr
 SystemRequirements:
     lua
