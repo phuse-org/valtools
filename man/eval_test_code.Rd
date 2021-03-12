@@ -10,6 +10,8 @@ vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
 vt_kable_test_code(results)
 }
 \arguments{
+\item{file}{full path to test code file.}
+
 \item{test_env}{environment to perform tests in}
 
 \item{...}{argument passed to \code{knitr::kable()}}
@@ -17,8 +19,6 @@ vt_kable_test_code(results)
 \item{ref}{reference path to use. Defaults to vt_path()}
 
 \item{results}{results data.frame from \code{vt_run_test_code_file()}}
-
-\item{file.}{full path to test code file.}
 }
 \value{
 a kable with variables: \code{Test}, \code{Expected}, \code{Results},

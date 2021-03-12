@@ -1,5 +1,5 @@
 #' Evaluate the test code file
-#' @param file. full path to test code file.
+#' @param file full path to test code file.
 #' @param test_env environment to perform tests in
 #' @param ... argument passed to `knitr::kable()`
 #' @param ref reference path to use. Defaults to vt_path()
@@ -108,7 +108,7 @@ eval_test_code <- function(path, test_env = new.env()) {
 
                        data.frame(
                          Test = outcome$test,
-                         Results = capture_output(testthat:::print.expectation(outcome)),
+                         Results = as.character(format(outcome)),
                          Pass_Fail = expectation_outcome,
                          stringsAsFactors = FALSE
                        )

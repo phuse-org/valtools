@@ -20,7 +20,7 @@ test_that("Evaluate test code works", {
       results,
       data.frame(
         Test = "test_example",
-        Results = "As expected ",
+        Results = "As expected",
         Pass_Fail = "Pass",
         stringsAsFactors = FALSE
       )
@@ -30,7 +30,7 @@ test_that("Evaluate test code works", {
       results2,
       data.frame(
         Test = "test_example",
-        Results = "2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1 ",
+        Results = "2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1",
         Pass_Fail = "Fail",
         stringsAsFactors = FALSE
       )
@@ -63,7 +63,7 @@ test_that("Evaluate multiple tests within test_that works", {
       results,
       data.frame(
         Test = c("test_example.1","test_example.2"),
-        Results = c("As expected ","As expected "),
+        Results = c("As expected","As expected"),
         Pass_Fail = c("Pass","Pass"),
         stringsAsFactors = FALSE
       )
@@ -73,7 +73,7 @@ test_that("Evaluate multiple tests within test_that works", {
       results2,
       data.frame(
         Test = c("test_example.1","test_example.2"),
-        Results = c("As expected ","2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1 "),
+        Results = c("As expected","2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1"),
         Pass_Fail = c("Pass","Fail"),
         stringsAsFactors = FALSE
       )
@@ -110,10 +110,10 @@ test_that("Evaluate multiple test_thats within file works", {
           "test_example2.2"
         ),
         Results = c(
-          "As expected ",
-          "As expected ",
-          "As expected ",
-          "2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1 "
+          "As expected",
+          "As expected",
+          "As expected",
+          "2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1"
         ),
         Pass_Fail = c(
           "Pass",
@@ -141,7 +141,7 @@ test_that("Empty test_that returns skip", {
       results,
       data.frame(
         Test = "test_example",
-        Results = "Reason: empty test ",
+        Results = "Reason: empty test",
         Pass_Fail = "Skip",
         stringsAsFactors = FALSE
       )
@@ -216,7 +216,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
       results,
       data.frame(
         Test = c("1.1","1.2"),
-        Results = c("As expected ","As expected "),
+        Results = c("As expected","As expected"),
         Pass_Fail = c("Pass","Pass"),
         stringsAsFactors = FALSE
       )
@@ -226,7 +226,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
       results2,
       data.frame(
         Test = c("2.1","2.2"),
-        Results = c("As expected ","2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1 "),
+        Results = c("As expected","2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1"),
         Pass_Fail = c("Pass","Fail"),
         stringsAsFactors = FALSE
       )
@@ -274,7 +274,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
       results,
       data.frame(
         Test = c("1.1","1.2"),
-        Results = c("As expected ","As expected "),
+        Results = c("As expected","As expected"),
         Pass_Fail = c("Pass","Pass"),
         stringsAsFactors = FALSE
       )
@@ -284,7 +284,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
       results2,
       data.frame(
         Test = c("2.1","2.2"),
-        Results = c("As expected ","2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1 "),
+        Results = c("As expected","2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1"),
         Pass_Fail = c("Pass","Fail"),
         stringsAsFactors = FALSE
       )

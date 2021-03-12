@@ -35,7 +35,6 @@ Suggests:
     covr,
     XML,
     pdftools,
-    knitr,
     bookdown,
     here
 Imports:
