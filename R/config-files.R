@@ -4,7 +4,7 @@
 #'
 #' Impose ordering of validation child files
 #' @param filename character vector containing filenames in order
-#' @param before Optional destination of new filenames, default is end of existing list
+#' @param before,after Optional destination of new filenames, default is end of existing list. Specifying both is error.
 #' @returns Used for side effect of adding validation file ordering to validation config
 #'     file. Invisibly returns TRUE on success.
 #'
@@ -19,7 +19,7 @@
 #' }
 #' @importFrom rlang abort
 #' @export
-vt_add_file_to_config <- function(filename, before = NULL, pkg = "." ){
+vt_add_file_to_config <- function(filename, before = NULL, after = NULL, pkg = "." ){
 
   validation_config <- read_validation_config(pkg = pkg)
 
@@ -37,24 +37,28 @@ vt_add_file_to_config <- function(filename, before = NULL, pkg = "." ){
       ),
       class = "vt.validation_config_add_already_exists")
   } else {
-    # determine ordering
-    # || to short circuit
-    if(is.null(before) || length(validation_file_list_old) == 0 ||
-       (!is.null(before) & !(before %in% validation_file_list_old))){
-      inform(
-        paste0(
-          "Before locator filename: ",
-          before,
-          " not present in existing validation filename list. Using default location."
-        ),
-        class = "vt.validation_config_add_missing_locator"
+     if(!is.null(before) & !is.null(after)){
+      abort(
+        "Must supply only one of `before` and `after`",
+        class = "vt.validation_config_before_and_after"
       )
+    } else if(is.null(before) & is.null(after)){
       validation_file_list_new <- c(validation_file_list_old, as.list(filename))
-    } else{
+    } else if(length(validation_file_list_old) == 0){
+
+      if(!is.null(before) || !is.null(after)){
+        check_location_anchor(NULL, before, after)
+      }
+      validation_file_list_new <- c(validation_file_list_old, as.list(filename))
+    }  else if(!is.null(before)){
       list_locator <- which(validation_file_list_old %in% before)
+      check_location_anchor(list_locator, before, after)
+      validation_file_list_new <- insert_list_locator(validation_file_list_old, filename, list_locator)
+    } else {
+      list_locator <- which(validation_file_list_old %in% after) + 1
+      check_location_anchor(list_locator, before, after)
       validation_file_list_new <- insert_list_locator(validation_file_list_old, filename, list_locator)
     }
-
 
 
     write_validation_config(
@@ -142,4 +146,15 @@ insert_list_locator <- function(validation_file_list_old, filename, list_locator
              validation_file_list_old[list_locator:n_old]))
   }
 
+}
+
+check_location_anchor <- function(list_locator, before, after){
+  if(length(list_locator) == 0){
+    abort(paste0(
+      "Location anchor ",
+      before, after,
+      " does not exist. Run `valtools::vt_add_file_to_config` first!"
+    ),
+    class = "vt.validation_config_file_not_listed")
+  }
 }
