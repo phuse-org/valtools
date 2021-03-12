@@ -304,19 +304,21 @@ test_that("vt_kable_test_code returns formatted kable object",{
     ))
 
   expect_equal(
-    capture.output(output_pass),
-    c(
-      "\\begin{table}[H]",
-      "\\centering",
-      "\\begin{tabular}{l|>{\\raggedright\\arraybackslash}p{10em}|>{\\raggedright\\arraybackslash}p{10em}}",
-      "\\hline",
-      "Test & Results & Pass/Fail\\\\",
-      "\\hline",
-      "test_example & As expected & \\shortstack{\\textcolor{OliveGreen}{Pass}}\\\\",
-      "\\hline",
-      "\\end{tabular}",
-      "\\end{table}"
-    )
+    output_pass,
+    kable_styling(
+      column_spec(
+        kable(
+          data.frame(
+            Test = "test_example",
+            Results = "As expected ",
+            Pass_Fail = "\\shortstack{\\textcolor{OliveGreen}{Pass}}",
+            stringsAsFactors = FALSE
+          ),
+          format = "latex",
+          escape = FALSE,
+          col.names = c("Test", "Results", "Pass/Fail")
+        ),2:3, width = "10em"
+    ),position = "center")
   )
 
   output_fail <- vt_kable_test_code(data.frame(
@@ -327,19 +329,21 @@ test_that("vt_kable_test_code returns formatted kable object",{
   ))
 
   expect_equal(
-    capture.output(output_fail),
-    c(
-      "\\begin{table}[H]",
-      "\\centering",
-      "\\begin{tabular}{l|>{\\raggedright\\arraybackslash}p{10em}|>{\\raggedright\\arraybackslash}p{10em}}",
-      "\\hline",
-      "Test & Results & Pass/Fail\\\\",
-      "\\hline",
-      "test_example & Failure Reasons & \\shortstack{\\textcolor{red}{Fail}}\\\\",
-      "\\hline",
-      "\\end{tabular}",
-      "\\end{table}"
-    )
+    output_fail,
+    kable_styling(
+      column_spec(
+        kable(
+          data.frame(
+            Test = "test_example",
+            Results = "Failure Reasons ",
+            Pass_Fail = "\\shortstack{\\textcolor{red}{Fail}}",
+            stringsAsFactors = FALSE
+          ),
+          format = "latex",
+          escape = FALSE,
+          col.names = c("Test", "Results", "Pass/Fail")
+        ),2:3, width = "10em"
+      ),position = "center")
   )
 
   output_skip <- vt_kable_test_code(data.frame(
@@ -350,19 +354,21 @@ test_that("vt_kable_test_code returns formatted kable object",{
   ))
 
   expect_equal(
-    capture.output(output_skip),
-    c(
-      "\\begin{table}[H]",
-      "\\centering",
-      "\\begin{tabular}{l|>{\\raggedright\\arraybackslash}p{10em}|>{\\raggedright\\arraybackslash}p{10em}}",
-      "\\hline",
-      "Test & Results & Pass/Fail\\\\",
-      "\\hline",
-      "test_example & Skipped test for reasons & \\shortstack{\\textcolor{YellowOrange}{Skip}}\\\\",
-      "\\hline",
-      "\\end{tabular}",
-      "\\end{table}"
-    )
+    output_skip,
+    kable_styling(
+      column_spec(
+        kable(
+          data.frame(
+            Test = "test_example",
+            Results = "Skipped test for reasons",
+            Pass_Fail = "\\shortstack{\\textcolor{YellowOrange}{Skip}}",
+            stringsAsFactors = FALSE
+          ),
+          format = "latex",
+          escape = FALSE,
+          col.names = c("Test", "Results", "Pass/Fail")
+        ),2:3, width = "10em"
+      ),position = "center")
   )
 
   output_empty <- vt_kable_test_code(data.frame(
@@ -373,19 +379,19 @@ test_that("vt_kable_test_code returns formatted kable object",{
   ))
 
   expect_equal(
-    capture.output(output_empty),
-    c(
-      "\\begin{table}[H]",
-      "\\centering",
-      "\\begin{tabular}{l|l|l}",
-      "\\hline",
-      "Test & Results & Pass/Fail\\\\",
-      "",
-      "",
-      "\\hline",
-      "\\end{tabular}",
-      "\\end{table}"
-    )
+    output_empty,
+    kable_styling(
+        kable(
+          data.frame(
+            Test = character(),
+            Results = character(),
+            Pass_Fail = character(),
+            stringsAsFactors = FALSE
+          ),
+          format = "latex",
+          escape = FALSE,
+          col.names = c("Test", "Results", "Pass/Fail")
+      ),position = "center")
   )
 
 
