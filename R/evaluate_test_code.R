@@ -8,12 +8,63 @@
 #' @export
 #' @importFrom testthat capture_output Reporter
 #' @importFrom knitr kable
+#'
+#' @rdname eval_test_code
 vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_path()){
 
   test_results <- eval_test_code(path = file.path(ref, "test_code",file), test_env = test_env)
 
-  return(kable(test_results, ...))
+  return(test_results)
 }
+
+#' Turn test code results data.frame into kable output
+#'
+#' @param results results data.frame from `vt_run_test_code_file()`
+#'
+#' @returns kableExtra object with formatting
+#'
+#' @importFrom knitr kable
+#' @importFrom kableExtra column_spec kable_styling
+#' @importFrom rlang abort
+#'
+#' @export
+#'
+#' @rdname eval_test_code
+vt_kable_test_code <- function(results) {
+  ## check column names
+  if (!all(c("Test", "Results", "Pass_Fail") %in% colnames(results))) {
+    abort("Results data must contain the fields `Test`, `Results`, and `Pass_Fail`")
+  }
+
+  rownames(results) <- NULL
+
+  if( nrow(results) > 0 & any(results$Pass_Fail %in% c("Pass", "Fail", "Skip"))) {
+
+    Pass_Fail_colorized <-  c(Pass = "\\shortstack{\\textcolor{OliveGreen}{Pass}}",
+                              Skip = "\\shortstack{\\textcolor{YellowOrange}{Skip}}",
+                              Fail = "\\shortstack{\\textcolor{red}{Fail}}")[results$Pass_Fail]
+
+    results$Pass_Fail[results$Pass_Fail %in% c("Pass", "Fail", "Skip")] <-
+      Pass_Fail_colorized[results$Pass_Fail %in% c("Pass", "Fail", "Skip")]
+
+  }
+
+  t <- kable(
+    results[, c("Test", "Results", "Pass_Fail")],
+    format = "latex",
+    escape = FALSE,
+    col.names = c("Test", "Results", "Pass/Fail")
+  )
+
+  if(nrow(results) > 0){
+    t <- column_spec(t, 2:3, width = "10em")
+  }
+
+  t <- kable_styling(t, position = "center")
+
+  return(t)
+}
+
 
 #' @importFrom testthat capture_output Reporter test_file
 #' @importFrom rlang warn
@@ -31,7 +82,7 @@ eval_test_code <- function(path, test_env = new.env()) {
     return(data.frame(
         Test = character(),
         Results = character(),
-        `Pass/Fail` = character(),
+        Pass_Fail = character(),
         stringsAsFactors = FALSE
       ))
   }else{
@@ -58,7 +109,7 @@ eval_test_code <- function(path, test_env = new.env()) {
                        data.frame(
                          Test = outcome$test,
                          Results = capture_output(testthat:::print.expectation(outcome)),
-                         `Pass/Fail` = expectation_outcome,
+                         Pass_Fail = expectation_outcome,
                          stringsAsFactors = FALSE
                        )
 

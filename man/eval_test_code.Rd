@@ -2,9 +2,12 @@
 % Please edit documentation in R/evaluate_test_code.R
 \name{vt_run_test_code_file}
 \alias{vt_run_test_code_file}
+\alias{vt_kable_test_code}
 \title{Evaluate the test code file}
 \usage{
 vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
+
+vt_kable_test_code(results)
 }
 \arguments{
 \item{test_env}{environment to perform tests in}
@@ -13,12 +16,18 @@ vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
 
 \item{ref}{reference path to use. Defaults to vt_path()}
 
+\item{results}{results data.frame from \code{vt_run_test_code_file()}}
+
 \item{file.}{full path to test code file.}
 }
 \value{
 a kable with variables: \code{Test}, \code{Expected}, \code{Results},
 \code{Pass/Fail}. Suitable for including in validation report
+
+kableExtra object with formatting
 }
 \description{
 Evaluate the test code file
+
+Turn test code results data.frame into kable output
 }
