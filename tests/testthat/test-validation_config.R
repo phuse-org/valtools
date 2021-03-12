@@ -508,3 +508,75 @@ test_that("adding and removing validation files from list", {
                  ))
   })
 })
+
+test_that("inserting validation file at diff location", {
+  withr::with_tempdir({
+    vt_use_validation_config(pkg = ".",
+                             username_list = list(vt_user(
+                               name = "test",
+                               title = "test2",
+                               role = "tester2",
+                               username = "test"
+                             )),
+                             validation_files = list("req1.Rmd",
+                                                     "test_case1.Rmd",
+                                                     "test_code1.R"))
+    validation_config <- readLines("validation.yml")
+    expect_equal(validation_config,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- test_case1.Rmd",
+                   "- test_code1.R"))
+
+    expect_message(vt_add_file_to_config("report_content_from_template.Rmd", before = "req1.Rmd"),
+                   "Filename(s): report_content_from_template.Rmd added to validation config file.",
+                   fixed = TRUE)
+    validation_config2 <- readLines("validation.yml")
+    expect_equal(validation_config2,
+                 c(
+                   "working_dir: vignettes",
+                   "output_dir: inst" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- report_content_from_template.Rmd",
+                   "- req1.Rmd",
+                   "- test_case1.Rmd",
+                   "- test_code1.R"))
+
+
+  expect_message(vt_add_file_to_config("another_file.Rmd", before = "req2.Rmd"),
+                 class = c("vt.validation_config_add_missing_locator",
+                           "vt.validation_config_add_file"))
+  validation_config3 <- readLines("validation.yml")
+  expect_equal(validation_config3,
+               c(
+                 "working_dir: vignettes",
+                 "output_dir: inst" ,
+                 "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                 "usernames:",
+                 "  test:",
+                 "    name: test",
+                 "    title: test2" ,
+                 "    role: tester2",
+                 "validation_files:",
+                 "- report_content_from_template.Rmd",
+                 "- req1.Rmd",
+                 "- test_case1.Rmd",
+                 "- test_code1.R",
+                 "- another_file.Rmd"))
+  })
+})
