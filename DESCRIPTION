@@ -56,7 +56,8 @@ Imports:
     whisker,
     glue,
     testthat,
-    knitr
+    knitr,
+    kableExtra
 VignetteBuilder: knitr
 SystemRequirements:
     lua
