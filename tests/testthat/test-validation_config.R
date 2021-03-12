@@ -579,8 +579,9 @@ test_that("inserting validation file at diff location", {
                    "- req1.Rmd",
                    "- test_case1.Rmd",
                    "- test_code1.R"))
+
   # position locator doesn't exist in file list
-  expect_error(vt_add_file_to_config("another_file.Rmd", before = "req2.Rmd"),
+  expect_error(vt_add_file_to_config("another_file2.Rmd", before = "req2.Rmd"),
                class = "vt.validation_config_file_not_listed")
   expect_error(vt_add_file_to_config("another_file2.Rmd", after = "req2.Rmd"),
                class = "vt.validation_config_file_not_listed")
