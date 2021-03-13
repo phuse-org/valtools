@@ -4,14 +4,16 @@
 \alias{vt_kable_sig_table}
 \title{Kable defaults for rendering validation report}
 \usage{
-vt_kable_sig_table(people)
+vt_kable_sig_table(people, format = "latex")
 }
 \arguments{
 \item{people}{A dataframe with the columns role, Name and Title, Signature,
 and "Date"}
+
+\item{format}{passed to knitr::kable}
 }
 \value{
-Output from calls to kable
+knitr_kable object
 }
 \description{
 Kable defaults for rendering validation report

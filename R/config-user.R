@@ -185,6 +185,12 @@ vt_get_user_info <- function(username, type = c("name","title","role"), pkg = ".
 }
 
 
+#' @export
+vt_get_all_users <- function(pkg = "."){
+  return(read_validation_config(pkg = pkg)$usernames)
+
+}
+
 #' @importFrom rlang is_interactive inform abort
 get_config_user <- function(username, pkg = "."){
 
