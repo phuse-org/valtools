@@ -1,5 +1,7 @@
 #' Generate a signature table for a validation report
 #'
+#' @param pkg Top-level directory of the package to validate
+#' @param usernames list of vt_names to use when validation.yml does not exist
 #' @return A dataframe created from the validation config containing a row for
 #'   each user with the columns: role, name_and_title, signature, and date.
 #'

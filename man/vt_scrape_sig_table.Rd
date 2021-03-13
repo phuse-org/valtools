@@ -6,6 +6,11 @@
 \usage{
 vt_scrape_sig_table(usernames = NULL, pkg = ".")
 }
+\arguments{
+\item{usernames}{list of vt_names to use when validation.yml does not exist}
+
+\item{pkg}{Top-level directory of the package to validate}
+}
 \value{
 A dataframe created from the validation config containing a row for
 each user with the columns: role, name_and_title, signature, and date.
