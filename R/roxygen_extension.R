@@ -16,6 +16,7 @@ roxy_tag_parse.roxy_tag_editDate <- function(x) {
 #' @importFrom lubridate parse_date_time
 #' @importFrom roxygen2  roxy_tag_parse
 roxy_tag_parse.roxy_tag_coverage<- function(x) {
+
   x <- format_coverage_text(x)
 }
 
@@ -60,7 +61,6 @@ format.rd_section_coverage <- function(x, ...) {
 }
 
 format_coverage_text <- function(x){
-
   ## capture val
   x <- tag_markdown(x)
 
@@ -69,7 +69,7 @@ format_coverage_text <- function(x){
   test_coverage <- strsplit(text, "\n")
 
   coverage <- lapply(
-    test_coverage,
+    test_coverage[[1]],
     function(tc){
       if(grepl("deprecate", tc, ignore.case = TRUE)){
         data.frame(
