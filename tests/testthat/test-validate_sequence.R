@@ -174,6 +174,17 @@ test_that("test building a validated bundle from source", {
     valtools::vt_use_test_case("sample_test_case.md", username = "NewUser", open = FALSE)
     valtools::vt_use_test_code("sample_test_code.R", username = "NewUser", open = FALSE)
 
+    writeLines(c(
+      "#' @title Hello World",
+      "#' @editor Sample Name",
+      "#' @editDate 1900-01-01",
+      "#' @param name name to say hello to",
+      "#' @returns string of 'Hello, ' pasted to name",
+      "hello_world <- function(name){",
+      "  paste('Hello, ', name)",
+      "}"),
+      con = "R/hello_world.R")
+
     ## validate source & create bundle.
     suppressMessages({
     quiet <- capture.output({
@@ -218,11 +229,25 @@ test_that("test building a validated bundle from source", {
     ## validation content were copied properly
     expect_true(
       all(validation_docs %in% c(
+        "R/Function_Roxygen_Blocks.R",
         "requirements/sample_req.md",
         "test_cases/sample_test_case.md",
         "test_code/sample_test_code.R",
-        "validation.Rmd"
+        "validation.Rmd",
+        "validation.yml"
       ))
+    )
+
+    ## check roxygen blocks
+    expect_equal(
+      readLines("inst/validation/R/Function_Roxygen_Blocks.R"),
+      c("#' @title Hello World",
+        "#' @editor Sample Name",
+        "#' @editDate 1900-01-01",
+        "#' @param name name to say hello to",
+        "#' @returns string of 'Hello, ' pasted to name",
+        "hello_world <- function(){}",
+        "")
     )
 
   })})
@@ -278,6 +303,17 @@ test_that("test installing a validated bundle from source and rerunning report",
     valtools::vt_use_test_case("sample_test_case.md", username = "NewUser", open = FALSE)
     valtools::vt_use_test_code("sample_test_code.R", username = "NewUser", open = FALSE)
 
+    writeLines(c(
+      "#' @title Hello World",
+      "#' @editor Sample Name",
+      "#' @editDate 1900-01-01",
+      "#' @param name name to say hello to",
+      "#' @returns string of 'Hello, ' pasted to name",
+      "hello_world <- function(name){",
+      "  paste('Hello, ', name)",
+      "}"),
+      con = "R/hello_world.R")
+
     old_pkgs <- rownames(installed.packages(lib.loc = .libPaths()[1]))
 
     ## validate source & create bundle.
@@ -322,11 +358,26 @@ test_that("test installing a validated bundle from source and rerunning report",
     ## validation content were copied properly
     expect_true(
       all(validation_docs %in% c(
+        "R/Function_Roxygen_Blocks.R",
         "requirements/sample_req.md",
         "test_cases/sample_test_case.md",
         "test_code/sample_test_code.R",
-        "validation.Rmd"
+        "validation.Rmd",
+        "validation.yml"
+
       ))
+    )
+
+    ## check roxygen blocks
+    expect_equal(
+      readLines("inst/validation/R/Function_Roxygen_Blocks.R"),
+      c("#' @title Hello World",
+        "#' @editor Sample Name",
+        "#' @editDate 1900-01-01",
+        "#' @param name name to say hello to",
+        "#' @returns string of 'Hello, ' pasted to name",
+        "hello_world <- function(){}",
+        "")
     )
 
     ### rerun validation report

@@ -5,9 +5,11 @@ context("validation environment table")
 #       which causes package_file to fail.
 
 test_that("works on valtools (no Depends)", {
-  skip_if(grepl(dirname(here::here()), pattern = "\\.Rcheck"))
 
-  testthat::expect_false(all(grepl(readLines(here::here("DESCRIPTION")), pattern = "Depends")))
+
+  skip_if(grepl(dirname(rprojroot::is_testthat$find_file()), pattern = "\\.Rcheck"))
+
+  testthat::expect_false(all(grepl(readLines(rprojroot::is_r_package$find_file("DESCRIPTION")), pattern = "Depends")))
 
   validation_env <- vt_scrape_val_env()
   testthat::expect_true(!all(is.na(validation_env)))
