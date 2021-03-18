@@ -63,7 +63,9 @@ vt_kable_sig_table <- function(people, format = "latex") {
              col.names = c("Role", "Name and Title", "Signature", "Date"),
              booktabs = FALSE)
   t <- column_spec(t, 1, width = "9em", border_left = TRUE)
+  t <- column_spec(t, 3, width = "15em") %>%
   t <- column_spec(t, 4, width = "8em", border_right = TRUE)
+
   t
 
 }
