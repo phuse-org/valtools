@@ -447,3 +447,21 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
   ))
 
 })
+
+test_that("Dynaming referencing within a data.frame",{
+
+  cov_matrix_content <- data.frame( req_id = "##req:first",
+                                    tc_id = c("##tc:first", "##tc:second"))
+
+  references <- vt_dynamic_referencer$new()
+  references$initialize(reference_indicator = "##")
+  references$scrape_references(cov_matrix_content)
+  expect_equal(references$reference_insertion(cov_matrix_content),
+               data.frame(req_id = "1",
+                          tc_id = c("1", "2")))
+
+  expect_equal(references$reference_insertion(cov_matrix_content$tc_id),
+               c("1", "2"))
+
+
+})

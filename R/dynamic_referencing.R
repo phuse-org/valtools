@@ -52,7 +52,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           scrape_references = function(text){
 
             ## Drop roxygen comment headers from text for scraping references.
-            text <- text[!grepl("^#'", text)]
+            text <- unname(unlist(text[!grepl("^#'", text)]))
 
             reference_locations <-
               gregexpr(
@@ -133,13 +133,21 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
             for(ref in names(references)){
               ref_value <- references[[ref]]
 
+              if("data.frame" %in% class(text)){
+                text <- as.data.frame(lapply(text, gsub,
+                                             pattern = paste0(private$reference_indicator, ref),
+                                             replacement = ref_value,
+                                             fixed = TRUE))
+              } else {
+                text <- gsub(
+                  pattern = paste0(private$reference_indicator,ref),
+                  replacement = ref_value,
+                  text,
+                  fixed = TRUE,
+                )
+              }
 
-              text = gsub(
-                pattern = paste0(private$reference_indicator,ref),
-                replacement = ref_value,
-                text,
-                fixed = TRUE,
-              )
+
             }
 
             text
