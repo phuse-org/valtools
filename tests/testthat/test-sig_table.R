@@ -104,8 +104,6 @@ test_that("render returns the expected html", {
       vt_add_user_to_config(username = "mv", name = "Marie", role = "dev", title = "Developer")
       vt_add_user_to_config(username = "eh", name = "Ellis H", role = "dev", title = "Developer")
 
-      people <- vt_scrape_sig_table()
-      sig_kable <- vt_kable_sig_table(people)
       # using internal function that will be called when validation report is built
       valtools:::render_template(
         template = "sig_table.Rmd",
@@ -127,6 +125,7 @@ test_that("render returns the expected html", {
 
       writeLines(
         c("---",
+          "title: A report",
           "output: html_document",
           "---",
           "\n\n",
@@ -151,13 +150,14 @@ test_that("render returns the expected html", {
 
       this_test <- xml2::read_html(html_report_name)
       test_output_rendered <- rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]]
-      expect_equal(test_output_rendered,
+      expect_equal(as.data.frame(test_output_rendered),
                    data.frame(
                      Role = rep("dev", 3),
                      `Name and Title` = c( "Eli Miller, Developer", "Marie, Developer", "Ellis H, Developer"),
                      Signature = NA,
                      Date = NA,
-                     check.names = FALSE
+                     check.names = FALSE,
+                     stringsAsFactors = FALSE
                    ))
 
 

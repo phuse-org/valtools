@@ -364,7 +364,6 @@ test_that("retrieve all users from config", {
                 role = "role")
     user_b <- c(username = "buser", name = "Another user", title = "this title",
                 role = "this role")
-    browser()
     do.call(vt_add_user_to_config, as.list(user_a))
     do.call(vt_add_user_to_config, as.list(user_b))
 
