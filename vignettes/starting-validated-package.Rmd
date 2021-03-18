@@ -1,5 +1,5 @@
 ---
-title: "Starting New Validation Package"
+title: "Starting New Validation Package using {valtools}"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Starting New Validation Package}
@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, warning=FALSE}
+remotes::install_github("phuse-org/valtools")
 library(valtools)
 ```
 
@@ -160,7 +161,7 @@ manually.
 
 ```{r}
 
-usethis::use_vignette("validation",)
+usethis::use_vignette("validation")
 
 ```
 
@@ -175,26 +176,36 @@ We currently have code in `develop` for the following:
 
 Copy the following into the vignette:
 
-Edit the header yaml:
+header yaml:
 
 ```
 ---
 title: "validation"
 date: "`r Sys.time()`"
 output: 
-  rmarkdown::html_document:
-    toc: true
-    self_contained: true
+  rmarkdown::pdf_document:
 vignette: >
   %\VignetteIndexEntry{validation}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+header-includes:
+  - \usepackage{float}
+  - \usepackage{array}
+classoption: dvipsnames
 ---
 ```
 
-Edit the contents:
+vignette contents:
+
+``````
 
 ```{r, include = FALSE}
+
+options(knitr.table.format = "latex",
+        knitr.kable.NA = '',
+        width = 40,
+        usethis.quiet = TRUE)
+        
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
