@@ -111,3 +111,21 @@ test_that("Roxygen can read in new tags - DD-MMMM-YYYY", {
   )
 
 })
+
+
+test_that("formatting coverage section parses correctly", {
+    # one test case
+    cov_tag1 <- roxygen2::roxy_tag(tag = "coverage",
+                                raw = "1.1: 1.1, 1.2")
+    expect_s3_class(class = "roxy_tag_coverage",
+                 format_coverage_text(cov_tag1))
+
+    # multiple test cases
+    cov_tag2 <- roxygen2::roxy_tag(tag = "coverage",
+                                       raw = "\n1.1: 1.1, 1.2\n1.2: 1.2, 1.3\n1.3: 1.1, 1.3, 1.4",
+                                       line = 4)
+    expect_s3_class(class = "roxy_tag_coverage",
+                    format_coverage_text(cov_tag2))
+
+
+})
