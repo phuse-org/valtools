@@ -36,7 +36,9 @@ Suggests:
     XML,
     pdftools,
     bookdown,
-    here
+    here,
+    xml2,
+    rvest
 Imports:
     desc,
     devtools,

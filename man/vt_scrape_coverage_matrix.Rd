@@ -19,7 +19,7 @@ vt_scrape_coverage_matrix(
 \item{src, ref}{passed to \code{\link{vt_scrape_tags_from}}}
 }
 \value{
-a data.frame
+a data.frame mapping requirement ids to test case ids.
 }
 \description{
 Scrape "coverage" tag in test code to generate mapping
