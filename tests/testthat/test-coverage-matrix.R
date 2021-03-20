@@ -161,6 +161,7 @@ test_that("coverage matrix from dynam num", {
                  expect_matrix2)
 
 
+    cov_matrix2_tex_file <- tempfile(fileext = ".tex", tmpdir = getwd())
 
     writeLines(
       c("---",
@@ -176,11 +177,11 @@ test_that("coverage matrix from dynam num", {
         "---",
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix2, format = "latex")),
-      con = "cov_matrix2.tex")
+      con = cov_matrix2_tex_file)
 
-    rmarkdown::render("cov_matrix2.tex", output_format = "pdf_document")
+    rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
     rendered_cov_matrix2_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                                                                    pdftools::pdf_text("cov_matrix2.pdf")))[[1]])
+                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".tex", replacement = '.pdf'))))[[1]])
 
     expect_equal(rendered_cov_matrix2_pdf[2:24],
                  c( "Test Case 1     Test Case 2     Test Case 3",
@@ -207,6 +208,7 @@ test_that("coverage matrix from dynam num", {
                     "3.3                                               x",
                     "3.4                                               x"  ))
 
+    cov_matrix2_rmd_file <-  tempfile(fileext = ".Rmd", tmpdir = getwd())
     writeLines(
       c("---",
         "title: validation report",
@@ -214,10 +216,10 @@ test_that("coverage matrix from dynam num", {
         "---",
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix2, format = "html")),
-      con = "cov_matrix2.rmd")
-    rmarkdown::render("cov_matrix2.rmd")
+      con = cov_matrix2_rmd_file)
+    rmarkdown::render(cov_matrix2_rmd_file)
 
-    this_test2 <- xml2::read_html("cov_matrix2.html")
+    this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
 
     rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]])
     expected_cov_matrix2_html <- data.frame(reqs = c("", rep(paste("Requirement", 1:3), each = 7)),
