@@ -8,7 +8,7 @@ test_that("coverage matrix from dynam num", {
     vt_use_req("req2", username = "a user", open = FALSE)
     vt_use_req("req3", username = "a user", open = FALSE)
 
-    config_wd <- valtools::get_config_working_dir()
+    config_wd <- get_config_working_dir()
     cat(
       file = file.path(config_wd, "validation", "test_cases", "testcase1.md"),
       sep = "\n",
