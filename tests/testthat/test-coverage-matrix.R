@@ -8,7 +8,7 @@ test_that("coverage matrix from dynam num", {
     vt_use_req("req2", username = "a user", open = FALSE)
     vt_use_req("req3", username = "a user", open = FALSE)
 
-    config_wd <- get_config_working_dir()
+    config_wd <- valtools::get_config_working_dir()
     cat(
       file = file.path(config_wd, "validation", "test_cases", "testcase1.md"),
       sep = "\n",
@@ -120,6 +120,7 @@ test_that("coverage matrix from dynam num", {
     cov_matrix_rmd_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
     writeLines(
       c("---",
+        "title: validation report",
         "output: html_document",
         "---",
         "\n\n",
@@ -160,7 +161,39 @@ test_that("coverage matrix from dynam num", {
     expect_equal(cov_matrix2,
                  expect_matrix2)
 
+    cov_matrix2_rmd_file <-  tempfile(fileext = ".Rmd", tmpdir = getwd())
+    writeLines(
+      c("---",
+        "title: validation report",
+        "output: html_document",
+        "---",
+        "\n\n",
+        vt_kable_coverage_matrix(cov_matrix2, format = "html")),
+      con = cov_matrix2_rmd_file)
+    rmarkdown::render(cov_matrix2_rmd_file)
 
+    this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
+
+    rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]])
+    expected_cov_matrix2_html <- data.frame(reqs = c("", rep(paste("Requirement", 1:3), each = 7)),
+                                            req_id = as.double(c(NA, paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                                                 paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                                                 paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = "."))),
+                                            `Test Case 1` = c("1.1", rep("x", 2), rep("", 19)),
+                                            `Test Case 1` = c(1.2, rep("", 2), rep("x", 2), rep("", 17)),
+                                            `Test Case 1` = c(1.3, rep("", 4), rep("x", 3), rep("", 14)),
+                                            `Test Case 2` = c(2.1, rep("", 9), rep("x", 2), rep("", 10)),
+                                            `Test Case 2` = c(2.2, rep("", 7), rep("x", 2), rep("", 12)),
+                                            `Test Case 2` = c(2.3, rep("", 11 ), rep("x", 3), rep("", 7)),
+                                            `Test Case 3` = c(3.1, rep("", 14), rep("x", 2), rep("", 5)),
+                                            `Test Case 3` = c(3.2, rep("", 16), rep("x", 2), rep("", 3)),
+                                            `Test Case 3` = c(3.3,rep("", 18), rep("x", 3)),
+                                            check.names = FALSE)
+    names(expected_cov_matrix2_html)[1:2] <- c("", "")
+    expect_equal(rendered_cov_matrix2_html,
+                 expected_cov_matrix2_html )
+
+    skip_on_os("mac")
     cov_matrix2_tex_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
 
     writeLines(
@@ -211,37 +244,6 @@ test_that("coverage matrix from dynam num", {
                     "3.3                                               x",
                     "3.4                                               x"  ))
 
-    cov_matrix2_rmd_file <-  tempfile(fileext = ".Rmd", tmpdir = getwd())
-    writeLines(
-      c("---",
-        "title: validation report",
-        "output: html_document",
-        "---",
-        "\n\n",
-        vt_kable_coverage_matrix(cov_matrix2, format = "html")),
-      con = cov_matrix2_rmd_file)
-    rmarkdown::render(cov_matrix2_rmd_file)
-
-    this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
-
-    rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]])
-    expected_cov_matrix2_html <- data.frame(reqs = c("", rep(paste("Requirement", 1:3), each = 7)),
-                                            req_id = as.double(c(NA, paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
-                                                                 paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
-                                                                 paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = "."))),
-                                            `Test Case 1` = c("1.1", rep("x", 2), rep("", 19)),
-                                            `Test Case 1` = c(1.2, rep("", 2), rep("x", 2), rep("", 17)),
-                                            `Test Case 1` = c(1.3, rep("", 4), rep("x", 3), rep("", 14)),
-                                            `Test Case 2` = c(2.1, rep("", 9), rep("x", 2), rep("", 10)),
-                                            `Test Case 2` = c(2.2, rep("", 7), rep("x", 2), rep("", 12)),
-                                            `Test Case 2` = c(2.3, rep("", 11 ), rep("x", 3), rep("", 7)),
-                                            `Test Case 3` = c(3.1, rep("", 14), rep("x", 2), rep("", 5)),
-                                            `Test Case 3` = c(3.2, rep("", 16), rep("x", 2), rep("", 3)),
-                                            `Test Case 3` = c(3.3,rep("", 18), rep("x", 3)),
-                                            check.names = FALSE)
-    names(expected_cov_matrix2_html)[1:2] <- c("", "")
-    expect_equal(rendered_cov_matrix2_html,
-                 expected_cov_matrix2_html )
 
 
 
