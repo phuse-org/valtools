@@ -74,6 +74,7 @@ test_that("coverage matrix from dynam num", {
     expect_equal(cov_matrix,
                  expect_matrix)
 
+    cov_matrix_tex_file <- tempfile(fileext = ".tex", tmpdir = getwd())
     writeLines(
       c("---",
           "title: validation report",
@@ -85,11 +86,12 @@ test_that("coverage matrix from dynam num", {
           "---",
           "\n\n",
           vt_kable_coverage_matrix(cov_matrix)),
-          con = "cov_matrix.tex")
+          con = cov_matrix_tex_file)
 
-    rmarkdown::render("cov_matrix.tex", output_format = "pdf_document")
+    rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
     rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                                                      pdftools::pdf_text("cov_matrix.pdf")))[[1]])
+                                                      pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
+                                                                replacement = ".pdf"))))[[1]])
     expect_equal(rendered_cov_matrix_pdf[2:23],
                  c("Requirement Name  Requirement ID Test Case Name Test Cases",
                    "1.1                           1.1",
@@ -114,15 +116,17 @@ test_that("coverage matrix from dynam num", {
                    "3.3                           3.3",
                    "3.4                           3.3" ) )
 
+    cov_matrix_rmd_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
     writeLines(
       c("---",
         "output: html_document",
         "---",
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix, format = "html")),
-      con = "cov_matrix.html")
+      con = cov_matrix_rmd_file)
 
-    this_test <- xml2::read_html("cov_matrix.html")
+    rmarkdown::render(cov_matrix_rmd_file)
+    this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
     rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]])
     expect_equal(rendered_cov_matrix_html,
                  data.frame(`Requirement Name` = rep(paste("Requirement", 1:3), each = 7),
