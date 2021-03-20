@@ -83,6 +83,7 @@ test_that("coverage matrix from dynam num", {
           "  - \\usepackage{array}",
           "  - \\usepackage{longtable}",
           "  - \\usepackage{multirow}",
+          "classoption: dvipsnames",
           "---",
           "\n\n",
           vt_kable_coverage_matrix(cov_matrix)),
