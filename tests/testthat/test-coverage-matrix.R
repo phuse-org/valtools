@@ -161,7 +161,7 @@ test_that("coverage matrix from dynam num", {
                  expect_matrix2)
 
 
-    cov_matrix2_tex_file <- tempfile(fileext = ".tex", tmpdir = getwd())
+    cov_matrix2_tex_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
 
     writeLines(
       c("---",
@@ -180,8 +180,11 @@ test_that("coverage matrix from dynam num", {
       con = cov_matrix2_tex_file)
 
     rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
+
+    expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
+
     rendered_cov_matrix2_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".tex", replacement = '.pdf'))))[[1]])
+                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))[[1]])
 
     expect_equal(rendered_cov_matrix2_pdf[2:24],
                  c( "Test Case 1     Test Case 2     Test Case 3",
