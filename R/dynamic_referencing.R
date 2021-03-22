@@ -221,12 +221,20 @@ dynamic_referencer <- vt_dynamic_referencer$new(
 #' @title Dynamic Reference Rendering
 #' @description enable dynamic referencing by reading file and converting any dynamic references
 #' into their values for rendering in the validation report.
-#' @param file path to the file to convert dynamic referencing to values
+#' @param input R object or path to the file to convert dynamic referencing to values
 #' @param reference which dynamic referencer to use. When NULL, uses internal dynamic referencer.
-#' @return text of file with dynamic referencing evaluated
-#' @export
-dynamic_reference_rendering <- function(file, reference = NULL){
-  file_text <- readLines(file)
+#' @return text with dynamic referencing evaluated
+#' @importFrom rlang inform
+dynamic_reference_rendering <- function(input, reference = NULL){
+  file_text <- tryCatch({
+    file_text <- readLines(input)
+    inform(message = paste0("Reading input from file: ", input),
+           class = "vt.dynamic_ref_readlines")
+    file_text
+  },
+  error = function(e){
+    input
+  })
 
   if(is.null(reference)){
     reference <- dynamic_referencer

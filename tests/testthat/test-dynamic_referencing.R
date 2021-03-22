@@ -256,17 +256,17 @@ test_that("Dynamic Number Referencing Works on files", {
       ""))
 
   test_spec_rendered <- dynamic_reference_rendering(
-    file = test_spec,
+    input = test_spec,
     reference = test_referencer
   )
 
   test_test_case_rendered <- dynamic_reference_rendering(
-    file = test_test_case,
+    input = test_test_case,
     reference = test_referencer
   )
 
   test_test_code_rendered <- dynamic_reference_rendering(
-    file = test_test_code,
+    input = test_test_code,
     reference = test_referencer
   )
 
@@ -370,18 +370,18 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
       'test_referencer <- vt_dynamic_referencer$new(reference_indicator = "##")',
       '```',
       '\n\n',
-      '```{r require-1, echo=FALSE}',
+      '```{r require-1, echo=FALSE, message = FALSE}',
       'cat(dynamic_reference_rendering(',
-      paste0('  file = "', gsub(pattern = "\\\\",
+      paste0('  input = "', gsub(pattern = "\\\\",
                                 replacement = "\\\\\\\\",
                                 normalizePath(test_req1)), '",'),
       '  reference = test_referencer',
       '),sep = "\\n")',
       '```',
       '\n\n',
-      '```{r require-2, echo=FALSE}',
+      '```{r require-2, echo=FALSE, message = FALSE}',
       'cat(dynamic_reference_rendering(',
-      paste0('  file = "', gsub(pattern = "\\\\",
+      paste0('  input = "', gsub(pattern = "\\\\",
                                 replacement = "\\\\\\\\",
                                 normalizePath(test_req2)), '",'),
       '  reference = test_referencer',
@@ -463,5 +463,13 @@ test_that("Dynaming referencing within a data.frame",{
   expect_equal(references$reference_insertion(cov_matrix_content$tc_id),
                c("1", "2"))
 
+
+  more_references <- data.frame(var1 = c("##req:third", "##req:first" ),
+                                var2 = c("##tc:second", "##tc:third"))
+
+  more_ref_rendered <- dynamic_reference_rendering(more_references, reference = references)
+  expect_equal(more_ref_rendered,
+               data.frame(var1 = as.character(2:1),
+                          var2 = as.character(2:3)))
 
 })
