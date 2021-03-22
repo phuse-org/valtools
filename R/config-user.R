@@ -184,6 +184,14 @@ vt_get_user_info <- function(username, type = c("name","title","role"), pkg = ".
   return(output)
 }
 
+#' Get all users from validation config file without knowing usernames
+#' @param pkg Top-level directory of the package to validate
+#' @return list of all users in config file
+#' @export
+vt_get_all_users <- function(pkg = "."){
+  return(read_validation_config(pkg = pkg)$usernames)
+
+}
 
 #' @importFrom rlang is_interactive inform abort
 get_config_user <- function(username, pkg = "."){
@@ -275,6 +283,7 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 
 }
 
+#' @noRd
 get_config_user_name <- function(username, pkg = "."){
   get_config_user(username, pkg = pkg)$name
 }

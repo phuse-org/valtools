@@ -36,7 +36,9 @@ Suggests:
     XML,
     pdftools,
     bookdown,
-    here
+    here,
+    xml2,
+    rvest
 Imports:
     desc,
     devtools,
@@ -54,9 +56,9 @@ Imports:
     rprojroot,
     whisker,
     glue,
-    testthat,
     knitr,
-    kableExtra
+    kableExtra,
+    testthat
 VignetteBuilder: knitr
 SystemRequirements:
     lua
