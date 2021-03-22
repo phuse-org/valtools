@@ -10,40 +10,42 @@
 #'    defaults to FALSE.
 #'
 #' @returns a list of roxygen blocks found in the file.
+#' 
+#' @nord
 
-vt_print_file <- function(file, ..., type = tools::file_ext(file), dynamic_referencing = getOption("vt.dynamic_referencing", FALSE)){
-
-  vt_file_con <- vt_file(
+add_file_to_report_content <- function(file, ..., type = tools::file_ext(file), dynamic_referencing = FALSE){
+  
+  file_path <- vignette_file_path(
     path = file,
     type = type
   )
 
-  print_file(file = vt_file_con, ..., dynamic_referencing = dynamic_referencing)
+  add_file(file = file_path, ..., dynamic_referencing = dynamic_referencing)
 
 }
 
-vt_file <- function(path, type){
+vignette_file_path <- function(path, type){
   structure(
     path,
     type = type,
-    class = tolower(type)
+    class = c(tolower(type),"vignette_file_path")
   )
 }
 
 #' @noRd
 #' @keywords internal
 #' @importFrom utils getFromNamespace
-print_file <- function(file, ..., dynamic_referencing = FALSE){
+add_file <- function(file, ..., dynamic_referencing = FALSE){
   type <- class(text)[[1]]
   func <- trycatch({
-    getFromNamespace(paste0("print_file.",type), "valtools")
+    getFromNamespace(paste0("add_file.",type), "valtools")
   }, error = function(e){
-    getFromNamespace("print_file.default", "valtools")
-  }
+    getFromNamespace("add_file.default", "valtools")
+  })
   func(file, ..., dynamic_referencing = dynamic_referencing)
 }
 
-print_file.default <- function(file, ..., dynamic_referencing = FALSE){
+add_file.default <- function(file, ..., dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
     text <- dynamic_reference_rendering(file)
@@ -58,7 +60,7 @@ print_file.default <- function(file, ..., dynamic_referencing = FALSE){
 }
 
 
-print_file.md <- function(file, ..., dynamic_referencing = FALSE){
+add_file.md <- function(file, ..., dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
     text <- dynamic_reference_rendering(file)
@@ -82,18 +84,18 @@ print_file.md <- function(file, ..., dynamic_referencing = FALSE){
 
 }
 
-print_file.rmd <- parse_file.md
+add_file.rmd <- parse_file.md
 
 
 #' @noRd
 #' @importFrom tools file_path_sans_ext
-print_file.r_test_code <- function(file, ..., dynamic_referencing = FALSE){
+add_file.r_test_code <- function(file, ..., dynamic_referencing = FALSE){
 
   eval_test_code_text <- c(
     paste0("```{r ", file_path_sans_ext(basename(file)),", echo = FALSE}"),
     paste0("results <- vt_run_test_code_file(file=\"",basename(file),"\")"),
     ifelse(dynamic_referencing,"results <- dynamic_reference_rendering(results)",NULL),
-    "vt_kable_test_code(results)"
+    "vt_kable_test_code(results)",
     "```"
   )
 
