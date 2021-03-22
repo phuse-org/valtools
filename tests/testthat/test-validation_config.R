@@ -354,6 +354,26 @@ test_that("Test removal of individual from config file", {
 
 })
 
+test_that("retrieve all users from config", {
+  withr::with_tempdir({
+    vt_use_validation_config(pkg = ".")
+
+    expect_equal(vt_get_all_users(), list())
+
+    user_a <- c(username = "auser", name = "A user", title = "title",
+                role = "role")
+    user_b <- c(username = "buser", name = "Another user", title = "this title",
+                role = "this role")
+    do.call(vt_add_user_to_config, as.list(user_a))
+    do.call(vt_add_user_to_config, as.list(user_b))
+
+    expect_user <- list(as.list(user_a[-1]), as.list(user_b[-1]))
+    names(expect_user) <- c(user_a["username"], user_b["username"])
+    expect_equal(vt_get_all_users(),
+                 expect_user)
+  })
+})
+
 test_that("Attempting to read when a config file does not exist is informative", {
   withr::with_tempdir({
 

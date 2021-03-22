@@ -56,9 +56,9 @@ Imports:
     rprojroot,
     whisker,
     glue,
-    testthat,
     knitr,
-    kableExtra
+    kableExtra,
+    testthat
 VignetteBuilder: knitr
 SystemRequirements:
     lua
