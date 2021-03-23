@@ -59,12 +59,13 @@ file_parse.default <- function(file, ..., dynamic_referencing = FALSE){
     text <- readLines(file)
   }
 
-  knitr::asis_output(
+  asis_output(
     paste(text,collapse = "\n"),
   )
 }
 
 
+#' @importFrom knitr knit_child
 file_parse.md <- function(file, ..., envir = parent.frame(), dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
@@ -76,7 +77,7 @@ file_parse.md <- function(file, ..., envir = parent.frame(), dynamic_referencing
   ## remove roxygen comments
   text <- text[!grepl("^#'", text)]
 
-  knitr::knit_child(
+  knit_child(
       text = text,
       envir = envir,
       ...,
