@@ -10,11 +10,11 @@
 #'    defaults to FALSE.
 #'
 #' @returns a list of roxygen blocks found in the file.
-#' 
-#' @nord
+#'
+#' @noRd
 
 add_file_to_report_content <- function(file, ..., type = tools::file_ext(file), dynamic_referencing = FALSE){
-  
+
   file_path <- vignette_file_path(
     path = file,
     type = type
@@ -84,7 +84,7 @@ add_file.md <- function(file, ..., dynamic_referencing = FALSE){
 
 }
 
-add_file.rmd <- parse_file.md
+add_file.rmd <- add_file.md
 
 
 #' @noRd
