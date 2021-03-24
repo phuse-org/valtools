@@ -1,27 +1,22 @@
 #' Scrape "coverage" tag in test code to generate mapping
-#' @param references dynamic reference holder if it already exists
+#' @param reference dynamic reference holder if it already exists
 #' @param src,ref passed to \code{\link{vt_scrape_tags_from}}
 #' @param type one of "long" or "wide" which determines shape of output table
 #' @return a data.frame mapping requirement ids to test case ids.
 #' @importFrom rlang list2 := !!
 #' @export
-vt_scrape_coverage_matrix <- function(type = c("long", "wide"), references = NULL, src = ".", ref = vt_path()){
-
-  ## instantiate dynamic referencing
-  ## if no dynamic reference content, this won't get populated
-  if(is.null(references)){
-    references <- vt_dynamic_referencer$new()
-  }
+vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL, src = ".", ref = vt_path()){
 
   ## helper functions
+  split_vals <- function(vals){
+    do.call("rbind", apply(vals, 1, FUN = function(x){
+      this_row <- strsplit(x[["coverage"]], split = ":")[[1]]
+      names(this_row) <- c("tc_id", "req_id")
+      this_row["tc_id"] <- trimws(this_row["tc_id"])
 
-  split_vals <- function(x){
-    this_row <- strsplit(x["coverage"], split = ":")[[1]]
-    names(this_row) <- c("tc_id", "req_id")
-    this_row["tc_id"] <- trimws(this_row["tc_id"])
-
-    this_row["tc_title"] <- x["tc_title"]
-    as.data.frame(t(this_row))
+      this_row["tc_title"] <- x["tc_title"]
+      as.data.frame(t(this_row))
+    }))
   }
 
   split_req <- function(vals){
@@ -35,8 +30,6 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), references = NUL
       req_one_row
     }))
   }
-
-
 
   # avoids dependency on tidyr::pivot_wider
   make_wider <- function(long_vals){
@@ -60,25 +53,17 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), references = NUL
 
   ## end helper functions
 
-  cov_raw_values <- sapply(vt_scrape_tags_from(type = "test_cases", tags =  c("title", "coverage"),
-                                               src = src, ref = vt_path()),
-                           FUN = function(x){data.frame(coverage = x$coverage,
-                                                        tc_title = x$title)})
+  cov_raw_values <- do.call("rbind", vt_scrape_tags_from(type = "test_cases", tags =  c("title", "coverage"),
+                                               src = src, ref = vt_path()))[, c("title", "coverage")]
 
-  indiv_vals <- data.frame(t(cov_raw_values))
-  references$scrape_references(indiv_vals)
-
-  vals_title <- do.call("rbind", apply(references$reference_insertion(indiv_vals), 1,
-                                       FUN = function(x){
-    data.frame(tc_title = x[["tc_title"]],
-               coverage = strsplit(x[["coverage"]], split = "\n")[[1]])
+  indiv_vals <- do.call("rbind", apply(cov_raw_values, 1, FUN = function(x){
+    data.frame(tc_title = x[["title"]],
+               coverage = strsplit(x[["coverage"]], split = "\n")[[1]], check.names = FALSE)
   }))
 
-  numbered_cov_vals <- do.call("rbind", apply(vals_title, 1,
-    FUN = split_vals))
-
+  vals_title <- dynamic_reference_rendering(indiv_vals, reference = reference)
+  numbered_cov_vals <- split_vals(vals_title)
   vals_all <- split_req(numbered_cov_vals)
-
 
 
   if(type[1] == "long"){
