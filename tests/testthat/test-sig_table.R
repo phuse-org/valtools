@@ -2,7 +2,9 @@ test_that("vt_generate_sig_table generates the expected dataframe", {
 
   withr::with_tempdir({
 
-    vt_create_package(".", open = FALSE)
+    capture_output <- capture.output({
+      vt_create_package(".", open = FALSE)
+    })
 
     vt_add_user_to_config(username = "em", name = "Eli Miller", role = "dev", title = "Developer")
     vt_add_user_to_config(username = "mv", name = "Marie", role = "dev", title = "Developer")
@@ -28,7 +30,9 @@ test_that("vt_generate_sig_table generates the expected dataframe", {
 test_that("render returns the expected RMD text", {
   withr::with_tempdir({
 
-    vt_create_package(pkg = ".", open = FALSE)
+    capture_output <- capture.output({
+      vt_create_package(pkg = ".", open = FALSE)
+    })
 
     vt_add_user_to_config(username = "em", name = "Eli Miller", role = "dev", title = "Developer")
     vt_add_user_to_config(username = "mv", name = "Marie", role = "dev", title = "Developer")
@@ -75,8 +79,8 @@ test_that("render returns the expected RMD text", {
         sig_table_rmd),
       con = file.path("vignettes", "validation", "stand_alone_sig_table.Rmd")
     )
-    rmarkdown::render(file.path("vignettes", "validation",
-                                "stand_alone_sig_table.Rmd"))
+    capture_output <- capture.output(rmarkdown::render(file.path("vignettes", "validation",
+                                "stand_alone_sig_table.Rmd")))
     pdf_report_name <- file.path("vignettes", "validation",
                                  "stand_alone_sig_table.pdf")
     test_output_rendered <-
@@ -98,7 +102,9 @@ test_that("render returns the expected html", {
 
     withr::with_tempdir({
 
-      vt_create_package(pkg = ".", open = FALSE)
+      capture_output <- capture.output({
+        vt_create_package(pkg = ".", open = FALSE)
+      })
 
       vt_add_user_to_config(username = "em", name = "Eli Miller", role = "dev", title = "Developer")
       vt_add_user_to_config(username = "mv", name = "Marie", role = "dev", title = "Developer")
@@ -143,8 +149,10 @@ test_that("render returns the expected html", {
         con = file.path("vignettes", "validation", "stand_alone_sig_table.Rmd")
       )
 
-      rmarkdown::render(file.path("vignettes", "validation",
+      capture_output <- capture.output({
+        rmarkdown::render(file.path("vignettes", "validation",
                                   "stand_alone_sig_table.Rmd"))
+      })
       html_report_name <- file.path("vignettes", "validation",
                                    "stand_alone_sig_table.html")
 
@@ -192,7 +200,9 @@ test_that("`vt_scrape_sig_table` throws errors", {
 test_that("`vt_kable_sig_table` returns expected value", {
 
   withr::with_tempdir({
-    vt_create_package(".", open = FALSE)
+    capture_output <- capture.output({
+      vt_create_package(".", open = FALSE)
+    })
 
     vt_add_user_to_config(username = "em", name = "Eli Miller", role = "dev", title = "Developer")
     vt_add_user_to_config(username = "mv", name = "Marie", role = "dev", title = "Developer")

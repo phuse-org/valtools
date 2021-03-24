@@ -1,5 +1,3 @@
-context("get section value")
-
 test_that("partial match to section names", {
   roxy_block1 <- c("@title Fourth Function",
                   "@description A description",
