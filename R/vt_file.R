@@ -54,22 +54,23 @@ file_parse <- function(file, ..., dynamic_referencing = FALSE){
 file_parse.default <- function(file, ..., dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
-    text <- dynamic_reference_rendering(file)
+    text <- dynamic_reference_rendering(file, ...)
   }else{
     text <- readLines(file)
   }
 
-  asis_output(
+  cat(asis_output(
     paste(text,collapse = "\n"),
-  )
+  ))
 }
 
 
 #' @importFrom knitr knit_child
-file_parse.md <- function(file, ..., envir = parent.frame(), dynamic_referencing = FALSE){
+#' @importFrom withr with_options
+file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
-    text <- dynamic_reference_rendering(file)
+    text <- dynamic_reference_rendering(file, reference = reference)
   }else{
     text <- readLines(file)
   }
@@ -77,12 +78,14 @@ file_parse.md <- function(file, ..., envir = parent.frame(), dynamic_referencing
   ## remove roxygen comments
   text <- text[!grepl("^#'", text)]
 
-  knit_child(
+  with_options(new = list(knitr.duplicate.label = "allow"), {
+    cat(asis_output(knit_child(
       text = text,
       envir = envir,
       ...,
       quiet = TRUE
-    )
+    )))
+  })
 }
 
 file_parse.rmd <- file_parse.md
