@@ -1,6 +1,6 @@
 test_that("coverage matrix from dynam num", {
   withr::with_tempdir({
-    vt_create_package(open = FALSE)
+    capture_output <- capture.output({vt_create_package(open = FALSE)})
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_test_case("testcase3", username = "a user", open = FALSE)
@@ -89,7 +89,9 @@ test_that("coverage matrix from dynam num", {
           vt_kable_coverage_matrix(cov_matrix)),
           con = cov_matrix_tex_file)
 
-    rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
+    capture_output <- capture.output({
+      rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
+    })
     rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
                                                       pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
                                                                 replacement = ".pdf"))))[[1]])
@@ -127,7 +129,9 @@ test_that("coverage matrix from dynam num", {
         vt_kable_coverage_matrix(cov_matrix, format = "html")),
       con = cov_matrix_rmd_file)
 
-    rmarkdown::render(cov_matrix_rmd_file)
+    capture_output <- capture.output({
+      rmarkdown::render(cov_matrix_rmd_file)
+    })
     this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
     rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]])
     expect_equal(rendered_cov_matrix_html,
@@ -170,7 +174,10 @@ test_that("coverage matrix from dynam num", {
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix2, format = "html")),
       con = cov_matrix2_rmd_file)
-    rmarkdown::render(cov_matrix2_rmd_file)
+
+    capture_output <- capture.output({
+      rmarkdown::render(cov_matrix2_rmd_file)
+    })
 
     this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
 
@@ -212,7 +219,9 @@ test_that("coverage matrix from dynam num", {
         vt_kable_coverage_matrix(cov_matrix2, format = "latex")),
       con = cov_matrix2_tex_file)
 
-    rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
+    capture_output <- capture.output({
+      rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
+    })
 
     expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
 
@@ -252,7 +261,9 @@ test_that("coverage matrix from dynam num", {
 
 test_that("coverage matrix no dynam num", {
   withr::with_tempdir({
-    vt_create_package(open = FALSE)
+    capture_output <- capture.output({
+      vt_create_package(open = FALSE)
+    })
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_test_case("testcase3", username = "a user", open = FALSE)
@@ -355,7 +366,9 @@ test_that("coverage matrix no dynam num", {
 test_that("existing reference obj", {
   withr::with_tempdir({
 
-    vt_create_package(open = FALSE)
+    capture_output <- capture.output({
+      vt_create_package(open = FALSE)
+    })
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_test_case("testcase3", username = "a user", open = FALSE)
@@ -451,16 +464,16 @@ test_that("existing reference obj", {
                  list(`req:dynamic_numbering4` = 1,
                       `req:dynamic_numbering5` = 2))
 
-    cov_matrix <- vt_scrape_coverage_matrix(references = references)
+    cov_matrix <- vt_scrape_coverage_matrix(reference = references)
 
     expect_equal(references$list_references(),
                  list(`req:dynamic_numbering4` = 1,
                       `req:dynamic_numbering5` = 2,
                       `tc:dynamic_numbering_testcase1` = 1,
-                      `req:dynamic_numbering1` = 3,
                       `tc:dynamic_numbering_testcase2` = 2,
-                      `req:dynamic_numbering2` = 4,
                       `tc:dynamic_numbering_testcase3` = 3,
+                      `req:dynamic_numbering1` = 3,
+                      `req:dynamic_numbering2` = 4,
                       `req:dynamic_numbering3` = 5))
     expect_matrix <- data.frame(req_title = rep(paste("Requirement", 3:5), each = 7),
                                 req_id = c(paste(3, c(1, 1, 2, 2, 3, 3, 4), sep = "."),
@@ -474,7 +487,7 @@ test_that("existing reference obj", {
     expect_equal(cov_matrix,
                  expect_matrix)
 
-    cov_matrix2 <- vt_scrape_coverage_matrix(references = references, type = "wide")
+    cov_matrix2 <- vt_scrape_coverage_matrix(reference = references, type = "wide")
     expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 3:5), each = 7),
                                  req_id = c(paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
                                             paste(4, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
