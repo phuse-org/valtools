@@ -8,3 +8,5 @@ CONDUCT.md
 CONTRIBUTING.md
 ^vignettes/validation/*
 ^\.validation$
+^validation\.yml$
+

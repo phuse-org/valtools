@@ -12,7 +12,7 @@ test_that("user can set default username", {
         "    name: Sample User",
         "    title: new",
         "    role: user"),
-        ".validation")
+        "validation.yml")
 
       expect_equal(
         vt_username(),
@@ -36,7 +36,7 @@ test_that("When a username is not set, it will throw an error that the user does
         "    name: Sample User",
         "    title: new",
         "    role: user"),
-        ".validation")
+        "validation.yml")
 
 
       expect_error(

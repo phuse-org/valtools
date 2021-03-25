@@ -3,7 +3,7 @@
 test_that("simple item creation", {
   withr::with_tempdir({
     # set up "validation" infrastructure
-    writeLines(c("working_dir: vignettes"),".validation")
+    writeLines(c("working_dir: vignettes"),"validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     spec_path <- create_item(
@@ -36,7 +36,7 @@ test_that("simple item creation", {
 test_that("simple item creation and adds a directory if missing", {
   withr::with_tempdir({
     # set up "validation" infrastructure
-    writeLines(c("working_dir: vignettes"),".validation")
+    writeLines(c("working_dir: vignettes"),"validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
 
     spec_path <- create_item(
@@ -106,7 +106,7 @@ test_that("vt_use_ family works nicely with simple item creation", {
 test_that("Throw an error if the validation directory has not been set up", {
   withr::with_tempdir({
     # set up "validation" infrastructure
-    writeLines(c("working_dir: vignettes"),".validation")
+    writeLines(c("working_dir: vignettes"),"validation.yml")
 
    expect_error(
      create_item(

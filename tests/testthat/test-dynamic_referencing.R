@@ -98,6 +98,52 @@ test_that("Dynamic Number Referencer can initialize and identify patterns in mul
 
 })
 
+test_that("Dynamic Number Referencer can ignore roxygen comment lines", {
+
+  references <- vt_dynamic_referencer$new()
+  references$initialize(reference_indicator = "##")
+
+  ## Add new multi string
+  multi_line <- c("#' @test ##req:string1","text ##req:string2")
+
+  references$scrape_references(multi_line)
+
+  expect_equal(
+    names(references$list_references()),
+    c("req:string2")
+  )
+
+  ## string replacement
+  expect_equal(
+    references$reference_insertion(multi_line),
+    c("#' @test ##req:string1","text 1")
+  )
+
+})
+
+test_that("Dynamic Number Referencer can use letters as an output too!", {
+
+  references <- vt_dynamic_referencer$new()
+  references$initialize(reference_indicator = "##", type = "letter")
+
+  ## Add new multi string
+  multi_line <- c("test ##req:string1","text ##req:string2")
+
+  references$scrape_references(multi_line)
+
+  expect_equal(
+    names(references$list_references()),
+    c("req:string1","req:string2")
+  )
+
+  ## string replacement
+  expect_equal(
+    references$reference_insertion(multi_line),
+    c("test A","text B")
+  )
+
+})
+
 test_that("Dynamic Number Referencer can use any reference identifier including specials", {
 
   references <- vt_dynamic_referencer$new()
@@ -174,9 +220,9 @@ test_that("Dynamic Number Referencing Works on files", {
     "#' @section Last update date:",
     "#' 2021-02-15",
     "",
-    "#' + _Specifications_",
-    "#'   + S##req:dynamic_numbering.1 User is able to reference numbers dynamically",
-    "#'     + S##req:dynamic_numbering.1.1 Numbers will automatically update on rendering",
+    "+ _Specifications_",
+    "  + S##req:dynamic_numbering.1 User is able to reference numbers dynamically",
+    "    + S##req:dynamic_numbering.1.1 Numbers will automatically update on rendering",
     ""))
 
   cat(
@@ -191,8 +237,8 @@ test_that("Dynamic Number Referencing Works on files", {
       "#' @section Specification coverage:",
       "#' ##tc:dynamic_numbering_testcase.1: ##req:dynamic_numbering.1, ##req:dynamic_numbering.2",
       "",
-      "#' + _Test Cases_",
-      "#'   + T##tc:dynamic_numbering_testcase.1 Create a sample spec with a unique reference number. Ensure the output matches 1 on rendering",
+      "+ _Test Cases_",
+      "  + T##tc:dynamic_numbering_testcase.1 Create a sample spec with a unique reference number. Ensure the output matches 1 on rendering",
       ""))
 
   cat(
@@ -210,17 +256,17 @@ test_that("Dynamic Number Referencing Works on files", {
       ""))
 
   test_spec_rendered <- dynamic_reference_rendering(
-    file = test_spec,
+    input = test_spec,
     reference = test_referencer
   )
 
   test_test_case_rendered <- dynamic_reference_rendering(
-    file = test_test_case,
+    input = test_test_case,
     reference = test_referencer
   )
 
   test_test_code_rendered <- dynamic_reference_rendering(
-    file = test_test_code,
+    input = test_test_code,
     reference = test_referencer
   )
 
@@ -233,9 +279,9 @@ test_that("Dynamic Number Referencing Works on files", {
       "#' @section Last update date:",
       "#' 2021-02-15",
       "",
-      "#' + _Specifications_",
-      "#'   + S1.1 User is able to reference numbers dynamically",
-      "#'     + S1.1.1 Numbers will automatically update on rendering",
+      "+ _Specifications_",
+      "  + S1.1 User is able to reference numbers dynamically",
+      "    + S1.1.1 Numbers will automatically update on rendering",
       ""))
 
   expect_equal(
@@ -249,8 +295,8 @@ test_that("Dynamic Number Referencing Works on files", {
       "#' @section Specification coverage:",
       "#' 1.1: 1.1, 1.2",
       "",
-      "#' + _Test Cases_",
-      "#'   + T1.1 Create a sample spec with a unique reference number. Ensure the output matches 1 on rendering",
+      "+ _Test Cases_",
+      "  + T1.1 Create a sample spec with a unique reference number. Ensure the output matches 1 on rendering",
       ""))
 
   expect_equal(
@@ -270,8 +316,6 @@ test_that("Dynamic Number Referencing Works on files", {
 
 
 test_that("Dynamic Number Referencing across rmarkdown chunks", {
-  # need to alter test such that does not need `valtools` installed to test
-  # if(FALSE){
 
   ## Create test files
   test_req1 <- tempfile(fileext = ".md")
@@ -326,30 +370,31 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
       'test_referencer <- vt_dynamic_referencer$new(reference_indicator = "##")',
       '```',
       '\n\n',
-      '```{r require-1, echo=FALSE}',
-      'dynamic_reference_rendering(',
-      paste0('  file = "', gsub(pattern = "\\\\",
+      '```{r require-1, echo=FALSE, message = FALSE}',
+      'cat(dynamic_reference_rendering(',
+      paste0('  input = "', gsub(pattern = "\\\\",
                                 replacement = "\\\\\\\\",
                                 normalizePath(test_req1)), '",'),
       '  reference = test_referencer',
-      ')',
+      '),sep = "\\n")',
       '```',
       '\n\n',
-      '```{r require-2, echo=FALSE}',
-      'dynamic_reference_rendering(',
-      paste0('  file = "', gsub(pattern = "\\\\",
+      '```{r require-2, echo=FALSE, message = FALSE}',
+      'cat(dynamic_reference_rendering(',
+      paste0('  input = "', gsub(pattern = "\\\\",
                                 replacement = "\\\\\\\\",
                                 normalizePath(test_req2)), '",'),
       '  reference = test_referencer',
-      ')',
+      '),sep = "\\n")',
       '```'
 
 
       ))
 
+  suppressWarnings({
   quiet <- capture.output({
-  rmarkdown::render(input = test_report, clean = FALSE)
-  })
+  rmarkdown::render(input = test_report, clean = FALSE, quiet = TRUE)
+  })})
 
   test_output_rendered <-
     readLines(gsub(test_report, pattern = ".Rmd", replacement = ".knit.md"))
@@ -378,29 +423,53 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
     "",
     "",
     "```",
-    "## [1] \"#' @title Test Requirement 1\"                               ",
-    "## [2] \"#' @editor An Author\"                                       ",
-    "## [3] \"#' @editDate 2021-02-15\"                                    ",
-    "## [4] \"\"                                                           ",
-    "## [5] \"+ _Requirements_\"                                           ",
-    "## [6] \"  + S1.1 User is able to reference numbers dynamically\"     ",
-    "## [7] \"    + S1.1.1 Numbers will automatically update on rendering\"",
-    "## [8] \"\"",
+    "## #' @title Test Requirement 1",
+    "## #' @editor An Author",
+    "## #' @editDate 2021-02-15",
+    "## ",
+    "## + _Requirements_",
+    "##   + S1.1 User is able to reference numbers dynamically",
+    "##     + S1.1.1 Numbers will automatically update on rendering",
     "```",
     "",
     "",
     "",
     "",
     "```",
-    "## [1] \"#' @title Test Requirement 2\"                                ",
-    "## [2] \"#' @editor Another Author\"                                   ",
-    "## [3] \"#' @editDate 2021-02-20\"                                     ",
-    "## [4] \"\"                                                            ",
-    "## [5] \"+ _Requirements_\"                                            ",
-    "## [6] \"  + S2.1 User is able to reference numbers dynamically\"      ",
-    "## [7] \"     + S2.1.1 Numbers will automatically update on rendering\"",
-    "## [8] \"\"",
+    "## #' @title Test Requirement 2",
+    "## #' @editor Another Author",
+    "## #' @editDate 2021-02-20",
+    "## ",
+    "## + _Requirements_",
+    "##   + S2.1 User is able to reference numbers dynamically",
+    "##      + S2.1.1 Numbers will automatically update on rendering",
     "```"
   ))
-# }
+
+})
+
+test_that("Dynaming referencing within a data.frame",{
+
+  cov_matrix_content <- data.frame( req_id = "##req:first",
+                                    tc_id = c("##tc:first", "##tc:second"))
+
+  references <- vt_dynamic_referencer$new()
+  references$initialize(reference_indicator = "##")
+  references$scrape_references(cov_matrix_content)
+  expect_equal(references$reference_insertion(cov_matrix_content),
+               data.frame(req_id = "1",
+                          tc_id = c("1", "2")))
+
+  expect_equal(references$reference_insertion(cov_matrix_content$tc_id),
+               c("1", "2"))
+
+
+  more_references <- data.frame(var1 = c("##req:third", "##req:first" ),
+                                var2 = c("##tc:second", "##tc:third"))
+
+  more_ref_rendered <- dynamic_reference_rendering(more_references, reference = references)
+  expect_equal(more_ref_rendered,
+               data.frame(var1 = as.character(2:1),
+                          var2 = as.character(2:3)))
+
 })
