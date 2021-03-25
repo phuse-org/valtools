@@ -481,7 +481,76 @@ test_that("rendered report is as expected using vt_file", {
         rmarkdown::render("report.Rmd")
       })})
 
-    browser()
+    test_report_rendered <-
+      trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                           pdftools::pdf_text("report.pdf")))[[1]])
+
+    expect_equal(
+      test_report_rendered,
+      c(
+        "test report",
+        "header",
+        "Content",
+        "• bullet 1",
+        "• bullet 2",
+        "print(’hello’)",
+        "## [1] \"hello\"" ,
+        "• Start documenting requirements here!",
+        "• Test Case",
+        "– Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "– Start documenting test case here!",
+        "1"
+      )
+    )
+
+  })
+})
+
+test_that("rendered report works using file.path inside vt_file", {
+  withr::with_tempdir({
+
+    vt_use_validation_config()
+    vt_use_validation()
+    vt_use_req("example_req.md",username = "sample")
+    vt_use_test_case("example_test_case.md",username = "sample")
+
+    writeLines(c(
+      "## header",
+      "Content",
+      "",
+      "  - bullet 1",
+      "  - bullet 2",
+      "```{r}",
+      "print('hello')",
+      "```"
+    ),
+    con = vt_path("rando_file.Rmd"))
+
+    writeLines(
+      c("---",
+        "title: test report",
+        "output: pdf_document",
+        "---",
+        "",
+        "```{r rando-file, echo = FALSE, results = 'asis'}",
+        "vt_file(file=file.path('vignettes','validation','rando_file.Rmd'))",
+        "```",
+        "",
+        "```{r example-req, echo = FALSE, results = 'asis'}",
+        "vt_file(file=file.path('vignettes','validation','requirements','example_req.md'))",
+        "```",
+        "",
+        "```{r example-test-case, echo = FALSE, results = 'asis'}",
+        "vt_file(file=file.path('vignettes','validation','test_cases','example_test_case.md'))",
+        "```"
+      ), con = "report.Rmd"
+    )
+
+    ## test rendering report
+    quiet <- capture_warnings({
+      quiet <- capture.output({
+        rmarkdown::render("report.Rmd")
+      })})
 
     test_report_rendered <-
       trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
@@ -507,3 +576,4 @@ test_that("rendered report is as expected using vt_file", {
 
   })
 })
+
