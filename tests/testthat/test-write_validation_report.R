@@ -17,7 +17,7 @@ test_that("validation report in package",{
     expect_equal(report_code[21], paste0("library(", basename(getwd()), ")"))
 
 
-  }, clean = FALSE)
+  })
 })
 
 test_that("validation report in package",{
@@ -27,7 +27,7 @@ test_that("validation report in package",{
 
     report_name <- paste0("Validation_Report_", basename(getwd()),
                           "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
-    vt_create_package(open = FALSE)
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
     vt_add_user_to_config(username = "aperson",
                           name = "An author",
                           title = "Programmer",
@@ -40,18 +40,18 @@ test_that("validation report in package",{
     expect_equal(report_code[3], paste0("author: An author"))
 
 
-  }, clean = FALSE)
+  })
 })
 
 
-test_that("validation report in package",{
+test_that("multiple authors",{
 
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
     report_name <- paste0("Validation_Report_", basename(getwd()),
                           "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
-    vt_create_package(open = FALSE)
+    captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "aperson",
                           name = "An author",
                           title = "Programmer",
@@ -74,5 +74,28 @@ test_that("validation report in package",{
     expect_equal(report_code[3], paste0("author: An author, Another author"))
 
 
-  }, clean = FALSE)
+  })
 })
+
+
+
+
+test_that("multiple authors",{
+
+  withr::with_tempdir({
+    # using the default Validation Lead user
+    test_user <- whoami::username(fallback = "")
+    report_name <- paste0("Validation_Report_", basename(getwd()),
+                          "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
+    vt_create_package(open = FALSE)
+
+    vt_use_req("requirement1.md", username = "author1", open = FALSE)
+    vt_use_test_case("testcase1.md", username = "author1", open = FALSE)
+
+    vt_use_report()
+    report_code <- readLines(file.path(getwd(), "inst", report_name))
+
+
+  })
+})
+

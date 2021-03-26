@@ -13,7 +13,7 @@ vt_use_report <- function(dir = ".",
                           template = "validation_report.Rmd",
                           open = FALSE){
 
-  if(!file.exists(file.path(dir, ".validation"))){
+  if(!file.exists(file.path(dir, "validation.yml"))){
     vt_use_validation_config()
   }
 
@@ -53,11 +53,11 @@ vt_use_report <- function(dir = ".",
       })
   }
 
-  output_dir <- get_config_output_dir()
-  if(!file.exists(output_dir)){
+  output_dir <- file.path(dir, get_config_output_dir())
+  if(!dir.exists(output_dir)){
     dir.create(output_dir)
   }
-  proj_set(path = getwd(), force = TRUE)
+  proj_set(path = dir, force = TRUE)
   use_template( template = template,
                 save_as = file.path( output_dir,
                             paste0(evaluate_filename(), ".", file_ext(template))),
@@ -65,16 +65,25 @@ vt_use_report <- function(dir = ".",
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
-                                                 type = "name")), collapse = ', ') ),
+                                                 type = "name")), collapse = ', ')),
                 ignore = FALSE,
                 open = open,
                 package = "valtools")
+  if(file.exists(file.path(dir, "validation.yml"))){
+    file.copy(from = file.path(dir, "validation.yml"),
+              to = file.path(output_dir, "validation.yml"))
+  }
+
+  file_list <- get_config_validation_files()
+  file_list
 }
 
 #' @noRd
 #' @keywords internal
 get_val_leads <- function(dir = "."){
-  if(!file.exists(file.path(dir,".validation"))){
+
+
+  if(!file.exists(file.path(dir,"validation.yml"))){
     abort(
       paste0(
         "A validation config file does not exist.\n",

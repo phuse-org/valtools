@@ -12,13 +12,17 @@ vignette: >
 header-includes:
   - \usepackage[dvipsnames, table]{xcolor}
   - \usepackage{float}
+  - \usepackage{array}
 ---
 
 ```{r, setup, echo=FALSE}
-library(valtools)
-library(knitr)
-library(kableExtra)
-library({{pkg_name}})
+suppressPackageStartupMessages({
+  library(valtools)
+  library(knitr)
+  library(kableExtra)
+  library(magrittr)
+  library({{pkg_name}})
+})
 
 opts_chunk$set(
   collapse = TRUE,
@@ -31,3 +35,49 @@ opts_chunk$set(
 )
 
 ```
+
+```{r shared-obj}
+all_sig <- vt_scrape_sig_table() 
+```
+\newpage
+
+# Certifications
+
+## Signatures
+
+**AUTHOR** My signature designates authorship of this document.
+
+```{r validation-lead-sig-block}
+all_sig[tolower(all_sig$role) == "validation lead",] %>%
+  vt_kable_sig_table(format = "latex")
+```
+
+**APPROVAL** I have reviewed this document and approve its content.
+
+```{r other-roles-sig-block}
+all_sig[tolower(all_sig$role) != "validation lead",] %>%
+  vt_kable_sig_table(format = "latex")
+```
+
+The effective date of this document is the last date of signature.
+
+\newpage
+
+# Release details
+
+## Package Information
+
+### News
+
+```{r news-tab}
+vt_scrape_news(pkg = {{pkg_name}}) %>% 
+  vt_kable_news()
+```
+
+### Validation Environment
+
+```{r env-tab}
+vt_scrape_val_env() %>% 
+  vt_kable_val_env()
+```
+
