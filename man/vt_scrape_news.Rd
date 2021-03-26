@@ -16,7 +16,7 @@ data.frame with variables \code{version}, \code{effective_date}, \code{descripti
 Scrape news from a package
 }
 \note{
-Uses the function \link{utils::news} to extract version and date. Description
+Uses the function \code{utils::news} to extract version and date. Description
 are news items that start with \code{[validation]}. If no date is provided, will
 look for NEWs entries starting with \code{[version date]}
 }

@@ -7,9 +7,9 @@
 vt_use_news_md(date = NULL, open = rlang::is_interactive())
 }
 \arguments{
-\item{open}{Open the newly created file for editing?  Happens in RStudio, if applicable, or via utils::file.edit() otherwise.}
+\item{date}{passed to template}
 
-\item{data}{passed to \code{usethis::use_template}}
+\item{open}{Open the newly created file for editing?  Happens in RStudio, if applicable, or via utils::file.edit() otherwise.}
 }
 \description{
 Initiate a NEWS.md file
