@@ -4,12 +4,10 @@
 \alias{vt_use_news_md}
 \title{Initiate a NEWS.md file}
 \usage{
-vt_use_news_md(date = NULL, open = rlang::is_interactive())
+vt_use_news_md(date = NULL)
 }
 \arguments{
 \item{date}{passed to template}
-
-\item{open}{Open the newly created file for editing?  Happens in RStudio, if applicable, or via utils::file.edit() otherwise.}
 }
 \description{
 Initiate a NEWS.md file

@@ -1,9 +1,8 @@
 test_that("create NEWS from template", {
   withr::with_tempdir({
     captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
-    usethis::proj_set("myTestPkg")
     setwd("myTestPkg")
-    vt_use_news_md(date = "2021-01-01", open = FALSE)
+    vt_use_news_md(date = "2021-01-01")
     expect_true(file.exists("NEWS.md"))
     expect_equal(readLines("NEWS.md")[1],
                  "# myTestPkg 0.0.0.9000 (2021-01-01)" )
@@ -12,9 +11,8 @@ test_that("create NEWS from template", {
 
   withr::with_tempdir({
     captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
-    usethis::proj_set("myTestPkg", force = TRUE)
     setwd("myTestPkg")
-    vt_use_news_md(open = FALSE)
+    vt_use_news_md()
     expect_true(file.exists("NEWS.md"))
     expect_equal(readLines("NEWS.md")[1],
                  "# myTestPkg 0.0.0.9000 " )
@@ -26,9 +24,8 @@ test_that("create NEWS from template", {
 test_that("NEWs with date field", {
   withr::with_tempdir({
     captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
-    usethis::proj_set("myTestPkg", force = TRUE)
     setwd("myTestPkg")
-    vt_use_news_md(date = "2021-01-01", open = FALSE)
+    vt_use_news_md(date = "2021-01-01")
     setwd("..")
     with_temp_libpaths({
       install.packages("./myTestPkg", type = "source", repo = NULL, quiet = TRUE)
@@ -47,9 +44,8 @@ test_that("NEWs with date field", {
 test_that("NEWS as item", {
   withr::with_tempdir({
     captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
-    usethis::proj_set("myTestPkg", force = TRUE)
     setwd("myTestPkg")
-    vt_use_news_md( open = FALSE)
+    vt_use_news_md( )
     setwd("..")
 
     with_temp_libpaths({

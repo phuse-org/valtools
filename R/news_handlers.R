@@ -55,13 +55,11 @@ vt_kable_news <- function(news_info, format = "latex"){
 
 
 #' Initiate a NEWS.md file
-#' @param open Open the newly created file for editing?  Happens in RStudio, if applicable, or via utils::file.edit() otherwise.
 #' @param date passed to template
 #' @note This is an alternative to \code{usethis::use_news_md}.
 #' @export
-#' @importFrom usethis use_template
 #' @importFrom rprojroot find_root has_file
-vt_use_news_md <- function(date = NULL, open = rlang::is_interactive()){
+vt_use_news_md <- function(date = NULL){
   this_desc <- desc(find_root(criterion = has_file("DESCRIPTION")))
   proj_info <- c(Date = date, this_desc$get(this_desc$fields()))
   if("Date" %in% names(proj_info)){
@@ -70,7 +68,7 @@ vt_use_news_md <- function(date = NULL, open = rlang::is_interactive()){
     proj_info[["Date"]] = ""
   }
 
-  use_template("NEWS.md", data = proj_info, open = open, package = "valtools")
+  render_template("NEWS.md", data = proj_info)
 
 }
 
