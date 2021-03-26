@@ -6,7 +6,7 @@
 \usage{
 vt_scrape_coverage_matrix(
   type = c("long", "wide"),
-  references = NULL,
+  reference = NULL,
   src = ".",
   ref = vt_path()
 )
@@ -14,7 +14,7 @@ vt_scrape_coverage_matrix(
 \arguments{
 \item{type}{one of "long" or "wide" which determines shape of output table}
 
-\item{references}{dynamic reference holder if it already exists}
+\item{reference}{dynamic reference holder if it already exists}
 
 \item{src, ref}{passed to \code{\link{vt_scrape_tags_from}}}
 }
