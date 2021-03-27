@@ -69,6 +69,5 @@ vt_use_news_md <- function(date = NULL){
   }
 
   render_template("NEWS.md", data = proj_info)
-
 }
 

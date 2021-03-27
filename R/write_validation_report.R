@@ -53,26 +53,16 @@ vt_use_report <- function(dir = ".",
       })
   }
 
-  output_dir <- file.path(dir, get_config_output_dir())
-  if(!dir.exists(output_dir)){
-    dir.create(output_dir)
-  }
-  proj_set(path = dir, force = TRUE)
-  use_template( template = template,
-                save_as = file.path( output_dir,
-                            paste0(evaluate_filename(), ".", file_ext(template))),
+
+  render_template( template = template,
+                output = file.path(get_config_working_dir(),
+                                   paste0(evaluate_filename(), ".", file_ext(template))),
                 data = list(pkg_name = desc_get_field("Package", file = dir),
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
-                                                 type = "name")), collapse = ', ')),
-                ignore = FALSE,
-                open = open,
-                package = "valtools")
-  if(file.exists(file.path(dir, "validation.yml"))){
-    file.copy(from = file.path(dir, "validation.yml"),
-              to = file.path(output_dir, "validation.yml"))
-  }
+                                                 type = "name")), collapse = ', ')))
+
 
   file_list <- get_config_validation_files()
   file_list
