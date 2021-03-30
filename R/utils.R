@@ -8,22 +8,15 @@
 #' @importFrom rlang abort inform
 #'
 #' @noRd
-create_item <- function(pkg = ".", type = c("requirements","test_cases","test_code"), item_name){
+create_item <- function(type = c("requirements","test_cases","test_code"), item_name){
 
   type <- match.arg(type)
 
-  validation_directory <- file.path(get_config_working_dir(pkg = pkg),"validation")
+  validation_directory <- vt_path()
 
-  # Error out if no validation skeleton
-  if(!dir.exists(file.path(pkg, validation_directory))) {
-    abort("No validation structure found. Run `valtools::vt_use_validation().`",
-          class = "vt.missingStructure")
-
-    # Create item folder if this is the first item
-  }
-
-  if(!dir.exists(file.path(pkg, validation_directory, type))) {
-    dir.create(file.path(pkg, validation_directory, type))
+  # Create item folder if this is the first item
+  if(!dir.exists(file.path(validation_directory, type))) {
+    dir.create(file.path(validation_directory, type))
   }
 
 
@@ -33,7 +26,7 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
   # If the item is nested in a folder make sure its made.
   if( !item_dir %in% c("",".")){
     tryCatch({
-      dir.create(file.path(pkg,validation_directory,type,item_dir), recursive  = TRUE, showWarnings = FALSE)
+      dir.create(file.path(validation_directory,type,item_dir), recursive  = TRUE, showWarnings = FALSE)
     },
     error = function(e) {
       abort(paste0("Failed to create validation", type, item_name,
@@ -42,7 +35,7 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
     })
   }
 
-  item_file_path <- file.path(pkg,validation_directory, type, item_name)
+  item_file_path <- file.path(validation_directory, type, item_name)
 
   tryCatch({
 
