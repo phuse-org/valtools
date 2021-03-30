@@ -3,23 +3,22 @@
 test_that("simple item creation", {
   withr::with_tempdir({
     # set up "validation" infrastructure
-    writeLines(c("working_dir: vignettes"),"validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
+    writeLines(c("working_dir: vignettes"),"vignettes/validation/validation.yml")
+    file.create(".here")
+
 
     spec_path <- create_item(
       item_name = "new_specification",
-      type = "requirements",
-      pkg = ".")
+      type = "requirements")
 
     test_case_path <- create_item(
       item_name = "new_test_case",
-      type = "test_cases",
-      pkg = ".")
+      type = "test_cases")
 
     test_code_path <- create_item(
       item_name = "new_test_code",
-      type = "test_code",
-      pkg = ".")
+      type = "test_code")
 
     expect_true(
       file.exists("vignettes/validation/requirements/new_specification")
@@ -36,8 +35,9 @@ test_that("simple item creation", {
 test_that("simple item creation and adds a directory if missing", {
   withr::with_tempdir({
     # set up "validation" infrastructure
-    writeLines(c("working_dir: vignettes"),"validation.yml")
     dir.create("vignettes/validation", recursive = TRUE)
+    writeLines(c("working_dir: vignettes"),"vignettes/validation/validation.yml")
+    file.create(".here")
 
     spec_path <- create_item(
       item_name = "new_dir/new_specification",
@@ -71,7 +71,6 @@ test_that("vt_use_ family works nicely with simple item creation", {
   withr::with_tempdir({
 
     # set up validation infrastructure
-    vt_use_validation_config()
     vt_use_validation()
 
     ## create items
