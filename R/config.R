@@ -31,51 +31,70 @@
 #' @rdname validation_config
 #'
 #' @examples
-#' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".",
-#'                          working_dir = "vignettes",
-#'                          output_dir  = "inst",
-#'                          report_naming_format = "Validation_Report_{package}_v{version}_{date}"
-#'                          username_list = list(
-#'                            vt_user(
-#'                              name = "test",
-#'                              title = "test",
-#'                              role = "tester",
-#'                              username = "test"
-#'                            )
-#'                          ))
-#'
-#' }
+#' vt_use_config(pkg = tempdir(),
+#'               working_dir = ".",
+#'               output_dir  = ".",
+#'               report_naming_format = "Validation_Report_{package}_v{version}_{date}"
+#'               username_list = list(
+#'                  vt_user(
+#'                        name = "test",
+#'                        title = "test",
+#'                        role = "tester",
+#'                        username = "test"
+#'                        )))
 #'
 #' @export
 #'
-vt_use_validation_config <- function(pkg = ".",
-                                     working_dir = "vignettes",
-                                     output_dir  = "inst",
-                                     report_naming_format = "Validation_Report_{package}_v{version}_{date}",
-                                     username_list = list(),
-                                     validation_files = list(),
-                                     ...,
-                                     overwrite = FALSE)
-{
+vt_use_config <- function(pkg = ".",
+                          working_dir,
+                          output_dir,
+                          report_naming_format = "Validation_Report_{package}_v{version}_{date}",
+                          username_list = list(),
+                          validation_files = list(),
+                          ...,
+                          overwrite = FALSE
+){
 
-  if(file.exists(file.path(pkg,"validation.yml")) & !overwrite){
+  if(missing(working_dir)){
+    if(is_package(pkg = pkg)){
+      working_dir <- "vignettes"
+    }else{
+      working_dir <- "."
+    }
+  }
+
+  if(missing(output_dir)){
+    if(is_package(pkg = pkg)){
+      output_dir <- "inst"
+    }else{
+      output_dir <- "."
+    }
+  }
+
+  if(!dir.exists(file.path(pkg,working_dir,"validation"))){
+    abort("No validation structure found. Run `valtools::vt_use_validation().`",
+          class = "vt.missingStructure")
+  }
+
+  if(file.exists(file.path(pkg,working_dir,"validation","validation.yml")) & !overwrite){
     abort(
       paste0(
       "Validation config file already exists.\n",
-      "To overwrite, set `overwrite` to `TRUE` in `vt_use_validation_config()`"
+      "To overwrite, set `overwrite` to `TRUE` in `vt_use_config()`"
       ),
       class = "vt.validation_config_exists"
     )
   }
+
+
 
   ## add ".here" ref if not a package
   set_dir_ref(pkg = pkg)
 
   ## add "validation.yml" to .Rbuildignore if is a package
   if(is_package(pkg = pkg)){
-    use_build_ignore2(ignores = "^validation\\.yml$",dir = pkg)
+    use_build_ignore2(ignores = file.path(working_dir,"validation","validation.yml"),dir = pkg)
   }
 
   if(length(username_list) > 0 ){
@@ -94,7 +113,7 @@ vt_use_validation_config <- function(pkg = ".",
   }
 
   write_validation_config(
-    path = pkg,
+    path = file.path(pkg,working_dir,"validation"),
     working_dir = working_dir,
     output_dir = output_dir,
     report_naming_format = report_naming_format,
@@ -111,6 +130,8 @@ vt_use_validation_config <- function(pkg = ".",
   invisible(TRUE)
 
 }
+
+
 
 #' Create a user object
 #'
@@ -200,29 +221,36 @@ write_validation_config <- function(path = ".",
 
 #' @importFrom rlang abort
 #' @importFrom yaml read_yaml
-read_validation_config <- function(pkg = "."){
+read_validation_config <- function(){
 
-  if(!file.exists(file.path(pkg,"validation.yml"))){
-    abort(
-      paste0(
-        "A validation config file does not exist.\n",
-        "Run `valtools::vt_use_validation_config()` to create a validation config file."
-      ),
-      class = "vt.validation_config_missing"
-    )
-  }
-  read_yaml(file = file.path(pkg,"validation.yml"))
+  config_path <- tryCatch(
+    vt_find_config(),
+    error = function(e){
+      if(inherits(e,"vt.file_not_found")){
+        abort(
+          paste0(
+            "A validation config file does not exist.\n",
+            "Run `valtools::vt_use_config()` to create a validation config file."
+          ),
+          class = "vt.validation_config_missing"
+        )
+      }else{
+        abort(e)
+      }
+  })
+
+  read_yaml(file = config_path)
 
 }
 
 ### Accessor functions for internal use
 
-get_config_working_dir <- function(pkg = "."){
-  read_validation_config(pkg = pkg)$working_dir
+get_config_working_dir <- function(){
+  read_validation_config()$working_dir
 }
 
-get_config_output_dir <- function(pkg = "."){
-  config <- read_validation_config(pkg = pkg)
+get_config_output_dir <- function(){
+  config <- read_validation_config()
   if("output_dir" %in% names(config)){
     return(config$output_dir)
   }else{
@@ -230,6 +258,6 @@ get_config_output_dir <- function(pkg = "."){
   }
 }
 
-get_config_report_naming_format <- function(pkg = "."){
-  read_validation_config(pkg = pkg)$report_naming_format
+get_config_report_naming_format <- function(){
+  read_validation_config()$report_naming_format
 }
