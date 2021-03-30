@@ -4,7 +4,6 @@
 #' in the config file. It is also required to be used in the validation report
 #' for cases where validation of installed packages is intended as it will
 #' shift access to the correct location for the installed package for access.
-
 #'
 #'
 #' @param ... `[character]`\cr
@@ -42,11 +41,55 @@ vt_path <- function(..., pkg = "."){
 
   }else{
     ## default and if building (state == "build") uses the same path
-
-    root <- find_root(has_file(".here") | has_file("validation.yml") | is_rstudio_project | is_r_package | is_vcs_root)
-
-    path <- file.path(root, pkg, get_config_working_dir(pkg = file.path(root,pkg)), "validation")
+    path <- dirname(vt_find_config())
   }
 
   normalizePath(file.path(path, ...),winslash = "/",mustWork = FALSE)
 }
+
+
+#' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project is_vcs_root
+vt_find_config <- function(){
+  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+  tryCatch(
+    find_file("validation.yml", root, full_names = TRUE),
+    error = function(e){
+      if(inherits(e,"vt.file_not_found")){
+        abort(
+          paste0(
+            "A validation structure does not exist.\n",
+            "Run `valtools::vt_use_validation()`."
+          ),
+          class = "vt.validation_config_missing"
+        )
+      }else{
+        abort(e)
+      }
+    })
+}
+
+#' @importFrom rlang abort
+#' @importFrom withr with_dir
+find_file <- function(filename, ref = ".", full_names = FALSE){
+
+  with_dir(new = ref, {
+    file_list <- list.files(path = ".", recursive = TRUE, full.names = TRUE)
+  })
+
+  file_path <- file_list[basename(file_list) %in% filename]
+
+  if(length(file_path) == 0){
+    abort(paste0("File `",filename,"` not found."),
+          class = "vt.file_not_found")
+  }
+
+  file_path <- do.call('file.path',as.list(split_path(file_path)))
+
+  if(full_names){
+    file_path <- normalizePath(file_path, winslash = "/")
+  }
+
+  return(file_path)
+}
+
+
