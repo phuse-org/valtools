@@ -17,12 +17,11 @@
 #' Ellis Hughes
 #' @section Last updated date:
 #' 2021-03-05
-#' @export
 #' @importFrom devtools package_file
 #' @importFrom roxygen2  block_get_tag_value
 #' @importFrom stats setNames
 #' @importFrom rlang warn
-vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref = vt_path()){
+scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref = vt_path()){
 
   types <- c("requirements","test_cases","test_code")
 

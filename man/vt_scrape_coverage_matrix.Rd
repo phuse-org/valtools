@@ -16,7 +16,7 @@ vt_scrape_coverage_matrix(
 
 \item{reference}{dynamic reference holder if it already exists}
 
-\item{src, ref}{passed to \code{\link{vt_scrape_tags_from}}}
+\item{src, ref}{passed to \code{valtools:::scrape_tags_from}}
 }
 \value{
 a data.frame mapping requirement ids to test case ids.
