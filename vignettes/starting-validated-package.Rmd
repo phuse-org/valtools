@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, warning=FALSE}
-remotes::install_github("phuse-org/valtools")
+# remotes::install_github("phuse-org/valtools")
 library(valtools)
 ```
 
@@ -39,16 +39,17 @@ vt_create_package(file.path(tempdir(),"example.package"))
 
 ```
 
-See how in addition to the normal R package infrastructure, there is a `validation.yml`
-file. This file is the configuration file for validation. It drives a lot of the 
-downstream steps that occur during validation. Also, there is now a `vignettes/validation`
-folder, which is the working directory for the validation.
+See how in addition to the normal R package infrastructure, there is now a 
+`vignettes/validation` folder, which is the working directory for the 
+validation. Inside this, there is a `validation.yml` file. This file is the 
+configuration file for validation. It drives a lot of the downstream steps that 
+occur during validation.
 
 ```{r}
 
 fs::dir_ls()
 
-cat(readLines("validation.yml"),sep = "\n")
+cat(readLines("vignettes/validation/validation.yml"),sep = "\n")
 
 ```
 
@@ -65,9 +66,7 @@ before, it will ask the user some questions.
 
 ```{r}
 
-vt_use_req("Requirement_001")
-
-
+valtools::vt_use_req("Requirement_001")
 
 ```
 
@@ -113,6 +112,16 @@ devtools::document()
 #GPP: unit testing, update DESCRIPTION, ...
 ```
 
+## News
+
+Document updates and changes in code using a news file. This is also valuable for
+documenting updates to the validation!
+
+```{r}
+
+valtools::vt_use_news_md()
+
+```
 
 ## Testing
 
@@ -121,7 +130,7 @@ creates a new test code file. They have the same arguments as `vt_use_req()`.
 
 ```{r}
 
-vt_use_test_case("Test_case_001")
+valtools::vt_use_test_case("Test_case_001")
 
 ```
 
@@ -133,7 +142,7 @@ to the hello_world function
 
 ```{r}
 
-vt_use_test_code("Test_code_001", username = "Not Ellis")
+valtools::vt_use_test_code("Test_code_001", username = "Not Ellis")
 
 ```
 
@@ -168,7 +177,8 @@ usethis::use_vignette("validation")
 We currently have code in `develop` for the following:
 
 - `vt_path()` allows user to base path from the base validation directory
-- capture validation environment
+- capture validation environment with `vt_scrape_val_env()`
+- record the NEWS.md with `vt_scrape_news()`
 - scraping authorship from requirements, functions, test cases and test code
 - evaluating test code
 - dynamic referencing (Will cover later)
@@ -230,7 +240,16 @@ library(example.package)
 ```{r}
 
 vt_scrape_val_env() %>% 
-  kable()
+  vt_kable_val_env()
+
+```
+
+## News
+
+```{r}
+
+vt_scrape_news() %>% 
+  vt_kable_news()
 
 ```
 
@@ -257,7 +276,7 @@ kable(do.call('rbind', function_author_list))
 ### Test Case Authors
 
 ```{r}
-test_case_author_list <- vt_scrape_tags_from(type = "requirements")
+test_case_author_list <- vt_scrape_tags_from(type = "test_cases")
 
 kable(do.call('rbind', test_case_author_list))
 
@@ -266,7 +285,7 @@ kable(do.call('rbind', test_case_author_list))
 ### Test Code Authors
 
 ```{r}
-test_code_author_list <- vt_scrape_tags_from(type = "requirements")
+test_code_author_list <- vt_scrape_tags_from(type = "test_code")
 
 kable(do.call('rbind', test_code_author_list))
 
@@ -276,10 +295,7 @@ kable(do.call('rbind', test_code_author_list))
 
 ```{r}
 
-text <- readLines(vt_path("requirements","Requirement_001.md"))
-
-# remove roxygen comment headers
-cat(text[!grepl("^#'", text)], sep = "\n")
+vt_file(vt_path("requirements","Requirement_001.md"))
 
 ```
 
@@ -288,10 +304,7 @@ cat(text[!grepl("^#'", text)], sep = "\n")
 
 ```{r}
 
-text <- readLines(vt_path("test_cases","Test_case_001.md"))
-
-# remove roxygen comment headers
-cat(text[!grepl("^#'", text)], sep = "\n")
+vt_file(vt_path("test_cases","Test_case_001.md"))
 
 ```
 
@@ -301,7 +314,7 @@ cat(text[!grepl("^#'", text)], sep = "\n")
 ```{r}
 
 vt_run_test_code_file("Test_code_001.R") %>% 
-  kable()
+  vt_kable_test_code()
 
 ```
 
