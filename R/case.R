@@ -5,7 +5,6 @@
 #'   are located at `./inst/validation/<ItemType>/{name}`.
 #' @param username The username to insert into the validation item as the author.
 #' @param open Should the newly made file be opened for editing.
-#' @param pkg Top-level of package
 #'
 #' @return Path to the newly created validation item file, invisibly.
 #'

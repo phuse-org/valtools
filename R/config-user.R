@@ -185,7 +185,6 @@ vt_get_user_info <- function(username, type = c("name","title","role")){
 }
 
 #' Get all users from validation config file without knowing usernames
-#' @param pkg Top-level directory of the package to validate
 #' @return list of all users in config file
 #' @export
 vt_get_all_users <- function(){

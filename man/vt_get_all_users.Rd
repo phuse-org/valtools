@@ -6,9 +6,6 @@
 \usage{
 vt_get_all_users()
 }
-\arguments{
-\item{pkg}{Top-level directory of the package to validate}
-}
 \value{
 list of all users in config file
 }

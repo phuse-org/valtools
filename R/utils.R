@@ -57,14 +57,12 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
 #'
 #' Wrapper for whoami::username
 #'
-#' @param pkg path to base directory of working project
-#'
-#' @returns `[character]` Username of the person that called the function
+#'  @returns `[character]` Username of the person that called the function
 #'
 #' @importFrom whoami username
 #' @export
 #' @examples
-#' temp_dir <- tempdir()
+#' withr::with_tempdir({
 #' vt_use_validation_config(
 #'     pkg = temp_dir,
 #'     username_list = list(vt_user(
@@ -72,7 +70,8 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
 #'       name = "test",
 #'       title = "title",
 #'       role = "role")))
-#' vt_username( pkg = temp_dir)
+#' vt_username()
+#' })
 #'
 #' @importFrom whoami username
 vt_username <- function(){
