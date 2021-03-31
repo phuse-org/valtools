@@ -1,9 +1,12 @@
-#' Use to set dynamic file paths in a validation.
+#' Use dynamic file paths in a validation.
 #'
-#' vt_path() allows access of files relative to the working directory identified
-#' in the config file. It is also required to be used in the validation report
-#' for cases where validation of installed packages is intended as it will
+#' vt_path() allows access of files relative to the working directory,which is
+#' identified by the config file. It is also required to be used in the validation
+#' report for cases where validation of installed packages is intended as it will
 #' shift access to the correct location for the installed package for access.
+#'
+#' vt_find_config() locates the config file in the working directory, and
+#' returns the full path to it.
 #'
 #'
 #' @param ... `[character]`\cr
@@ -49,6 +52,7 @@ vt_path <- function(..., pkg = "."){
 
 
 #' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project is_vcs_root
+#'
 vt_find_config <- function(){
   root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
   tryCatch(
@@ -68,11 +72,13 @@ vt_find_config <- function(){
     })
 }
 
+
+
 #' @importFrom rlang abort
 #' @importFrom withr with_dir
 find_file <- function(filename, ref = ".", full_names = FALSE){
 
-  with_dir(new = ref, {
+  with_dir(new = normalizePath(ref,winslash = "/"), {
     file_list <- list.files(path = ".", recursive = TRUE, full.names = TRUE)
   })
 
@@ -83,13 +89,13 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
           class = "vt.file_not_found")
   }
 
-  file_path <- do.call('file.path',as.list(split_path(file_path)))
+  file_path <- as.list(split_path(file_path))
 
   if(full_names){
-    file_path <- normalizePath(file_path, winslash = "/")
+    file_path <- c(ref, file_path)
   }
 
-  return(file_path)
+  do.call('file.path',file_path)
 }
 
 
