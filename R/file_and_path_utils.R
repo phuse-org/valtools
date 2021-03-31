@@ -8,12 +8,13 @@
 #' vt_find_config() locates the config file in the working directory, and
 #' returns the full path to it.
 #'
+#' @rdname validation_paths
+#'
 #'
 #' @param ... `[character]`\cr
 #'   Path components below the validation folder, can be empty.
 #'   Each argument should be a string containing one or more
 #'   path components separated by a forward slash `"/"`.
-#' @param pkg path to base directory of package
 #'
 #' @export
 #'
@@ -22,16 +23,17 @@
 #' @examples
 #' withr::with_tempdir({callr::r(function(){
 #'
-#'  valtools::vt_use_validation_config()
 #'  valtools::vt_use_validation()
 #'
 #'  valtools::vt_path()
 #'  valtools::vt_path("some", "reqs", "req01.md")
 #'  valtools::vt_path("some/reqs/req01.md")
 #'
+#'  valtools::vt_find_config()
+#'
 #' })})
 #'
-vt_path <- function(..., pkg = "."){
+vt_path <- function(...){
 
   state <- Sys.getenv("vt_validation_state")
   package <- Sys.getenv("vt_validation_package")
@@ -52,7 +54,9 @@ vt_path <- function(..., pkg = "."){
 
 
 #' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project is_vcs_root
+#' @rdname validation_paths
 #'
+#' @export
 vt_find_config <- function(){
   root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
   tryCatch(

@@ -2,17 +2,18 @@
 % Please edit documentation in R/file_and_path_utils.R
 \name{vt_path}
 \alias{vt_path}
+\alias{vt_find_config}
 \title{Use dynamic file paths in a validation.}
 \usage{
-vt_path(..., pkg = ".")
+vt_path(...)
+
+vt_find_config()
 }
 \arguments{
 \item{...}{\verb{[character]}\cr
 Path components below the validation folder, can be empty.
 Each argument should be a string containing one or more
 path components separated by a forward slash \code{"/"}.}
-
-\item{pkg}{path to base directory of package}
 }
 \description{
 vt_path() allows access of files relative to the working directory,which is
@@ -27,12 +28,13 @@ returns the full path to it.
 \examples{
 withr::with_tempdir({callr::r(function(){
 
- valtools::vt_use_validation_config()
  valtools::vt_use_validation()
 
  valtools::vt_path()
  valtools::vt_path("some", "reqs", "req01.md")
  valtools::vt_path("some/reqs/req01.md")
+
+ valtools::vt_find_config()
 
 })})
 
