@@ -400,16 +400,53 @@ test_that("Scrape roxygen tags from function authors", {
     ), file.path(usethis::proj_get(), "R", "hello_world.R"))
 
 
-    expect_equal(vt_scrape_authors(tags = c("editor", "editDate")),
+    expect_equal(vt_scrape_functions(tags = c("editor", "editDate")),
                  data.frame(functions = c("hello_world", "hello_world2"),
                             editor = c("An author", "Another author"),
                             editDate = c("2021-01-01", "2021-02-01")))
 
-    exported_authors <- vt_scrape_authors()
+    exported_authors <- vt_scrape_functions()
     expect_equal(exported_authors[!is.na(exported_authors$export), c("functions", "editor", "editDate")],
                  data.frame(functions = "hello_world",
                             editor = "An author",
                             editDate = "2021-01-01"))
+    expect_equal(strsplit(vt_kable_functions(exported_authors), "\n")[[1]][-1],
+                 c(
+                   "\\begin{tabular}{|>{}l|l|l|>{}l|}",
+                   "\\hline",
+                    "functions & editor & editDate & export\\\\",
+                   "\\hline",
+                    "hello\\_world & An author & 2021-01-01 & \\\\",
+                   "\\hline",
+                    "hello\\_world2 & Another author & 2021-02-01 & NA\\\\",
+                   "\\hline",
+                    "\\end{tabular}"
+                 ))
+
+    expect_equal(strsplit(vt_kable_functions(exported_authors, format = "html"), "\n")[[1]][-1],
+                 c(" <thead>",
+                 "  <tr>",
+                 "   <th style=\"text-align:left;\"> functions </th>",
+                 "   <th style=\"text-align:left;\"> editor </th>",
+                 "   <th style=\"text-align:left;\"> editDate </th>",
+                 "   <th style=\"text-align:left;\"> export </th>",
+                 "  </tr>",
+                 " </thead>",
+                 "<tbody>",
+                 "  <tr>",
+                 "   <td style=\"text-align:left;border-left:1px solid;\"> hello_world </td>",
+                 "   <td style=\"text-align:left;\"> An author </td>",
+                 "   <td style=\"text-align:left;\"> 2021-01-01 </td>",
+                 "   <td style=\"text-align:left;border-right:1px solid;\">  </td>",
+                 "  </tr>",
+                 "  <tr>",
+                 "   <td style=\"text-align:left;border-left:1px solid;\"> hello_world2 </td>",
+                 "   <td style=\"text-align:left;\"> Another author </td>",
+                 "   <td style=\"text-align:left;\"> 2021-02-01 </td>",
+                 "   <td style=\"text-align:left;border-right:1px solid;\"> NA </td>",
+                 "  </tr>",
+                 "</tbody>",
+                 "</table>" ))
 
 
 
