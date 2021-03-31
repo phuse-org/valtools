@@ -8,9 +8,16 @@
 #' @export
 #' @importFrom utils news
 #' @importFrom rprojroot find_root has_file
-vt_scrape_news <- function(pkg = rprojroot::find_root(criterion = has_file("DESCRIPTION"))){
-  db <- news(package = pkg)
+vt_scrape_news <- function(pkg = rprojroot::find_root(criterion = rprojroot::has_file("DESCRIPTION"))){
+
+  if(is_package(pkg)){
+    db <- news(package = basename(pkg))
+  }else{
+    db <- read_news(find_file("NEWS.md",ref = pkg))
+  }
+
   all_text <- strsplit(db$Text, split = "\n ")
+
   all_news <- do.call("rbind", lapply(seq_along(db$Version),
     FUN = function(x){
       this_text <- all_text[[x]]
@@ -47,8 +54,8 @@ vt_kable_news <- function(news_info, format = "latex"){
   t <- kable(all_news,
              format = format,
              col.names = c("Version", "Effective Date", "Activity Description"))
-  t <- column_spec(1, border_left = TRUE)
-  t <- column_spec(3, border_right = TRUE, width = "30em")
+  t <- column_spec(t, 1, border_left = TRUE)
+  t <- column_spec(t, 3, border_right = TRUE, width = "30em")
   t <- collapse_rows(t, 1:2)
   t
 }
@@ -59,9 +66,18 @@ vt_kable_news <- function(news_info, format = "latex"){
 #' @note This is an alternative to \code{usethis::use_news_md}.
 #' @export
 #' @importFrom rprojroot find_root has_file
-vt_use_news_md <- function(date = NULL){
-  this_desc <- desc(find_root(criterion = has_file("DESCRIPTION")))
-  proj_info <- c(Date = date, this_desc$get(this_desc$fields()))
+vt_use_news_md <- function(date = NULL, version = NULL){
+
+  root <- find_root(criterion = has_file("DESCRIPTION") | has_file(".here"))
+
+  if(is_package(root)){
+    this_desc <- desc(file = file.path(root,"DESCRIPTION"))
+    fields <- this_desc$get(this_desc$fields())
+  }else{
+    fields <- c(Version = version, Package = basename(root))
+  }
+
+  proj_info <- c(Date = date, fields)
   if("Date" %in% names(proj_info)){
     proj_info[["Date"]] = paste0("(", proj_info[["Date"]], ")")
   } else {
@@ -72,3 +88,38 @@ vt_use_news_md <- function(date = NULL){
 
 }
 
+## internal function for parsing NEWS.md into a "db" file
+read_news <- function(file){
+
+  news_file <- readLines(file)
+  n_headers <- sum(grepl("^#",news_file))
+  section_headers <- c(grep("^#",news_file),length(news_file))
+  sections <-
+
+  db <- list(
+    text = vector("character", length =n_headers ),
+    version = vector("character", length =n_headers ),
+    Date = vector("character", length =n_headers )
+  )
+
+  for(section_idx in seq_len(n_headers)){
+
+    section_lines <- seq(
+      section_headers[[section_headers]]+1,
+      section_headers[[section_headers+1]]-1
+    )
+
+    header <- strsplit(section_headers[[section_headers]],sep = "\\s")[[1]]
+
+    version <- header[2]
+    date <- ifelse(length(header) == 3, header[3], NA)
+    body <- paste(news_file[section_lines], collapse = "\n ")
+
+    db$text[[section_idx]] <- body
+    db$version[[section_idx]] <- version
+    db$Date[[section_idx]] <- date
+  }
+
+  db
+
+}

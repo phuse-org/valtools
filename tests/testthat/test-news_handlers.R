@@ -41,6 +41,39 @@ test_that("NEWs with date field", {
   })
 })
 
+
+test_that("NEWS not in a package", {
+
+  withr::with_tempdir({
+
+    file.create(".here")
+
+    vt_use_news_md(date = "2021-01-01", version = "0.0.0.9000")
+
+    expect_equal(
+      vt_scrape_news(pkg = "."),
+      data.frame(version = "0.0.0.9000",
+                 effective_date = "2021-01-01",
+                 description = "Validation release notes for version 0.0.0.9000")
+      )
+  })
+
+  withr::with_tempdir({
+
+    file.create(".here")
+
+    vt_use_news_md()
+
+    expect_equal(
+      vt_scrape_news(pkg = "."),
+      data.frame(version = "",
+                 effective_date = "",
+                 description = "Validation release notes for version 0.0.0.9000")
+    )
+  })
+
+})
+
 test_that("NEWS as item", {
   withr::with_tempdir({
     captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
