@@ -15,7 +15,7 @@ test_that("integration test for CRAN", {
                           role = "Write Code")
     vt_use_news_md(date = "2021-01-01")
     vt_use_req("req1.md", username = "B user", title = "##req:req1", open = FALSE)
-    vt_use_test_case("test_case1.md", username = "C User", title = "##tc:tc1")
+    vt_use_test_case("test_case1.md", username = "C User", title = "##tc:tc1", open = FALSE)
     writeLines(con = file.path("vignettes", "validation", "test_cases", "test_case1.md"),
                c(
                "#' @title ##tc:tc1",
@@ -51,9 +51,14 @@ test_that("integration test for CRAN", {
                  "  paste0('Hello ', name, ', today is: ', Sys.Date(), '!')",
                  "}"
                ))
+
+
     vt_use_report()
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
-
+    withr::with_temp_libpaths({
+      install.packages(getwd(), type = "source", repos = NULL)
+      rmarkdown::render(file.path(getwd(), "vignettes", report_name))
+    })
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")

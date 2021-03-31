@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
   library(knitr)
   library(kableExtra)
   library(magrittr)
+  library(devtools)
   library({{pkg_name}})
 })
 
@@ -40,7 +41,7 @@ opts_chunk$set(
 ## TODO: verify that this is appropriate for validate outside of package model
 ##       needs test case
 config_file_path <- list.files(pattern = "validation.yml", 
-                               valtools:::package_file(), full.names = TRUE)
+                              package_file(), full.names = TRUE)
 all_sig <- vt_scrape_sig_table(pkg = dirname(config_file_path) ) 
 ```
 \newpage
@@ -88,4 +89,13 @@ vt_scrape_val_env() %>%
 ### Function Code
 
 ```{r func-authors}
+all_authors <- do.call("rbind", vt_scrape_tags_from(
+    type = "functions",
+    tags = c("editor", "editDate", "export"),
+    src = {{pkg_name}},
+    ref = valtools:::get_config_working_dir()
+  ))
+  
+all_authors[!is.na(all_authors$export), !names(all_authors) %in% "export"] %>% 
+  kable()
 ```
