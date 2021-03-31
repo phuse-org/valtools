@@ -36,9 +36,10 @@ test_that("lua numbering for pdf", {
       'Later reference to (3) - ##tc:refB\n'
     ))
 
-
+  suppressWarnings({
+  capture_output <- capture.output({
     rmarkdown::render(input = test_input, clean = FALSE)
-
+  })})
     test_output_rendered <-
       strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
                pdftools::pdf_text(gsub(test_input, pattern = ".md", replacement = ".pdf"))))[[1]]
@@ -90,8 +91,10 @@ test_that("lua numbering for html", {
       'Later reference to (5) - ##req:refC\n',
       'Later reference to (3) - ##tc:refB\n'
     ))
-
-  rmarkdown::render(input = test_input, clean = FALSE)
+  suppressWarnings({
+  capture_output <- capture.output({
+    rmarkdown::render(input = test_input, clean = FALSE)
+  })})
   test_output_rendered <- XML::htmlTreeParse(gsub(test_input, pattern = ".md", replacement = ".html"),
                                             useInternal = TRUE)
   text_rendered <- unlist(XML::xpathApply(test_output_rendered, "//p", XML::xmlValue,

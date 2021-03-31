@@ -5,14 +5,16 @@ test_that("user can set default username", {
       "USER" = "SampleUser"
     ),
     {
+      dir.create("validation", recursive = TRUE)
       writeLines(c(
-        "working_dir: vignettes",
+        "working_dir: '.'",
         "usernames:",
         paste0("  ",username(fallback = ""),":"),
         "    name: Sample User",
         "    title: new",
         "    role: user"),
-        "validation.yml")
+        "validation/validation.yml")
+      file.create(".here")
 
       expect_equal(
         vt_username(),
@@ -29,14 +31,17 @@ test_that("When a username is not set, it will throw an error that the user does
       "vt_username" = NULL
     ),
     {
+
+      dir.create("validation")
       writeLines(c(
-        "working_dir: vignettes",
+        "working_dir: '.'",
         "usernames:",
         paste0("  sampleUser:"),
         "    name: Sample User",
         "    title: new",
         "    role: user"),
-        "validation.yml")
+        "validation/validation.yml")
+      file.create(".here")
 
 
       expect_error(

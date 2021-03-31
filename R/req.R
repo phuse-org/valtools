@@ -4,7 +4,7 @@
 #'
 #' @rdname new_item
 #' @export
-vt_use_req <- function(name, username = vt_username(), title = NULL, open = interactive(), pkg = "."){
+vt_use_req <- function(name, username = vt_username(), title = NULL, open = interactive()){
 
   # ensure file extensions are of the acceptable type
   name <- vt_set_ext(name, ext = "md")
@@ -12,7 +12,7 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
   is_valid_name(name)
 
   # Create file to write in
-  req_name <- create_item(pkg, "requirements", name)
+  req_name <- create_item("requirements", name)
 
   ## if the file didnt exist before, populate with contents
   if (file.size(req_name) == 0){

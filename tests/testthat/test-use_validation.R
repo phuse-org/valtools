@@ -5,8 +5,6 @@ test_that("Able to add validation structure to package", {
       usethis::create_package(".", open = FALSE)
     })
 
-    vt_use_validation_config(".")
-
     vt_use_validation(".")
 
     expect_true(

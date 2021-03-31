@@ -364,8 +364,6 @@ test_that("parsing md files with the old nomeclature as expected", {
       "test_case_1: Req_2, Req_4"
     )
 
-    browser()
-
     expect_equal(
       roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
       structure(
