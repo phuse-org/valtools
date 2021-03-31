@@ -216,7 +216,7 @@ get_config_user <- function(username){
 
       if(tolower(decision) == "y"){
         vt_add_user_to_config(username = username)
-        read_validation_config(pkg = pkg)$usernames[[username]]
+        read_validation_config()$usernames[[username]]
       }else{
         abort(
           paste0("User `",username,"` does not exist in the config file.\n",
