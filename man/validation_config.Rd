@@ -6,30 +6,24 @@
 \alias{vt_add_user_to_config}
 \alias{vt_drop_user_from_config}
 \alias{vt_get_user_info}
-\alias{vt_use_validation_config}
+\alias{vt_use_config}
 \alias{vt_user}
 \title{Add validation file ordering to  validation config file}
 \usage{
-vt_add_file_to_config(filename, before = NULL, after = NULL, pkg = ".")
+vt_add_file_to_config(filename, before = NULL, after = NULL)
 
-vt_drop_file_from_config(filename, pkg = ".")
+vt_drop_file_from_config(filename)
 
-vt_add_user_to_config(
-  username = whoami::username(),
-  name,
-  title,
-  role,
-  pkg = "."
-)
+vt_add_user_to_config(username = whoami::username(), name, title, role)
 
-vt_drop_user_from_config(username, pkg = ".")
+vt_drop_user_from_config(username)
 
-vt_get_user_info(username, type = c("name", "title", "role"), pkg = ".")
+vt_get_user_info(username, type = c("name", "title", "role"))
 
-vt_use_validation_config(
+vt_use_config(
   pkg = ".",
-  working_dir = "vignettes",
-  output_dir = "inst",
+  working_dir,
+  output_dir,
   report_naming_format = "Validation_Report_{package}_v{version}_{date}",
   username_list = list(),
   validation_files = list(),
@@ -44,8 +38,6 @@ vt_user(username, name, title, role, ...)
 
 \item{before, after}{Optional destination of new filenames, default is end of existing list. Specifying both is error.}
 
-\item{pkg}{where to write config file}
-
 \item{username}{username of the user.}
 
 \item{name}{full name of the user.}
@@ -55,6 +47,8 @@ vt_user(username, name, title, role, ...)
 \item{role}{role of the user. Can be more than one.}
 
 \item{type}{type of information to pull. select at least one: name, title, role}
+
+\item{pkg}{where to write config file}
 
 \item{working_dir}{\link{character} which directory to be have working validation
 contents that are used interactively}
@@ -136,7 +130,7 @@ vt_drop_file_from_config(filename = "myReqFile.Rmd")
 }
 \dontrun{
 
-vt_use_validation_config(pkg = ".")
+vt_use_config(pkg = ".")
 
 vt_add_user_to_config(
     username = "ellis",
@@ -172,22 +166,18 @@ vt_get_user_info(username = "ellis", type = c("name","title"))
 
 }
 
-\dontrun{
 
-vt_use_validation_config(pkg = ".",
-                         working_dir = "vignettes",
-                         output_dir  = "inst",
-                         report_naming_format = "Validation_Report_{package}_v{version}_{date}"
-                         username_list = list(
-                           vt_user(
-                             name = "test",
-                             title = "test",
-                             role = "tester",
-                             username = "test"
-                           )
-                         ))
-
-}
+vt_use_config(pkg = tempdir(),
+              working_dir = ".",
+              output_dir  = ".",
+              report_naming_format = "Validation_Report_{package}_v{version}_{date}"
+              username_list = list(
+                 vt_user(
+                       name = "test",
+                       title = "test",
+                       role = "tester",
+                       username = "test"
+                       )))
 
 
 vt_user(

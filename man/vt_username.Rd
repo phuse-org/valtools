@@ -4,7 +4,7 @@
 \alias{vt_username}
 \title{Get current username}
 \usage{
-vt_username(pkg = ".")
+vt_username()
 }
 \arguments{
 \item{pkg}{path to base directory of working project}
