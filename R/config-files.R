@@ -64,7 +64,7 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
     write_validation_config(
       path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
-      output_directory = validation_config$output_directory,
+      output_dir = validation_config$output_dir,
       report_naming_format = validation_config$report_naming_format,
       username_list = validation_config$usernames,
       validation_files = validation_file_list_new
@@ -99,7 +99,7 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
 #' }
 #' @export
 vt_drop_file_from_config <- function(filename){
-  validation_config <- read_validation_config(pkg = pkg)
+  validation_config <- read_validation_config()
   validation_file_list_old <- validation_config$validation_files
 
   ## check whether these files are already listed
@@ -119,7 +119,7 @@ vt_drop_file_from_config <- function(filename){
     write_validation_config(
       path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
-      output_directory = validation_config$output_directory,
+      output_dir = validation_config$output_dir,
       report_naming_format = validation_config$report_naming_format,
       username_list = validation_config$usernames,
       validation_files = validation_file_list_new

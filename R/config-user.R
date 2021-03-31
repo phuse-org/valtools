@@ -33,7 +33,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
       title = title,
       role = role)
 
-  validation_config <- read_validation_config(pkg = vt_find_config())
+  validation_config <- read_validation_config()
 
   updating_info <-
     names(user_info) %in% names(validation_config$usernames)
@@ -45,7 +45,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
   write_validation_config(
     path = dirname(vt_find_config()),
     working_dir = validation_config$working_dir,
-    output_directory = validation_config$output_directory,
+    output_dir = validation_config$output_dir,
     report_naming_format = validation_config$report_naming_format,
     username_list = user_list,
     validation_files = validation_config$validation_files
@@ -92,7 +92,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @export
 vt_drop_user_from_config <- function(username){
 
-  validation_config <- read_validation_config(pkg = vt_find_config())
+  validation_config <- read_validation_config()
 
   existing_info <-
     username %in% names(validation_config$usernames)
@@ -114,7 +114,7 @@ vt_drop_user_from_config <- function(username){
     write_validation_config(
       path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
-      output_directory = validation_config$output_directory,
+      output_dir = validation_config$output_dir,
       report_naming_format = validation_config$report_naming_format,
       username_list = user_list,
       validation_files = validation_config$validation_files
@@ -169,18 +169,16 @@ vt_get_user_info <- function(username, type = c("name","title","role")){
 
   type <- match.arg(type,several.ok = TRUE)
 
-  config_path <- vt_find_config()
-
   output <- c()
 
   if("name" %in% type){
-    output <- c(name = get_config_user_name(username,pkg = config_path))
+    output <- c(name = get_config_user_name(username))
   }
   if("title" %in% type){
-    output <- c(output, title = get_config_user_title(username,pkg = pkg))
+    output <- c(output, title = get_config_user_title(username))
   }
   if("role" %in% type){
-    output <- c(output, role = get_config_user_role(username,pkg = pkg))
+    output <- c(output, role = get_config_user_role(username))
   }
 
   return(output)
@@ -191,7 +189,7 @@ vt_get_user_info <- function(username, type = c("name","title","role")){
 #' @return list of all users in config file
 #' @export
 vt_get_all_users <- function(){
-  return(read_validation_config(pkg = pkg)$usernames)
+  return(read_validation_config()$usernames)
 
 }
 
@@ -286,15 +284,15 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 }
 
 #' @noRd
-get_config_user_name <- function(username, pkg = "."){
-  get_config_user(username, pkg = pkg)$name
+get_config_user_name <- function(username){
+  get_config_user(username)$name
 }
 
-get_config_user_title <- function(username, pkg = "."){
-  get_config_user(username, pkg = pkg)$title
+get_config_user_title <- function(username){
+  get_config_user(username)$title
 }
 
-get_config_user_role <- function(username, pkg = "."){
-  get_config_user(username, pkg = pkg)$role
+get_config_user_role <- function(username){
+  get_config_user(username)$role
 }
 

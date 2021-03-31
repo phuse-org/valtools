@@ -223,21 +223,7 @@ write_validation_config <- function(path = ".",
 #' @importFrom yaml read_yaml
 read_validation_config <- function(){
 
-  config_path <- tryCatch(
-    vt_find_config(),
-    error = function(e){
-      if(inherits(e,"vt.file_not_found")){
-        abort(
-          paste0(
-            "A validation config file does not exist.\n",
-            "Run `valtools::vt_use_config()` to create a validation config file."
-          ),
-          class = "vt.validation_config_missing"
-        )
-      }else{
-        abort(e)
-      }
-  })
+  config_path <- vt_find_config()
 
   read_yaml(file = config_path)
 
