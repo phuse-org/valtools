@@ -14,6 +14,7 @@ test_that("lua numbering for pdf", {
       'title: "Lua filter counter"',
       'output:',
       '  pdf_document:',
+      '    fig_crop: false',
       '    pandoc_args:',
       '    - --lua-filter',
       paste0('    - ', system.file(package = "valtools", "lua/counter.lua")),

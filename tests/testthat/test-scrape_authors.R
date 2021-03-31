@@ -321,9 +321,9 @@ test_that("scrape functions from external dir", {
 })
 
 test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
-  
+
   withr::with_tempdir({
-    
+
     ## test setup
     vt_use_validation_config(
       username_list = list(
