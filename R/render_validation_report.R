@@ -51,7 +51,7 @@ vt_render_validation_report <- function(report_path, output_dir = dirname(report
 #'
 evaluate_filename <- function(pkg = ".", package, version){
 
-  filename_format <- get_config_report_naming_format(pkg = pkg)
+  filename_format <- get_config_report_naming_format()
 
   if(is.null(filename_format)){
     filename_format <- "Validation_Report_{package}_v{version}_{date}"

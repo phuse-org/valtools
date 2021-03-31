@@ -75,9 +75,9 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
 #' vt_username( pkg = temp_dir)
 #'
 #' @importFrom whoami username
-vt_username <- function(pkg = "."){
+vt_username <- function(){
   user <- username(fallback = "")
-  get_config_user_name(username = user,pkg = pkg)
+  get_config_user_name(username = user)
 }
 
 

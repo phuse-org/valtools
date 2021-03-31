@@ -1,14 +1,13 @@
 #' Generate a signature table for a validation report
 #'
-#' @param pkg Top-level directory of the package to validate
 #' @param usernames list of vt_names to use when validation.yml does not exist
 #' @return A dataframe created from the validation config containing a row for
 #'   each user with the columns: role, name_and_title, signature, and date.
 #'
 #' @export
-vt_scrape_sig_table <- function(usernames = NULL, pkg = "."){
+vt_scrape_sig_table <- function(usernames = NULL){
   if(is.null(usernames)){
-    people <- do.call('rbind', lapply(vt_get_all_users(pkg = pkg), data.frame))
+    people <- do.call('rbind', lapply(vt_get_all_users(), data.frame))
     rownames(people) <- NULL
     people
   } else {
