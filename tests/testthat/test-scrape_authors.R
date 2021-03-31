@@ -367,3 +367,51 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
 
   })
 })
+
+
+test_that("Scrape roxygen tags from function authors", {
+
+  withr::with_tempdir({
+
+    ## test setup
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    usethis::proj_set(force = TRUE)
+    usethis::use_r("hello_world.R", open = FALSE)
+
+    writeLines(c(
+      "#' A function to greet someone",
+      "#' @param name someone's name",
+      "#' @editor An author",
+      "#' @editDate 2021-01-01",
+      "#' @return text greeting",
+      "#' @export",
+     " hello_world <- function(name){",
+     "   paste(\"Hello \", name)",
+      "}",
+      "",
+      "#' A function to greet someone with date",
+      "#' @param name someone's name",
+      "#' @editor Another author",
+      "#' @editDate 2021-02-01",
+      "#' @return text greeting with date",
+      "hello_world2 <- function(name){",
+      "  paste(\"Hello \", name, \" today is: \", Sys.Date())",
+      "}"
+    ), file.path(usethis::proj_get(), "R", "hello_world.R"))
+
+
+    expect_equal(vt_scrape_authors(tags = c("editor", "editDate")),
+                 data.frame(functions = c("hello_world", "hello_world2"),
+                            editor = c("An author", "Another author"),
+                            editDate = c("2021-01-01", "2021-02-01")))
+
+    exported_authors <- vt_scrape_authors()
+    expect_equal(exported_authors[!is.na(exported_authors$export), c("functions", "editor", "editDate")],
+                 data.frame(functions = "hello_world",
+                            editor = "An author",
+                            editDate = "2021-01-01"))
+
+
+
+  })
+})

@@ -85,3 +85,29 @@ scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref
     return(list())
   }
 }
+
+#' Scrape author info from R functions
+#' @param tags which tags to keep. defaults to editor, editDate, and export.
+#' @param src path to package source. defaults to the current directory.
+#' passed to \code{valtools:::scrape_tags_from}
+#' @param ref reference path to where validation documentation lives. defaults to
+#' vt_path() passed to \code{valtools:::scrape_tags_from}
+#' @export
+#' @examples
+#' \dontrun{
+#' # all functions
+#' vt_scrape_authors(tags = c("editor", "editDate"))
+#'
+#' # only public functions
+#' vt_scrape_authors()  %>%
+#'   dplyr::filter(!is.na(export)) %>%
+#'   dplyr::select(-export)
+#' }
+vt_scrape_authors <- function(tags = c("editor", "editDate", "export"), src = ".", ref = vt_path()){
+  do.call("rbind", scrape_tags_from(
+    type = "functions",
+    tags = tags,
+    src = src,
+    ref = ref
+  ))
+}
