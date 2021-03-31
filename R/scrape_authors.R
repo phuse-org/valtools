@@ -122,7 +122,18 @@ vt_scrape_functions <- function(tags = c("editor", "editDate", "export"), src = 
 #' @importFrom knitr kable
 #' @importFrom kableExtra column_spec
 vt_kable_functions <- function(author_details, format = "latex"){
-  t <- kable(author_details, format = format, booktabs = FALSE)
+  all_colnames <- c(functions = "Function Name",
+                    editor = "Editor",
+                    editDate = "Edit Date",
+                    export = "Exported?")
+  this_colnames <- all_colnames[names(author_details)]
+
+  if("export" %in% names(this_colnames)){
+    author_details$export <- ifelse(is.na(author_details$export), FALSE, TRUE )
+  }
+
+  t <- kable(author_details[, names(this_colnames)], format = format, booktabs = FALSE,
+             col.names = unname(this_colnames))
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, ncol(author_details), border_right = TRUE)
   t
