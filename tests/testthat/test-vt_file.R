@@ -438,7 +438,6 @@ test_that("evaluating default files works", {
 test_that("rendered report is as expected using vt_file", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_req("example_req.md",username = "sample")
     vt_use_test_case("example_test_case.md",username = "sample")
@@ -509,7 +508,6 @@ test_that("rendered report is as expected using vt_file", {
 test_that("rendered report works using file.path inside vt_file", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_req("example_req.md",username = "sample")
     vt_use_test_case("example_test_case.md",username = "sample")
@@ -533,15 +531,15 @@ test_that("rendered report works using file.path inside vt_file", {
         "---",
         "",
         "```{r rando-file, echo = FALSE, results = 'asis'}",
-        "vt_file(file=file.path('vignettes','validation','rando_file.Rmd'))",
+        "vt_file(file=file.path('validation','rando_file.Rmd'))",
         "```",
         "",
         "```{r example-req, echo = FALSE, results = 'asis'}",
-        "vt_file(file=file.path('vignettes','validation','requirements','example_req.md'))",
+        "vt_file(file=file.path('validation','requirements','example_req.md'))",
         "```",
         "",
         "```{r example-test-case, echo = FALSE, results = 'asis'}",
-        "vt_file(file=file.path('vignettes','validation','test_cases','example_test_case.md'))",
+        "vt_file(file=file.path('validation','test_cases','example_test_case.md'))",
         "```"
       ), con = "report.Rmd"
     )
