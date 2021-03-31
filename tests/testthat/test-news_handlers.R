@@ -62,17 +62,18 @@ test_that("NEWS not in a package", {
 
     file.create(".here")
 
-    vt_use_news_md()
+    vt_use_news_md(version = "0.0.0.9000")
 
     expect_equal(
       vt_scrape_news(pkg = "."),
-      data.frame(version = "",
+      data.frame(version = "0.0.0.9000",
                  effective_date = "",
                  description = "Validation release notes for version 0.0.0.9000")
     )
   })
 
 })
+
 
 test_that("NEWS as item", {
   withr::with_tempdir({

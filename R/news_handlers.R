@@ -93,30 +93,33 @@ read_news <- function(file){
 
   news_file <- readLines(file)
   n_headers <- sum(grepl("^#",news_file))
-  section_headers <- c(grep("^#",news_file),length(news_file))
+  section_headers <- c(grep("^#",news_file),length(news_file) +1)
   sections <-
 
   db <- list(
-    text = vector("character", length =n_headers ),
-    version = vector("character", length =n_headers ),
+    Text = vector("character", length =n_headers ),
+    Version = vector("character", length =n_headers ),
     Date = vector("character", length =n_headers )
   )
 
   for(section_idx in seq_len(n_headers)){
 
     section_lines <- seq(
-      section_headers[[section_headers]]+1,
-      section_headers[[section_headers+1]]-1
+      section_headers[[section_idx]]+1,
+      section_headers[[section_idx+1]]-1
     )
 
-    header <- strsplit(section_headers[[section_headers]],sep = "\\s")[[1]]
+    header <-
+      strsplit(news_file[section_headers[[section_idx]]], split = "\\s+")[[1]]
 
-    version <- header[2]
-    date <- ifelse(length(header) == 3, header[3], NA)
-    body <- paste(news_file[section_lines], collapse = "\n ")
+    version <- header[3]
+    date <- ifelse(length(header) == 4, format(lubridate::parse_date_time(header[4],orders = c("ymd","mdy","dmy")), "%Y-%m-%d"), "")
+    body <- paste(
+      trimws(substring(trimws(news_file[section_lines]),first = 2)),
+        collapse = "\n ")
 
-    db$text[[section_idx]] <- body
-    db$version[[section_idx]] <- version
+    db$Text[[section_idx]] <- body
+    db$Version[[section_idx]] <- version
     db$Date[[section_idx]] <- date
   }
 
