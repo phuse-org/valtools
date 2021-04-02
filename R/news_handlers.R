@@ -63,10 +63,11 @@ vt_kable_news <- function(news_info, format = "latex"){
 
 #' Initiate a NEWS.md file
 #' @param date passed to template
+#' @param open
 #' @note This is an alternative to \code{usethis::use_news_md}.
 #' @export
 #' @importFrom rprojroot find_root has_file
-vt_use_news_md <- function(date = NULL, version = NULL){
+vt_use_news_md <- function(date = NULL, version = NULL, open = interactive()){
 
   root <- find_root(criterion = has_file("DESCRIPTION") | has_file(".here"))
 
@@ -74,6 +75,9 @@ vt_use_news_md <- function(date = NULL, version = NULL){
     this_desc <- desc(file = file.path(root,"DESCRIPTION"))
     fields <- this_desc$get(this_desc$fields())
   }else{
+    if(is.null(version) & !file.exists("NEWS.md")){
+      version <- "1.0"
+    }
     fields <- c(Version = version, Package = basename(root))
   }
 
@@ -86,6 +90,11 @@ vt_use_news_md <- function(date = NULL, version = NULL){
 
   render_template("NEWS.md", data = proj_info)
 
+  if(open){
+    edit_file("NEWS.md")
+  }
+
+  invisible("NEWS.md")
 }
 
 ## internal function for parsing NEWS.md into a "db" file
@@ -126,3 +135,4 @@ read_news <- function(file){
   db
 
 }
+

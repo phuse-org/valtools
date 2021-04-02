@@ -62,13 +62,13 @@ test_that("NEWS not in a package", {
 
     file.create(".here")
 
-    vt_use_news_md(version = "0.0.0.9000")
+    vt_use_news_md()
 
     expect_equal(
       vt_scrape_news(pkg = "."),
-      data.frame(version = "0.0.0.9000",
+      data.frame(version = "1.0",
                  effective_date = "",
-                 description = "Validation release notes for version 0.0.0.9000")
+                 description = "Validation release notes for version 1.0")
     )
   })
 
