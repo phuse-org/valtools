@@ -17,11 +17,12 @@
 #' Ellis Hughes
 #' @section Last updated date:
 #' 2021-03-05
+#' @export
 #' @importFrom devtools package_file
 #' @importFrom roxygen2  block_get_tag_value
 #' @importFrom stats setNames
 #' @importFrom rlang warn
-scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref = vt_path()){
+vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref = vt_path()){
 
   types <- c("requirements","test_cases","test_code")
 
@@ -89,9 +90,9 @@ scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref
 #' Scrape author info from R functions
 #' @param tags which tags to keep. defaults to editor, editDate, and export.
 #' @param src path to package source. defaults to the current directory.
-#' passed to \code{valtools:::scrape_tags_from}
+#' passed to \code{\link{vt_scrape_tags_from}}
 #' @param ref reference path to where validation documentation lives. defaults to
-#' vt_path() passed to \code{valtools:::scrape_tags_from}
+#' vt_path() passed to \code{\link{vt_scrape_tags_from}}
 #' @note Requires access to raw R/ or function documentation parsed via {valtools} into validation/ folder.
 #' Cannot pull information from installed R/ location.
 #' @export
@@ -106,7 +107,7 @@ scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref
 #'   dplyr::select(-export)
 #' }
 vt_scrape_functions <- function(tags = c("editor", "editDate", "export"), src = ".", ref = vt_path()){
-  do.call("rbind", scrape_tags_from(
+  do.call("rbind", vt_scrape_tags_from(
     type = "functions",
     tags = tags,
     src = src,

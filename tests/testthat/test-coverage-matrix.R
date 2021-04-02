@@ -464,7 +464,7 @@ test_that("existing reference obj", {
     expect_equal(references$list_references(), list())
 
     references$scrape_references(
-      do.call("rbind", scrape_tags_from(type = "requirements", tags = "title")))
+      do.call("rbind", vt_scrape_tags_from(type = "requirements", tags = "title")))
 
     expect_equal(references$list_references(),
                  list(`req:dynamic_numbering4` = 1,

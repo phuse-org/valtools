@@ -14,10 +14,10 @@ vt_scrape_functions(
 \item{tags}{which tags to keep. defaults to editor, editDate, and export.}
 
 \item{src}{path to package source. defaults to the current directory.
-passed to \code{valtools:::scrape_tags_from}}
+passed to \code{\link{vt_scrape_tags_from}}}
 
 \item{ref}{reference path to where validation documentation lives. defaults to
-vt_path() passed to \code{valtools:::scrape_tags_from}}
+vt_path() passed to \code{\link{vt_scrape_tags_from}}}
 }
 \description{
 Scrape author info from R functions

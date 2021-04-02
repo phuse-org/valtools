@@ -1,6 +1,6 @@
 #' Scrape "coverage" tag in test code to generate mapping
 #' @param reference dynamic reference holder if it already exists
-#' @param src,ref passed to \code{valtools:::scrape_tags_from}
+#' @param src,ref passed to \code{\link{vt_scrape_tags_from}}
 #' @param type one of "long" or "wide" which determines shape of output table
 #' @return a data.frame mapping requirement ids to test case ids.
 #' @importFrom rlang list2 := !!
@@ -53,7 +53,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
 
   ## end helper functions
 
-  cov_raw_values <- do.call("rbind", scrape_tags_from(type = "test_cases", tags =  c("title", "coverage"),
+  cov_raw_values <- do.call("rbind", vt_scrape_tags_from(type = "test_cases", tags =  c("title", "coverage"),
                                                src = src, ref = vt_path()))[, c("title", "coverage")]
 
   indiv_vals <- do.call("rbind", apply(cov_raw_values, 1, FUN = function(x){

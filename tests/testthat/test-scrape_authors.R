@@ -26,7 +26,7 @@ test_that("Scrape roxygen tags from reqs works", {
     vt_use_req("req003.md",username = "Test User 2")
 
     ## scrape
-    tag_list <- scrape_tags_from(
+    tag_list <- vt_scrape_tags_from(
       type = "requirements",
       tags = c("editor","editDate"),
       ref = "vignettes/validation")
@@ -84,7 +84,7 @@ test_that("Scrape roxygen tags from test cases works", {
     vt_use_test_case("test_case_003.md",username = "Test User 2")
 
     ## scrape
-    tag_list <- scrape_tags_from(
+    tag_list <- vt_scrape_tags_from(
       type = "test_cases",
       tags = c("editor","editDate"),
       ref = "vignettes/validation")
@@ -162,7 +162,7 @@ test_that("Scrape roxygen tags from test code works", {
     writeLines(gsub("TESTNUMBER","3.1", text),"vignettes/validation/test_code/test_code_003.R")
 
     ## scrape
-    tag_list <- scrape_tags_from(
+    tag_list <- vt_scrape_tags_from(
       type = "test_code",
       tags = c("editor","editDate"),
       ref = "vignettes/validation")
@@ -280,7 +280,7 @@ test_that("scrape functions from external dir", {
         "# some stray comment"),sep = "\n")
 
     warnings <- capture_warnings({
-    tag_list <- scrape_tags_from(
+    tag_list <- vt_scrape_tags_from(
       type = "functions",
       tags = c("editor", "editDate"),
       src = "example.package",
@@ -347,7 +347,7 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
 
     ## scrape
     warn_val <- capture_warnings({
-      tag_list <- scrape_tags_from(
+      tag_list <- vt_scrape_tags_from(
         type = "test_cases",
         tags = c("fake_tag"),
         ref = "vignettes/validation")
