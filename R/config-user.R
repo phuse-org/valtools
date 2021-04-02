@@ -14,7 +14,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -78,7 +78,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -152,7 +152,7 @@ vt_drop_user_from_config <- function(username){
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",

@@ -14,7 +14,7 @@ Wrapper for whoami::username
 }
 \examples{
 withr::with_tempdir({
-vt_use_validation_(
+vt_use_validation(
     username_list = list(vt_user(
       username = whoami::username(),
       name = "test",

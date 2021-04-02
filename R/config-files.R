@@ -13,7 +13,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_file_to_config(filename = "myReqFile.Rmd")
 #' }
@@ -90,7 +90,7 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_file_to_config(filename = "myReqFile.Rmd")
 #'

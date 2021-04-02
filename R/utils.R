@@ -63,7 +63,7 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
 #' @export
 #' @examples
 #' withr::with_tempdir({
-#' vt_use_validation_(
+#' vt_use_validation(
 #'     username_list = list(vt_user(
 #'       username = whoami::username(),
 #'       name = "test",

@@ -31,8 +31,8 @@
 #' @rdname validation_config
 #'
 #' @examples
-#'
-#' vt_use_config(pkg = tempdir(),
+#' withr::with_tempdir({
+#' vt_use_validation(
 #'               working_dir = ".",
 #'               output_dir  = ".",
 #'               report_naming_format = "Validation_Report_{package}_v{version}_{date}",
@@ -43,6 +43,7 @@
 #'                        role = "tester",
 #'                        username = "test"
 #'                        )))
+#'  })
 #'
 #' @export
 #'
