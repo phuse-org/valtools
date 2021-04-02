@@ -61,7 +61,9 @@ test_that("render returns the expected RMD text", {
 
     writeLines(
       c("---",
-        "output: pdf_document",
+        "output:",
+        "  pdf_document:",
+        "    fig_crop: false",
         "header-includes:",
         "  - \\usepackage{array}",
         "---",
@@ -132,7 +134,9 @@ test_that("render returns the expected html", {
       writeLines(
         c("---",
           "title: A report",
-          "output: html_document",
+          "output:",
+          "  html_document:",
+          "    fig_crop: false",
           "---",
           "\n\n",
           "```{r, setup, echo = FALSE, warning = FALSE, message = FALSE}",
