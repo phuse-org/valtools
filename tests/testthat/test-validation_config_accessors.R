@@ -2,16 +2,16 @@ test_that("Accessing config dirs works", {
 
     withr::with_tempdir({
 
-      vt_use_validation_config(pkg = ".")
+      vt_use_validation()
 
       expect_equal(
         get_config_working_dir(),
-        "vignettes"
+        "."
       )
 
       expect_equal(
         get_config_output_dir(),
-        "inst"
+        "."
       )
 
       expect_equal(
@@ -23,8 +23,7 @@ test_that("Accessing config dirs works", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(
-      pkg = ".",
+    vt_use_validation(
       working_dir = "new/dir",
       output_dir = "test",
       report_naming_format = "{package}_v{version}_Validation_report"
@@ -48,8 +47,7 @@ test_that("Accessing config user info works", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",
-                             username_list = list(
+    vt_use_validation(username_list = list(
                                vt_user(
                                  name = "test-name",
                                  title = "test-title",
@@ -88,8 +86,8 @@ test_that("Accessing config user info works even with multiple users", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",
-                             username_list = list(
+    vt_use_validation(
+      username_list = list(
                                vt_user(
                                  name = "test-name",
                                  title = "test-title",
@@ -141,7 +139,7 @@ test_that("Accessing config user info that does not exist throws informative err
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",
+    vt_use_validation(
                              username_list = list(
                                vt_user(
                                  name = "test-name",

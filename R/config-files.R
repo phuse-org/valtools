@@ -13,15 +13,15 @@
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_file_to_config(filename = "myReqFile.Rmd")
 #' }
 #' @importFrom rlang abort
 #' @export
-vt_add_file_to_config <- function(filename, before = NULL, after = NULL, pkg = "." ){
+vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
 
-  validation_config <- read_validation_config(pkg = pkg)
+  validation_config <- read_validation_config()
 
   # check whether these files are already listed
   # handle whether filename value is list or vector
@@ -62,14 +62,14 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL, pkg = "
 
 
     write_validation_config(
-      path = pkg,
+      path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
-      output_directory = validation_config$output_directory,
+      output_dir = validation_config$output_dir,
       report_naming_format = validation_config$report_naming_format,
       username_list = validation_config$usernames,
       validation_files = validation_file_list_new
-
     )
+
     inform(paste0("Filename(s): ", paste0(filename, collapse = ", "), " added to validation config file."),
            class = "vt.validation_config_add_file")
   }
@@ -90,7 +90,7 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL, pkg = "
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_file_to_config(filename = "myReqFile.Rmd")
 #'
@@ -98,8 +98,8 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL, pkg = "
 #'
 #' }
 #' @export
-vt_drop_file_from_config <- function( filename, pkg = "."){
-  validation_config <- read_validation_config(pkg = pkg)
+vt_drop_file_from_config <- function(filename){
+  validation_config <- read_validation_config()
   validation_file_list_old <- validation_config$validation_files
 
   ## check whether these files are already listed
@@ -117,9 +117,9 @@ vt_drop_file_from_config <- function( filename, pkg = "."){
   } else {
     validation_file_list_new <- validation_file_list_old[!validation_file_list_old %in% unlist(filename)]
     write_validation_config(
-      path = pkg,
+      path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
-      output_directory = validation_config$output_directory,
+      output_dir = validation_config$output_dir,
       report_naming_format = validation_config$report_naming_format,
       username_list = validation_config$usernames,
       validation_files = validation_file_list_new
@@ -132,8 +132,12 @@ vt_drop_file_from_config <- function( filename, pkg = "."){
 }
 
 
-get_config_validation_files <- function(dir = "."){
-  files <- read_validation_config(pkg = dir)$validation_files
+get_config_validation_files <- function(){
+  files <- read_validation_config()$validation_files
+}
+
+get_config_report_naming_format <- function(){
+  read_validation_config()$report_naming_format
 }
 
 insert_list_locator <- function(validation_file_list_old, filename, list_locator){

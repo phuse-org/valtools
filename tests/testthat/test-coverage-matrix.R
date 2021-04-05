@@ -91,9 +91,11 @@ test_that("coverage matrix from dynam num", {
           vt_kable_coverage_matrix(cov_matrix)),
           con = cov_matrix_tex_file)
 
+    suppressWarnings({
     capture_output <- capture.output({
       rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
-    })
+    })})
+
     rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
                                                       pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
                                                                 replacement = ".pdf"))))[[1]])
@@ -133,9 +135,10 @@ test_that("coverage matrix from dynam num", {
         vt_kable_coverage_matrix(cov_matrix, format = "html")),
       con = cov_matrix_rmd_file)
 
+    suppressWarnings({
     capture_output <- capture.output({
       rmarkdown::render(cov_matrix_rmd_file)
-    })
+    })})
     this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
     rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]])
     expect_equal(rendered_cov_matrix_html,
@@ -225,9 +228,10 @@ test_that("coverage matrix from dynam num", {
         vt_kable_coverage_matrix(cov_matrix2, format = "latex")),
       con = cov_matrix2_tex_file)
 
+    suppressWarnings({
     capture_output <- capture.output({
       rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
-    })
+    })})
 
     expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
 

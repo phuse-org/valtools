@@ -3,7 +3,7 @@ test_that("Scrape roxygen tags from reqs works", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -19,8 +19,6 @@ test_that("Scrape roxygen tags from reqs works", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_req("req001.md",username = "Test User")
     vt_use_req("req002.md",username = "Test User")
     vt_use_req("req003.md",username = "Test User 2")
@@ -29,7 +27,7 @@ test_that("Scrape roxygen tags from reqs works", {
     tag_list <- vt_scrape_tags_from(
       type = "requirements",
       tags = c("editor","editDate"),
-      ref = "vignettes/validation")
+      ref = "validation")
 
 
     ## check values
@@ -61,7 +59,7 @@ test_that("Scrape roxygen tags from test cases works", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -77,8 +75,6 @@ test_that("Scrape roxygen tags from test cases works", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_case("test_case_001.md",username = "Test User")
     vt_use_test_case("test_case_002.md",username = "Test User")
     vt_use_test_case("test_case_003.md",username = "Test User 2")
@@ -87,7 +83,7 @@ test_that("Scrape roxygen tags from test cases works", {
     tag_list <- vt_scrape_tags_from(
       type = "test_cases",
       tags = c("editor","editDate"),
-      ref = "vignettes/validation")
+      ref = "validation")
 
 
     ## check values
@@ -119,7 +115,7 @@ test_that("Scrape roxygen tags from test code works", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -147,25 +143,23 @@ test_that("Scrape roxygen tags from test code works", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_code("test_code_001",username = "Test User 3")
-    text <- readLines("vignettes/validation/test_code/test_code_001.R")
-    writeLines(gsub("TESTNUMBER","1.1", text),"vignettes/validation/test_code/test_code_001.R")
+    text <- readLines("validation/test_code/test_code_001.R")
+    writeLines(gsub("TESTNUMBER","1.1", text),"validation/test_code/test_code_001.R")
 
     vt_use_test_code("test_code_002",username = "Test User 4")
-    text <- readLines("vignettes/validation/test_code/test_code_002.R")
-    writeLines(gsub("TESTNUMBER","2.1", text),"vignettes/validation/test_code/test_code_002.R")
+    text <- readLines("validation/test_code/test_code_002.R")
+    writeLines(gsub("TESTNUMBER","2.1", text),"validation/test_code/test_code_002.R")
 
     vt_use_test_code("test_code_003",username = "Test User 4")
-    text <- readLines("vignettes/validation/test_code/test_code_003.R")
-    writeLines(gsub("TESTNUMBER","3.1", text),"vignettes/validation/test_code/test_code_003.R")
+    text <- readLines("validation/test_code/test_code_003.R")
+    writeLines(gsub("TESTNUMBER","3.1", text),"validation/test_code/test_code_003.R")
 
     ## scrape
     tag_list <- vt_scrape_tags_from(
       type = "test_code",
       tags = c("editor","editDate"),
-      ref = "vignettes/validation")
+      ref = "validation")
 
     ## check values
     expect_equal(
@@ -199,7 +193,7 @@ test_that("scrape functions from external dir", {
       usethis::create_package(path = "example.package" , open = FALSE,rstudio = TRUE)
     })
 
-    vt_use_validation_config()
+    vt_use_validation()
 
     this_file1 <- file.path("example.package", "R/hello_world.R")
     fs::file_create(path = this_file1)
@@ -325,7 +319,7 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -341,8 +335,6 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_case("test_case_001.md",username = "Test User")
 
     ## scrape
@@ -350,7 +342,7 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
       tag_list <- vt_scrape_tags_from(
         type = "test_cases",
         tags = c("fake_tag"),
-        ref = "vignettes/validation")
+        ref = "validation")
     })
 
 
