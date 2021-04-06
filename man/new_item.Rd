@@ -28,8 +28,6 @@ are located at \verb{./inst/validation/<ItemType>/\{name\}}.}
 sans file paths or extensions.}
 
 \item{open}{Should the newly made file be opened for editing.}
-
-\item{pkg}{Top-level of package}
 }
 \value{
 Path to the newly created validation item file, invisibly.

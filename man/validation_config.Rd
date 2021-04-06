@@ -115,13 +115,13 @@ Capture the information on a user that is going to be involved with validation
 \examples{
 \dontrun{
 
-vt_use_validation_config(pkg = ".")
+vt_use_validation()
 
 vt_add_file_to_config(filename = "myReqFile.Rmd")
 }
 \dontrun{
 
-vt_use_validation_config(pkg = ".")
+vt_use_validation()
 
 vt_add_file_to_config(filename = "myReqFile.Rmd")
 
@@ -130,7 +130,7 @@ vt_drop_file_from_config(filename = "myReqFile.Rmd")
 }
 \dontrun{
 
-vt_use_config(pkg = ".")
+vt_use_validation()
 
 vt_add_user_to_config(
     username = "ellis",
@@ -141,7 +141,7 @@ vt_add_user_to_config(
 }
 \dontrun{
 
-vt_use_validation_config(pkg = ".")
+vt_use_validation()
 
 vt_add_user_to_config(
     username = "ellis",
@@ -154,7 +154,7 @@ vt_drop_user_from_config(username = "ellis")
 }
 \dontrun{
 
-vt_use_validation_config(pkg = ".")
+vt_use_validation()
 
 vt_add_user_to_config(
     username = "ellis",
@@ -166,11 +166,11 @@ vt_get_user_info(username = "ellis", type = c("name","title"))
 
 }
 
-
-vt_use_config(pkg = tempdir(),
+withr::with_tempdir({
+vt_use_validation(
               working_dir = ".",
               output_dir  = ".",
-              report_naming_format = "Validation_Report_{package}_v{version}_{date}"
+              report_naming_format = "Validation_Report_{package}_v{version}_{date}",
               username_list = list(
                  vt_user(
                        name = "test",
@@ -178,6 +178,7 @@ vt_use_config(pkg = tempdir(),
                        role = "tester",
                        username = "test"
                        )))
+ })
 
 
 vt_user(

@@ -78,7 +78,9 @@ test_that("coverage matrix from dynam num", {
     writeLines(
       c("---",
           "title: validation report",
-          "output: pdf_document",
+          "output: ",
+          "  pdf_document:",
+          "    fig_crop: false",
           "header-includes:",
           "  - \\usepackage{array}",
           "  - \\usepackage{longtable}",
@@ -125,7 +127,9 @@ test_that("coverage matrix from dynam num", {
     writeLines(
       c("---",
         "title: validation report",
-        "output: html_document",
+        "output: ",
+        "  html_document:",
+        "    fig_crop: false",
         "---",
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix, format = "html")),
@@ -209,7 +213,9 @@ test_that("coverage matrix from dynam num", {
     writeLines(
       c("---",
         "title: validation report",
-        "output: pdf_document",
+        "output: ",
+        "  pdf_document:",
+        "    fig_crop: false",
         "header-includes:",
         "  - \\usepackage{array}",
         "  - \\usepackage{longtable}",

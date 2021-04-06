@@ -14,7 +14,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -78,7 +78,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -152,7 +152,7 @@ vt_drop_user_from_config <- function(username){
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -185,7 +185,6 @@ vt_get_user_info <- function(username, type = c("name","title","role")){
 }
 
 #' Get all users from validation config file without knowing usernames
-#' @param pkg Top-level directory of the package to validate
 #' @return list of all users in config file
 #' @export
 vt_get_all_users <- function(){
@@ -216,7 +215,7 @@ get_config_user <- function(username){
 
       if(tolower(decision) == "y"){
         vt_add_user_to_config(username = username)
-        read_validation_config(pkg = pkg)$usernames[[username]]
+        read_validation_config()$usernames[[username]]
       }else{
         abort(
           paste0("User `",username,"` does not exist in the config file.\n",

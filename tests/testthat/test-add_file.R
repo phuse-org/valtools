@@ -242,7 +242,7 @@ test_that("added files and then rendered report is as expected", {
       "  - bullet 1",
       "  - bullet 2",
       "```{r}",
-      "print('hello')",
+      "print(\"hello\")",
       "```"
     ),
     con = vt_path("rando_file.Rmd"))
@@ -309,7 +309,7 @@ test_that("added files and then rendered report is as expected", {
         "Content",
         "• bullet 1",
         "• bullet 2",
-        "print(’hello’)" ,
+        "print(\"hello\")" ,
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
         "• Test Case",

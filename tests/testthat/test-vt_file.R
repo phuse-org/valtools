@@ -86,7 +86,7 @@ test_that("evaluating Rmarkdown files works", {
       "+ Content 2",
 
       "```{r}",
-      "print('hello')",
+      "print(\"hello\")",
       "```"),
       con = "sample.Rmd"
     )
@@ -103,7 +103,7 @@ test_that("evaluating Rmarkdown files works", {
       "  + more content",
       "+ Content 2",
       "```{r}",
-      "print('hello')",
+      "print(\"hello\")",
       "```"),
       con = "sample2.Rmd"
     )
@@ -146,7 +146,7 @@ test_that("evaluating Rmarkdown files works", {
         "+ Content",
         "  + more content",
         "+ Content 2",
-        "print('hello')## [1] \"hello\"")
+        "print(\"hello\")## [1] \"hello\"")
     )
 
     expect_equal(
@@ -156,7 +156,7 @@ test_that("evaluating Rmarkdown files works", {
         "+ 1.1 Reference",
         "  + more content",
         "+ Content 2",
-        "print('hello')## [1] \"hello\"")
+        "print(\"hello\")## [1] \"hello\"")
     )
 
     expect_equal(
@@ -166,7 +166,7 @@ test_that("evaluating Rmarkdown files works", {
         "+ Content",
         "  + more content",
         "+ Content 2",
-        "print('hello')## [1] \"hello\"")
+        "print(\"hello\")## [1] \"hello\"")
     )
 
     expect_equal(
@@ -176,7 +176,7 @@ test_that("evaluating Rmarkdown files works", {
         "+ 1.1 Reference",
         "  + more content",
         "+ Content 2",
-        "print('hello')## [1] \"hello\"")
+        "print(\"hello\")## [1] \"hello\"")
     )
 
   })
@@ -449,7 +449,7 @@ test_that("rendered report is as expected using vt_file", {
       "  - bullet 1",
       "  - bullet 2",
       "```{r}",
-      "print('hello')",
+      "print(\"hello\")",
       "```"
     ),
     con = vt_path("rando_file.Rmd"))
@@ -492,7 +492,7 @@ test_that("rendered report is as expected using vt_file", {
         "Content",
         "• bullet 1",
         "• bullet 2",
-        "print(’hello’)",
+        "print(\"hello\")",
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
         "• Test Case",
@@ -519,7 +519,7 @@ test_that("rendered report works using file.path inside vt_file", {
       "  - bullet 1",
       "  - bullet 2",
       "```{r}",
-      "print('hello')",
+      "print(\"hello\")",
       "```"
     ),
     con = vt_path("rando_file.Rmd"))
@@ -531,15 +531,15 @@ test_that("rendered report works using file.path inside vt_file", {
         "---",
         "",
         "```{r rando-file, echo = FALSE, results = 'asis'}",
-        "vt_file(file=file.path('validation','rando_file.Rmd'))",
+        "vt_file(file=file.path(\"validation\",\"rando_file.Rmd\"))",
         "```",
         "",
         "```{r example-req, echo = FALSE, results = 'asis'}",
-        "vt_file(file=file.path('validation','requirements','example_req.md'))",
+        "vt_file(file=file.path(\"validation\",\"requirements\",\"example_req.md\"))",
         "```",
         "",
         "```{r example-test-case, echo = FALSE, results = 'asis'}",
-        "vt_file(file=file.path('validation','test_cases','example_test_case.md'))",
+        "vt_file(file=file.path(\"validation\",\"test_cases\",\"example_test_case.md\"))",
         "```"
       ), con = "report.Rmd"
     )
@@ -562,7 +562,7 @@ test_that("rendered report works using file.path inside vt_file", {
         "Content",
         "• bullet 1",
         "• bullet 2",
-        "print(’hello’)",
+        "print(\"hello\")",
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
         "• Test Case",
