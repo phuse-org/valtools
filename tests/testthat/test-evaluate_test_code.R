@@ -181,7 +181,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -197,20 +197,18 @@ test_that("Can run tests with vt_run_test_code_file()", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_code("test_001",username = "Test User")
-    text <- gsub("TESTNUMBER","1",readLines("vignettes/validation/test_code/test_001.R"))
+    text <- gsub("TESTNUMBER","1",readLines("validation/test_code/test_001.R"))
     text[grepl("#TEST CODE HERE", text)] <- "  expect_equal(2 * 2, 4)\n  expect_equal(2 * 2, 4)"
-    writeLines(text,"vignettes/validation/test_code/test_001.R")
+    writeLines(text,"validation/test_code/test_001.R")
 
     vt_use_test_code("test_002",username = "Test User")
-    text <- gsub("TESTNUMBER","2",readLines("vignettes/validation/test_code/test_002.R"))
+    text <- gsub("TESTNUMBER","2",readLines("validation/test_code/test_002.R"))
     text[grepl("#TEST CODE HERE", text)] <- "  expect_equal(2 * 2, 4)\n  expect_equal(2 * 2, 5)"
-    writeLines(text,"vignettes/validation/test_code/test_002.R")
+    writeLines(text,"validation/test_code/test_002.R")
 
-    results <- vt_run_test_code_file(file = "test_001.R", ref = "vignettes/validation/")
-    results2 <- vt_run_test_code_file(file = "test_002.R", ref = "vignettes/validation/")
+    results <- vt_run_test_code_file(file = "test_001.R", ref = "validation/")
+    results2 <- vt_run_test_code_file(file = "test_002.R", ref = "validation/")
 
     expect_equal(
       results,
@@ -239,7 +237,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -255,20 +253,18 @@ test_that("Can run tests with vt_run_test_code_file()", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_code("test_001",username = "Test User")
-    text <- gsub("TESTNUMBER","1",readLines("vignettes/validation/test_code/test_001.R"))
+    text <- gsub("TESTNUMBER","1",readLines("validation/test_code/test_001.R"))
     text[grepl("#TEST CODE HERE", text)] <- "  expect_equal(2 * 2, 4)\n  expect_equal(2 * 2, 4)"
-    writeLines(text,"vignettes/validation/test_code/test_001.R")
+    writeLines(text,"validation/test_code/test_001.R")
 
     vt_use_test_code("test_002",username = "Test User")
-    text <- gsub("TESTNUMBER","2",readLines("vignettes/validation/test_code/test_002.R"))
+    text <- gsub("TESTNUMBER","2",readLines("validation/test_code/test_002.R"))
     text[grepl("#TEST CODE HERE", text)] <- "  expect_equal(2 * 2, 4)\n  expect_equal(2 * 2, 5)"
-    writeLines(text,"vignettes/validation/test_code/test_002.R")
+    writeLines(text,"validation/test_code/test_002.R")
 
-    results <- vt_run_test_code_file(file = "test_001.R", ref = "vignettes/validation/")
-    results2 <- vt_run_test_code_file(file = "test_002.R", ref = "vignettes/validation/")
+    results <- vt_run_test_code_file(file = "test_001.R", ref = "validation/")
+    results2 <- vt_run_test_code_file(file = "test_002.R", ref = "validation/")
 
     expect_equal(
       results,

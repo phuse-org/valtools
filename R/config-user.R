@@ -14,7 +14,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -24,7 +24,7 @@
 #'
 #' }
 #' @export
-vt_add_user_to_config <- function(username = whoami::username(), name, title, role, pkg = "."){
+vt_add_user_to_config <- function(username = whoami::username(), name, title, role){
 
   user_info <-
     ask_user_name_title_role(
@@ -33,7 +33,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
       title = title,
       role = role)
 
-  validation_config <- read_validation_config(pkg = pkg)
+  validation_config <- read_validation_config()
 
   updating_info <-
     names(user_info) %in% names(validation_config$usernames)
@@ -43,9 +43,9 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
       user_info)
 
   write_validation_config(
-    path = pkg,
+    path = dirname(vt_find_config()),
     working_dir = validation_config$working_dir,
-    output_directory = validation_config$output_directory,
+    output_dir = validation_config$output_dir,
     report_naming_format = validation_config$report_naming_format,
     username_list = user_list,
     validation_files = validation_config$validation_files
@@ -78,7 +78,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -90,9 +90,9 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 #'
 #' }
 #' @export
-vt_drop_user_from_config <- function(username, pkg = "."){
+vt_drop_user_from_config <- function(username){
 
-  validation_config <- read_validation_config(pkg = pkg)
+  validation_config <- read_validation_config()
 
   existing_info <-
     username %in% names(validation_config$usernames)
@@ -112,9 +112,9 @@ vt_drop_user_from_config <- function(username, pkg = "."){
     user_list <- validation_config$usernames[setdiff(names(validation_config$usernames), username)]
 
     write_validation_config(
-      path = pkg,
+      path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
-      output_directory = validation_config$output_directory,
+      output_dir = validation_config$output_dir,
       report_naming_format = validation_config$report_naming_format,
       username_list = user_list,
       validation_files = validation_config$validation_files
@@ -152,7 +152,7 @@ vt_drop_user_from_config <- function(username, pkg = "."){
 #' @examples
 #' \dontrun{
 #'
-#' vt_use_validation_config(pkg = ".")
+#' vt_use_validation()
 #'
 #' vt_add_user_to_config(
 #'     username = "ellis",
@@ -165,38 +165,37 @@ vt_drop_user_from_config <- function(username, pkg = "."){
 #' }
 #'
 #' @export
-vt_get_user_info <- function(username, type = c("name","title","role"), pkg = "."){
+vt_get_user_info <- function(username, type = c("name","title","role")){
 
   type <- match.arg(type,several.ok = TRUE)
 
   output <- c()
 
   if("name" %in% type){
-    output <- c(name = get_config_user_name(username,pkg = pkg))
+    output <- c(name = get_config_user_name(username))
   }
   if("title" %in% type){
-    output <- c(output, title = get_config_user_title(username,pkg = pkg))
+    output <- c(output, title = get_config_user_title(username))
   }
   if("role" %in% type){
-    output <- c(output, role = get_config_user_role(username,pkg = pkg))
+    output <- c(output, role = get_config_user_role(username))
   }
 
   return(output)
 }
 
 #' Get all users from validation config file without knowing usernames
-#' @param pkg Top-level directory of the package to validate
 #' @return list of all users in config file
 #' @export
-vt_get_all_users <- function(pkg = "."){
-  return(read_validation_config(pkg = pkg)$usernames)
+vt_get_all_users <- function(){
+  return(read_validation_config()$usernames)
 
 }
 
 #' @importFrom rlang is_interactive inform abort
-get_config_user <- function(username, pkg = "."){
+get_config_user <- function(username){
 
-  users <- read_validation_config(pkg = pkg)$usernames
+  users <- read_validation_config()$usernames
 
   if( !username %in% names(users)){
 
@@ -216,7 +215,7 @@ get_config_user <- function(username, pkg = "."){
 
       if(tolower(decision) == "y"){
         vt_add_user_to_config(username = username)
-        read_validation_config(pkg = pkg)$usernames[[username]]
+        read_validation_config()$usernames[[username]]
       }else{
         abort(
           paste0("User `",username,"` does not exist in the config file.\n",
@@ -284,15 +283,15 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 }
 
 #' @noRd
-get_config_user_name <- function(username, pkg = "."){
-  get_config_user(username, pkg = pkg)$name
+get_config_user_name <- function(username){
+  get_config_user(username)$name
 }
 
-get_config_user_title <- function(username, pkg = "."){
-  get_config_user(username, pkg = pkg)$title
+get_config_user_title <- function(username){
+  get_config_user(username)$title
 }
 
-get_config_user_role <- function(username, pkg = "."){
-  get_config_user(username, pkg = pkg)$role
+get_config_user_role <- function(username){
+  get_config_user(username)$role
 }
 

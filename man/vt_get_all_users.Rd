@@ -4,10 +4,7 @@
 \alias{vt_get_all_users}
 \title{Get all users from validation config file without knowing usernames}
 \usage{
-vt_get_all_users(pkg = ".")
-}
-\arguments{
-\item{pkg}{Top-level directory of the package to validate}
+vt_get_all_users()
 }
 \value{
 list of all users in config file

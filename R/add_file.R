@@ -100,24 +100,7 @@ add_file.r_test_code <- function(file, report, ..., dynamic_referencing = FALSE)
 }
 
 
-#' @importFrom rlang abort
-#' @importFrom withr with_dir
-find_file <- function(filename, ref = "."){
 
-  with_dir(new = ref, {
-    file_list <- list.files(path = ".", recursive = TRUE, full.names = TRUE)
-  })
-
-  file_path <- file_list[basename(file_list) %in% filename]
-
-  if(length(file_path) == 0){
-    abort(paste0("File `",filename,"` not found."),
-          class = "vt.file_not_found")
-  }
-
-  do.call('file.path',as.list(split_path(file_path)))
-
-}
 
 split_path <- function(path) {
   if (dirname(path) %in% c(".", path)) return(basename(path))

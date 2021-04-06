@@ -1,7 +1,6 @@
 test_that("validation file path finds files within the validation infrastructure, throws error otherwise", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_req("example_req.md",username = "sample")
 
@@ -30,7 +29,6 @@ test_that("validation file path finds files within the validation infrastructure
 test_that("add_file finds file and adds a reading section to the current report", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_req("example_req.md",username = "sample")
 
@@ -94,7 +92,6 @@ test_that("add_file finds file and adds a reading section to the current report"
 test_that("add_file finds test files and adds an evaluation section to the current report", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_test_code("example_code.r",username = "sample")
 
@@ -169,7 +166,6 @@ test_that("add_file finds test files and adds an evaluation section to the curre
 test_that("add_file_to_report is a simple wrapper around add_file", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_req("example_req.md",username = "sample")
     vt_use_test_code("example_code.r",username = "sample")
@@ -235,7 +231,6 @@ test_that("add_file_to_report is a simple wrapper around add_file", {
 test_that("added files and then rendered report is as expected", {
   withr::with_tempdir({
 
-    vt_use_validation_config()
     vt_use_validation()
     vt_use_req("example_req.md",username = "sample")
     vt_use_test_case("example_test_case.md",username = "sample")
@@ -247,7 +242,7 @@ test_that("added files and then rendered report is as expected", {
       "  - bullet 1",
       "  - bullet 2",
       "```{r}",
-      "print('hello')",
+      "print(\"hello\")",
       "```"
     ),
     con = vt_path("rando_file.Rmd"))
@@ -314,7 +309,7 @@ test_that("added files and then rendered report is as expected", {
         "Content",
         "• bullet 1",
         "• bullet 2",
-        "print(’hello’)" ,
+        "print(\"hello\")" ,
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
         "• Test Case",

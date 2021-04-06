@@ -8,22 +8,15 @@
 #' @importFrom rlang abort inform
 #'
 #' @noRd
-create_item <- function(pkg = ".", type = c("requirements","test_cases","test_code"), item_name){
+create_item <- function(type = c("requirements","test_cases","test_code"), item_name){
 
   type <- match.arg(type)
 
-  validation_directory <- file.path(get_config_working_dir(pkg = pkg),"validation")
+  validation_directory <- vt_path()
 
-  # Error out if no validation skeleton
-  if(!dir.exists(file.path(pkg, validation_directory))) {
-    abort("No validation structure found. Run `valtools::vt_use_validation().`",
-          class = "vt.missingStructure")
-
-    # Create item folder if this is the first item
-  }
-
-  if(!dir.exists(file.path(pkg, validation_directory, type))) {
-    dir.create(file.path(pkg, validation_directory, type))
+  # Create item folder if this is the first item
+  if(!dir.exists(file.path(validation_directory, type))) {
+    dir.create(file.path(validation_directory, type))
   }
 
 
@@ -33,7 +26,7 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
   # If the item is nested in a folder make sure its made.
   if( !item_dir %in% c("",".")){
     tryCatch({
-      dir.create(file.path(pkg,validation_directory,type,item_dir), recursive  = TRUE, showWarnings = FALSE)
+      dir.create(file.path(validation_directory,type,item_dir), recursive  = TRUE, showWarnings = FALSE)
     },
     error = function(e) {
       abort(paste0("Failed to create validation", type, item_name,
@@ -42,7 +35,7 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
     })
   }
 
-  item_file_path <- file.path(pkg,validation_directory, type, item_name)
+  item_file_path <- file.path(validation_directory, type, item_name)
 
   tryCatch({
 
@@ -64,27 +57,25 @@ create_item <- function(pkg = ".", type = c("requirements","test_cases","test_co
 #'
 #' Wrapper for whoami::username
 #'
-#' @param pkg path to base directory of working project
-#'
-#' @returns `[character]` Username of the person that called the function
+#'  @returns `[character]` Username of the person that called the function
 #'
 #' @importFrom whoami username
 #' @export
 #' @examples
-#' temp_dir <- tempdir()
-#' vt_use_validation_config(
-#'     pkg = temp_dir,
+#' withr::with_tempdir({
+#' vt_use_validation(
 #'     username_list = list(vt_user(
 #'       username = whoami::username(),
 #'       name = "test",
 #'       title = "title",
 #'       role = "role")))
-#' vt_username( pkg = temp_dir)
+#' vt_username()
+#' })
 #'
 #' @importFrom whoami username
-vt_username <- function(pkg = "."){
+vt_username <- function(){
   user <- username(fallback = "")
-  get_config_user_name(username = user,pkg = pkg)
+  get_config_user_name(username = user)
 }
 
 

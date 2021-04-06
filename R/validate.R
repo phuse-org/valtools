@@ -59,8 +59,8 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
       },args = list(
         pkg = pkg,
         src = src,
-        working_dir = get_config_working_dir(pkg),
-        output_dir = file.path(get_config_output_dir(pkg = "."),"validation"),
+        working_dir = get_config_working_dir(),
+        output_dir = file.path(get_config_output_dir(),"validation"),
         output_file = evaluate_filename(pkg = pkg)
       )
       ))
@@ -241,47 +241,42 @@ directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
 
 copy_validation_content <- function(pkg = ".", src = pkg){
 
-  validation_directory <- file.path(get_config_working_dir(pkg = pkg), "validation")
-  validation_output_directory <- file.path(get_config_output_dir(pkg = pkg),"validation")
+  validation_directory <- file.path(get_config_working_dir(), "validation")
+  validation_output_directory <- file.path(get_config_output_dir(),"validation")
 
-  tryCatch({
+  if(validation_directory != validation_output_directory){
+    tryCatch({
 
-    if(!dir.exists(file.path(pkg, validation_output_directory))){
-      dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
-    }
+      if(!dir.exists(file.path(pkg, validation_output_directory))){
+        dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
+      }
 
-    ## copy validation contents to validation output dir
-    directory_copy(
-      from = file.path(pkg, validation_directory),
-      to = file.path(pkg, validation_output_directory),
-      recursive = TRUE,
-      overwrite = TRUE)
+      ## copy validation contents to validation output dir
+      directory_copy(
+        from = file.path(pkg, validation_directory),
+        to = file.path(pkg, validation_output_directory),
+        recursive = TRUE,
+        overwrite = TRUE)
 
-    ## copy validation Rmd
-    file.copy(
-      from = file.path(pkg, "vignettes", "validation.Rmd"),
-      to = file.path(pkg, validation_output_directory),
-      overwrite = TRUE
-    )
+      ## copy validation Rmd
+      file.copy(
+        from = file.path(pkg, "vignettes", "validation.Rmd"),
+        to = file.path(pkg, validation_output_directory),
+        overwrite = TRUE
+      )
 
-    ## copy .validation config file
-    file.copy(
-      from = file.path(src, "validation.yml"),
-      to = file.path(pkg, validation_output_directory),
-      overwrite = TRUE
-    )
+      # copy and strip down code documentation to validation output dir
+      roxygen_copy(
+        from = file.path(pkg, "R"),
+        to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
+        overwrite = TRUE)
 
-    # copy and strip down code documentation to validation output dir
-    roxygen_copy(
-      from = file.path(pkg, "R"),
-      to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
-      overwrite = TRUE)
-
-  },
-  error = function(e) {
-    abort(paste0(c("Error in moving validated content", e), sep = .Platform$file.sep),
-          class = "vt.buildFail")
-  })
+    },
+    error = function(e) {
+      abort(paste0(c("Error in moving validated content", e), sep = .Platform$file.sep),
+            class = "vt.buildFail")
+    })
+  }
 
   invisible(TRUE)
 }

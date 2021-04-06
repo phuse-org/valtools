@@ -5,7 +5,6 @@
 #'   are located at `./inst/validation/<ItemType>/{name}`.
 #' @param username The username to insert into the validation item as the author.
 #' @param open Should the newly made file be opened for editing.
-#' @param pkg Top-level of package
 #'
 #' @return Path to the newly created validation item file, invisibly.
 #'
@@ -31,13 +30,13 @@
 #' vt_use_test_case("regTests/Update2/case2", open = FALSE)
 #'
 #' })
-vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(), pkg = ".") {
+vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive()) {
 
   name <- vt_set_ext(name, ext = "md")
 
   is_valid_name(name)
 
-  case_name <- create_item(pkg, "test_cases", name)
+  case_name <- create_item("test_cases", name)
 
   ## if the file didnt exist before, populate with contents
   if (file.size(case_name) == 0){

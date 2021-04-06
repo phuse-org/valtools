@@ -53,11 +53,10 @@ test_that("render returns the expected RMD text", {
                  c( "# Signatures",
                     "",
                     "```{r, sig_table, echo = FALSE}",
-                    "vt_scrape_sig_table(pkg = rprojroot::find_root(rprojroot::has_file('validation.yml'))) %>%",
+                    "vt_scrape_sig_table() %>%",
                     "  vt_kable_sig_table(format = \"latex\")",
                     "```"
                  ))
-    skip_if_not_installed("valtools")
 
     writeLines(
       c("---",
@@ -70,19 +69,23 @@ test_that("render returns the expected RMD text", {
         "\n\n",
         "```{r, setup, echo = FALSE, warning = FALSE, message = FALSE}",
         "suppressWarnings({",
-        "library(valtools)",
         "library(magrittr)",
         "library(here)",
         "library(usethis)",
-        "proj_set(force = TRUE)",
         "})",
         "```",
+        "",
         "\n\n",
-        sig_table_rmd),
+        sig_table_rmd
+        ),
       con = file.path("vignettes", "validation", "stand_alone_sig_table.Rmd")
     )
+
+    suppressWarnings({
     capture_output <- capture.output(rmarkdown::render(file.path("vignettes", "validation",
                                 "stand_alone_sig_table.Rmd")))
+    })
+
     pdf_report_name <- file.path("vignettes", "validation",
                                  "stand_alone_sig_table.pdf")
     test_output_rendered <-
@@ -125,11 +128,10 @@ test_that("render returns the expected html", {
                    c( "# Signatures",
                       "",
                       "```{r, sig_table, echo = FALSE}",
-                      "vt_scrape_sig_table(pkg = rprojroot::find_root(rprojroot::has_file('validation.yml'))) %>%",
+                      "vt_scrape_sig_table() %>%",
                       "  vt_kable_sig_table(format = \"html\")",
                       "```"
                    ))
-      skip_if_not_installed("valtools")
 
       writeLines(
         c("---",
@@ -141,7 +143,7 @@ test_that("render returns the expected html", {
           "\n\n",
           "```{r, setup, echo = FALSE, warning = FALSE, message = FALSE}",
           "suppressWarnings({",
-          "library(valtools)",
+          # "library(valtools)",
           "library(magrittr)",
           "library(here)",
           "library(usethis)",

@@ -10,24 +10,12 @@ vt_use_test_case(
   name,
   username = vt_username(),
   title = NULL,
-  open = interactive(),
-  pkg = "."
+  open = interactive()
 )
 
-vt_use_test_code(
-  name,
-  username = vt_username(),
-  open = interactive(),
-  pkg = "."
-)
+vt_use_test_code(name, username = vt_username(), open = interactive())
 
-vt_use_req(
-  name,
-  username = vt_username(),
-  title = NULL,
-  open = interactive(),
-  pkg = "."
-)
+vt_use_req(name, username = vt_username(), title = NULL, open = interactive())
 }
 \arguments{
 \item{name}{The name/path of the validation item. These can be named with your
@@ -40,8 +28,6 @@ are located at \verb{./inst/validation/<ItemType>/\{name\}}.}
 sans file paths or extensions.}
 
 \item{open}{Should the newly made file be opened for editing.}
-
-\item{pkg}{Top-level of package}
 }
 \value{
 Path to the newly created validation item file, invisibly.
