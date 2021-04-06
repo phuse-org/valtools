@@ -63,15 +63,15 @@ test_that("integration test for CRAN", {
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[24], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[10], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
 
 
   })
 })
 
 test_that("validation report in package",{
-
+  skip_on_cran()
   withr::with_tempdir({
     # using the default .validation Validation Lead user
     test_user <- whoami::username(fallback = "")
@@ -85,14 +85,14 @@ test_that("validation report in package",{
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[24], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[10], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
 
   })
 })
 
 test_that("validation report in package",{
-
+  skip_on_cran()
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
@@ -116,7 +116,7 @@ test_that("validation report in package",{
 
 
 test_that("multiple authors",{
-
+  skip_on_cran()
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
@@ -152,7 +152,7 @@ test_that("multiple authors",{
 
 
 test_that("multiple authors",{
-
+  skip_on_cran()
   withr::with_tempdir({
     # using the default Validation Lead user
     test_user <- whoami::username(fallback = "")
@@ -164,7 +164,7 @@ test_that("multiple authors",{
     vt_use_test_case("testcase1.md", username = "author1", open = FALSE)
 
     vt_use_report()
-    report_code <- readLines(file.path(getwd(), "inst", report_name))
+    report_code <- readLines(file.path(getwd(), "vignettes", report_name))
 
 
   })

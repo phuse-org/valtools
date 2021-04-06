@@ -5,14 +5,14 @@ date: "`r Sys.Date()`"
 output:
   pdf_document:
     toc: true
+    fig_crop: false
 vignette: >
   %\VignetteIndexEntry{ {{title}} }
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 header-includes:
-  - \usepackage[dvipsnames, table]{xcolor}
-  - \usepackage{float}
   - \usepackage{array}
+  - \usepackage{multirow}
 ---
 
 ```{r, setup, echo=FALSE}
@@ -91,9 +91,7 @@ vt_scrape_val_env() %>%
 ```{r func-authors}
 all_authors <- do.call("rbind", vt_scrape_tags_from(
     type = "functions",
-    tags = c("editor", "editDate", "export"),
-    src = {{pkg_name}},
-    ref = valtools:::get_config_working_dir()
+    tags = c("editor", "editDate", "export")
   ))
   
 all_authors[!is.na(all_authors$export), !names(all_authors) %in% "export"] %>% 
