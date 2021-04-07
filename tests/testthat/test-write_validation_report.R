@@ -13,7 +13,7 @@ test_that("integration test for CRAN", {
                           role = "Write Test Cases, Tester")
     vt_add_user_to_config(username = "duser", name = "D user", title = "staff",
                           role = "Write Code")
-    vt_use_news_md(date = "2021-01-01")
+    vt_use_news_md(date = "2021-01-01", open = FALSE)
     vt_use_req("req1.md", username = "B user", title = "##req:req1", open = FALSE)
     vt_use_test_case("test_case1.md", username = "C User", title = "##tc:tc1", open = FALSE)
     writeLines(con = file.path("vignettes", "validation", "test_cases", "test_case1.md"),

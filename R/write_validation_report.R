@@ -1,5 +1,5 @@
 #' Create validation report from template
-#' @param dir filepath to folder containing config file \code{.validation}
+
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
 #' passed to \code{usethis::use_template}
@@ -8,23 +8,25 @@
 #' @importFrom tools file_ext
 #' @importFrom rlang with_interactive
 #' @export
-vt_use_report <- function(dir = ".",
-                          pkg_name = desc::desc_get_field("Package"),
+vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
                           template = "validation_report.Rmd",
                           open = FALSE){
 
-  if(!file.exists(file.path(dir, "validation.yml"))){
-    vt_use_validation_config()
-  }
+  tryCatch({
+    dir <- vt_find_config()
+  },
+  error = function(e){
+    vt_use_config(pkg = vt_path())
+    dir <- vt_find_config()
+  })
 
-  val_leads <- get_val_leads(dir = dir)
+  val_leads <- get_val_leads(dir = dirname(dir))
 
   if(length(val_leads) == 0){
     val_leads <-  tryCatch({
       val_leads_username <- with_interactive(value = FALSE, vt_username())
       val_leads <- vt_get_user_info(username = val_leads_username,
-                                        type = "name",
-                                        pkg = dir)[["name"]]
+                                        type = "name")[["name"]]
 
       config_details <- read_validation_config()
       old_role <- config_details$usernames[[val_leads]]$role
@@ -57,7 +59,7 @@ vt_use_report <- function(dir = ".",
   render_template( template = template,
                 output = file.path(get_config_working_dir(),
                                    paste0(evaluate_filename(), ".", file_ext(template))),
-                data = list(pkg_name = desc_get_field("Package", file = dir),
+                data = list(pkg_name = desc_get_field("Package", file = dirname(dir)),
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
