@@ -24,6 +24,9 @@ vt_scrape_requirements <- function(tags = c("editor", "editDate"), src = ".", re
 #' kable code from requirement author table
 #' @param requirement_details data.frame as exported from vt_scrape_requirements
 #' @param format passed to \code{knitr::kable}
+#' @export
+#' @importFrom kableExtra column_spec
+#' @importFrom knitr kable
 vt_kable_requirements <- function(requirement_details, format = "latex"){
   requirement_details$requirements = paste0("Requirement ", requirement_details$requirements)
 
