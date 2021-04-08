@@ -7,13 +7,13 @@
 #' look for NEWs entries starting with \code{[version date]}
 #' @export
 #' @importFrom utils news
-#' @importFrom rprojroot find_root has_file
-vt_scrape_news <- function(pkg = rprojroot::find_root(criterion = rprojroot::has_file("DESCRIPTION"))){
+#' @importFrom devtools package_file is.package
+vt_scrape_news <- function(pkg = devtools::package_file()){
 
-  if(is_package(pkg)){
+  if(is.package(pkg)){
     db <- news(package = basename(pkg))
   }else{
-    db <- read_news(find_file("NEWS.md",ref = pkg))
+    db <- read_news(find_file("NEWS.md", ref = pkg, full_names = TRUE))
   }
 
   all_text <- strsplit(db$Text, split = "\n ")
