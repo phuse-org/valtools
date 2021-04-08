@@ -37,6 +37,6 @@ vt_kable_requirements <- function(requirement_details, format = "latex"){
              format = format, booktabs = FALSE,
              col.names = all_colnames)
   t <- column_spec(t, 1, border_left = TRUE)
-  t <- column_spec(t, ncol(req_authors), border_right = TRUE)
+  t <- column_spec(t, ncol(requirement_details), border_right = TRUE)
   t
 }
