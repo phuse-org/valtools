@@ -22,54 +22,60 @@ library(nomnoml)
 
 ```{r}
 
-nomnoml::nomnoml("
+diagram <- nomnoml::nomnoml("
 [<frame>R Package Validation Framework |
+#direction: down
 
-[<start> start]
+[<frame> Requirements |
+  Goals of Project |
+  Risk Assessment |
+  {roxygen2} & {rmarkdown}
+]
 
-[<frame> Specifications | Requirement 01 | Requirement 02 | Requirement ...]
+[<frame> Package Development |
+ Functions |
+ Documentation |
+ {roxygen2} & {devtools} & {usethis}
+]
 
-[<frame> Risk Assessment | Probability Incorrect | Impact of Wrong Value ]
+[<frame> Test Cases |
+ How Package meets Requirements |
+ {roxygen2} & {rmarkdown}
+]
 
-[<frame> Package Development | Functions | Long Form Documentation | Manual Documentation ]
-
-[<frame> Test Cases | Every Requirement must;have at least one | Based on Risk | Automatable]
-
-[<frame> Test Code | Scripted | Automatable]
+[<frame> Test Code |
+ Test Cases implemented as R scripts |
+ {roxygen2} & {testthat}
+]
 
 [<frame> Validation Report | 
   Validation Environment;
-  Authorship;
-  Specifications;
+  Authorship & Roles;
+  Requirements;
   Test Cases;
-  Test Code Results;
-  ...
+  Test Code Results | 
+  {rmarkdown} & {testthat} & {roxygen2}
 ]
 
-[<end> VALIDATION]
+[<start> start] --> [Requirements]
 
-[start] -:> [Specifications]
 
-[Specifications] -:> [Risk Assessment]
+[Requirements] --> [Package Development]
 
-[Specifications] -:> [Package Development]
-[Risk Assessment] -:> [Package Development]
+[Requirements] --> [Test Cases]
+[Package Development] --> [Test Cases]
 
-[Specifications] -:> [Test Cases]
-[Package Development] -:> [Test Cases]
-[Risk Assessment] -:> [Test Cases]
+[Test Cases] 1:1 --:> [Test Code]
 
-[Test Cases] 1:1 -:> [Test Code]
+[Requirements] --> [Validation Report]
+[Package Development] --> [Validation Report]
+[Test Cases] --> [Validation Report]
+[Test Code] Exectute Code --:> [Validation Report]
 
-[Specifications] -:> [Validation Report]
-[Risk Assessment] -:> [Validation Report]
-[Package Development] -:> [Validation Report]
-[Test Cases] -:> [Validation Report]
-[Test Code] Results -:> [Validation Report]
+[Validation Report] --> [<end> VALIDATION]
 
-[Validation Report] -:> [VALIDATION]
+]",png = "vignettes/RPVF_diagram.png")
 
-]
-")
+nomnoml::
 
 ```
