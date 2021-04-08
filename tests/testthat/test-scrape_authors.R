@@ -444,3 +444,56 @@ test_that("Scrape roxygen tags from function authors", {
 
   })
 })
+
+test_that("scrape roxygen tags requirement authors", {
+  withr::with_tempdir({
+
+    ## test setup
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    vt_use_req(name = "req1", username = "B user", title = "##req:req1")
+    dynamic_ref <- vt_dynamic_referencer$new()
+
+
+    rendered_req <- vt_scrape_requirements(dynamic_ref = dynamic_ref)
+    expect_equal(rendered_req,
+                 data.frame(requirements = "1",
+                            editor = "B user",
+                            editDate = as.character(Sys.Date())))
+
+    expect_equal(vt_scrape_requirements(),
+                 data.frame(requirements = "##req:req1",
+                            editor = "B user",
+                            editDate = as.character(Sys.Date())))
+
+    expect_equal(strsplit(vt_kable_requirements(rendered_req), split = "\n")[[1]][-1],
+                 c(
+                   "\\begin{tabular}{|>{}l|l|>{}l|}",
+                   "\\hline",
+                   "Requirement ID & Editor & Edit Date\\\\",
+                   "\\hline",
+                   "Requirement 1 & B user & 2021-04-07\\\\",
+                   "\\hline",
+                   "\\end{tabular}"))
+
+    expect_equal(strsplit(vt_kable_requirements(rendered_req, format = "html"), split = "\n")[[1]][-1],
+                 c(
+                   " <thead>",
+                   "  <tr>",
+                   "   <th style=\"text-align:left;\"> Requirement ID </th>",
+                   "   <th style=\"text-align:left;\"> Editor </th>",
+                   "   <th style=\"text-align:left;\"> Edit Date </th>",
+                   "  </tr>",
+                   " </thead>",
+                   "<tbody>",
+                   "  <tr>",
+                   "   <td style=\"text-align:left;border-left:1px solid;\"> Requirement 1 </td>",
+                   "   <td style=\"text-align:left;\"> B user </td>",
+                   "   <td style=\"text-align:left;border-right:1px solid;\"> 2021-04-07 </td>",
+                   "  </tr>",
+                   "</tbody>",
+                   "</table>"
+                 ))
+
+
+})
+})
