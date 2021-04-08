@@ -471,7 +471,7 @@ test_that("scrape roxygen tags requirement authors", {
                    "\\hline",
                    "Requirement ID & Editor & Edit Date\\\\",
                    "\\hline",
-                   "Requirement 1 & B user & 2021-04-07\\\\",
+                   paste0("Requirement 1 & B user & ", as.character(Sys.Date()), "\\\\"),
                    "\\hline",
                    "\\end{tabular}"))
 
@@ -488,7 +488,7 @@ test_that("scrape roxygen tags requirement authors", {
                    "  <tr>",
                    "   <td style=\"text-align:left;border-left:1px solid;\"> Requirement 1 </td>",
                    "   <td style=\"text-align:left;\"> B user </td>",
-                   "   <td style=\"text-align:left;border-right:1px solid;\"> 2021-04-07 </td>",
+                   paste0("   <td style=\"text-align:left;border-right:1px solid;\"> ", as.character(Sys.Date()), " </td>"),
                    "  </tr>",
                    "</tbody>",
                    "</table>"
