@@ -13,10 +13,6 @@ header-includes:
   - \usepackage{float}
 ---
 
-<<<<<<< Updated upstream
-```{r setup}
-library(valtools)
-=======
 ```{r, setup, echo=FALSE,warning=FALSE}
 suppressPackageStartupMessages({
   library(valtools)
@@ -106,5 +102,4 @@ all_func_details <- vt_scrape_functions()
 all_func_details[!is.na(all_function_details$export), c("functions", "editor", "editDate")] %>% 
   vt_kable_functions()
   
->>>>>>> Stashed changes
 ```
