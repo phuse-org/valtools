@@ -6,6 +6,9 @@
 #' @param username The username to insert into the validation item as the author.
 #' @param open Should the newly made file be opened for editing.
 #' @param pkg Top-level of package
+#' @param add_before,add_after If either parameters is supplied, the location to
+#'   add the validation item to the validation configuration. If no parameter is
+#'   passed the item is added at the end.
 #'
 #' @return Path to the newly created validation item file, invisibly.
 #'
@@ -28,10 +31,11 @@
 #' # Create req at the cases top level `inst/validation/cases/case1`
 #' vt_use_test_case("case1", open = FALSE)
 #' # Create req at `inst/validation/cases/regTests/Update2/case2`
-#' vt_use_test_case("regTests/Update2/case2", open = FALSE)
+#' vt_use_test_case("regTests/Update2/case2", open = FALSE, add_before = "case1.md")
 #'
 #' })
-vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(), pkg = ".") {
+vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(),
+                             pkg = ".", add_before = NULL, add_after = NULL) {
 
   name <- vt_set_ext(name, ext = "md")
 
@@ -55,6 +59,10 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
                      ))
 
   }
+
+  # Add file to validation configuration
+  vt_add_file_to_config(filename = name, pkg = pkg, after = add_after,
+                        before = add_before)
 
   if(open){
     edit_file(case_name)

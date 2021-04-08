@@ -1,7 +1,8 @@
 # The rest of this documentation is in case.R
 #' @export
 #' @rdname new_item
-vt_use_test_code <- function(name, username = vt_username(), open = interactive(), pkg = ".") {
+vt_use_test_code <- function(name, username = vt_username(), open = interactive(), pkg = ".",
+                             add_before = NULL, add_after = NULL) {
 
   name <- vt_set_ext(name, ext = "R")
 
@@ -20,6 +21,10 @@ vt_use_test_code <- function(name, username = vt_username(), open = interactive(
                       editDate = as.character(Sys.Date())
                     ))
   }
+
+  # Add file to validation configuration
+  vt_add_file_to_config(filename = name, pkg = pkg, after = add_after,
+                        before = add_before)
 
   if(open){
     edit_file(code_name)
