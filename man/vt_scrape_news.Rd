@@ -4,7 +4,9 @@
 \alias{vt_scrape_news}
 \title{Scrape news from a package}
 \usage{
-vt_scrape_news(pkg = rprojroot::find_root(criterion = has_file("DESCRIPTION")))
+vt_scrape_news(
+  pkg = rprojroot::find_root(criterion = rprojroot::has_file("DESCRIPTION"))
+)
 }
 \arguments{
 \item{pkg}{installed package}

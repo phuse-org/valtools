@@ -2,6 +2,7 @@ test_that("Creating test code and set user", {
 
   withr::with_tempdir({
 
+    dir.create("validation", recursive = TRUE)
     writeLines(c(
       "working_dir: vignettes",
       "usernames:",
@@ -9,13 +10,13 @@ test_that("Creating test code and set user", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      "validation.yml")
-    dir.create("vignettes/validation", recursive = TRUE)
+      "validation/validation.yml")
+    file.create(".here")
+
 
     test_code_path <- vt_use_test_code(
       name = "testcode001.md",
       username = "New User",
-      pkg = ".",
       open = FALSE
       )
 
@@ -51,6 +52,7 @@ test_that("Creating test code and not setting user takes username", {
 
   withr::with_tempdir({
 
+    dir.create("validation", recursive = TRUE)
     writeLines(c(
       "working_dir: vignettes",
       "usernames:",
@@ -58,12 +60,11 @@ test_that("Creating test code and not setting user takes username", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      "validation.yml")
-    dir.create("vignettes/validation", recursive = TRUE)
+      "validation/validation.yml")
+    file.create(".here")
 
     test_code_path <- vt_use_test_code(
       name = "testcode001.md",
-      pkg = ".",
       open = FALSE
     )
 
@@ -98,6 +99,7 @@ test_that("Creating test codes adds correct extension", {
 
   withr::with_tempdir({
 
+    dir.create("validation", recursive = TRUE)
     writeLines(c(
       "working_dir: vignettes",
       "usernames:",
@@ -105,18 +107,16 @@ test_that("Creating test codes adds correct extension", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      "validation.yml")
-    dir.create("vignettes/validation", recursive = TRUE)
+      "validation/validation.yml")
+    file.create(".here")
 
     test_code_path <- vt_use_test_code(
       name = "testcode001",
-      pkg = ".",
       open = FALSE
     )
 
     test_code_path2 <- vt_use_test_code(
       name = "testcode001.badext",
-      pkg = ".",
       open = FALSE
     )
 

@@ -4,7 +4,7 @@
 \alias{vt_use_news_md}
 \title{Initiate a NEWS.md file}
 \usage{
-vt_use_news_md(date = NULL)
+vt_use_news_md(date = NULL, version = NULL, open = interactive())
 }
 \arguments{
 \item{date}{passed to template}

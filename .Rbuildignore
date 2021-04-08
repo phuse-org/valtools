@@ -10,3 +10,4 @@ CONTRIBUTING.md
 ^\.validation$
 ^validation\.yml$
 
+vignettes/validation/validation.yml

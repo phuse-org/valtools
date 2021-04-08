@@ -41,7 +41,7 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
 
   is_valid_name(name)
 
-  case_name <- create_item(pkg, "test_cases", name)
+  case_name <- create_item("test_cases", name)
 
   ## if the file didnt exist before, populate with contents
   if (file.size(case_name) == 0){

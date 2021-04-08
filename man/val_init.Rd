@@ -5,7 +5,7 @@
 \alias{vt_create_package}
 \title{Create a validation structure}
 \usage{
-vt_use_validation(pkg = ".")
+vt_use_validation(pkg = ".", working_dir, ...)
 
 vt_create_package(
   pkg = ".",
@@ -20,7 +20,9 @@ vt_create_package(
 \arguments{
 \item{pkg}{Top level directory of a package}
 
-\item{...}{Additional argument passed to \code{vt_use_validation_config()}}
+\item{working_dir}{validation working directory of the project. Defaults to}
+
+\item{...}{Additional argument passed to \code{vt_use_config()}}
 
 \item{fields}{A named list of fields to add to \code{DESCRIPTION}, potentially
 overriding default values. See \code{\link[usethis:use_description]{use_description()}} for how you can set

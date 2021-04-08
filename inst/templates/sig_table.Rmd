@@ -1,6 +1,6 @@
 # Signatures
 
 ```{r, sig_table, echo = FALSE}
-vt_scrape_sig_table(pkg = rprojroot::find_root(rprojroot::has_file('validation.yml'))) %>%
+vt_scrape_sig_table() %>%
   vt_kable_sig_table(format = "{{format}}")
 ```

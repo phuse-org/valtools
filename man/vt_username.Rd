@@ -4,26 +4,23 @@
 \alias{vt_username}
 \title{Get current username}
 \usage{
-vt_username(pkg = ".")
-}
-\arguments{
-\item{pkg}{path to base directory of working project}
-}
-\value{
-\verb{[character]} Username of the person that called the function
+vt_username()
 }
 \description{
 Wrapper for whoami::username
 }
+\details{
+@returns \verb{[character]} Username of the person that called the function
+}
 \examples{
-temp_dir <- tempdir()
-vt_use_validation_config(
-    pkg = temp_dir,
+withr::with_tempdir({
+vt_use_validation(
     username_list = list(vt_user(
       username = whoami::username(),
       name = "test",
       title = "title",
       role = "role")))
-vt_username( pkg = temp_dir)
+vt_username()
+})
 
 }

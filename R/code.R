@@ -9,7 +9,7 @@ vt_use_test_code <- function(name, username = vt_username(), open = interactive(
   is_valid_name(name)
 
   # Create file to write in
-  code_name <- create_item(pkg, "test_code", name)
+  code_name <- create_item("test_code", name)
 
   ## if the file didnt exist before, populate with contents
   if (file.size(code_name) == 0){

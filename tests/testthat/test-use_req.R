@@ -2,6 +2,7 @@ test_that("Creating requirements and set user/title", {
 
   withr::with_tempdir({
 
+    dir.create("validation", recursive = TRUE)
     writeLines(c(
       "working_dir: vignettes",
       "usernames:",
@@ -9,14 +10,13 @@ test_that("Creating requirements and set user/title", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      "validation.yml")
-    dir.create("vignettes/validation", recursive = TRUE)
+      "validation/validation.yml")
+    file.create(".here")
 
     req_path <- vt_use_req(
       name = "req001.md",
       username = "New User",
       title = "Requirement 001",
-      pkg = ".",
       open = FALSE
       )
 
@@ -46,6 +46,7 @@ test_that("Creating requirements and not setting user takes username", {
 
   withr::with_tempdir({
 
+    dir.create("validation", recursive = TRUE)
     writeLines(c(
       "working_dir: vignettes",
       "usernames:",
@@ -53,12 +54,12 @@ test_that("Creating requirements and not setting user takes username", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      "validation.yml")
-    dir.create("vignettes/validation", recursive = TRUE)
+      "validation/validation.yml")
+    file.create(".here")
+
 
     req_path <- vt_use_req(
       name = "req001.md",
-      pkg = ".",
       open = FALSE
     )
 
@@ -88,6 +89,7 @@ test_that("Creating requirements adds correct extension", {
 
   withr::with_tempdir({
 
+    dir.create("validation", recursive = TRUE)
     writeLines(c(
       "working_dir: vignettes",
       "usernames:",
@@ -95,18 +97,16 @@ test_that("Creating requirements adds correct extension", {
       "    name: New User",
       "    title: new",
       "    role: user"),
-      "validation.yml")
-    dir.create("vignettes/validation", recursive = TRUE)
+      "validation/validation.yml")
+    file.create(".here")
 
     req_path <- vt_use_req(
       name = "req001",
-      pkg = ".",
       open = FALSE
     )
 
     req_path2 <- vt_use_req(
       name = "req001.badext",
-      pkg = ".",
       open = FALSE
     )
 

@@ -3,7 +3,7 @@ test_that("Scrape roxygen tags from reqs works", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -19,8 +19,6 @@ test_that("Scrape roxygen tags from reqs works", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_req("req001.md",username = "Test User")
     vt_use_req("req002.md",username = "Test User")
     vt_use_req("req003.md",username = "Test User 2")
@@ -29,7 +27,7 @@ test_that("Scrape roxygen tags from reqs works", {
     tag_list <- vt_scrape_tags_from(
       type = "requirements",
       tags = c("editor","editDate"),
-      ref = "vignettes/validation")
+      ref = "validation")
 
 
     ## check values
@@ -61,7 +59,7 @@ test_that("Scrape roxygen tags from test cases works", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -77,8 +75,6 @@ test_that("Scrape roxygen tags from test cases works", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_case("test_case_001.md",username = "Test User")
     vt_use_test_case("test_case_002.md",username = "Test User")
     vt_use_test_case("test_case_003.md",username = "Test User 2")
@@ -87,7 +83,7 @@ test_that("Scrape roxygen tags from test cases works", {
     tag_list <- vt_scrape_tags_from(
       type = "test_cases",
       tags = c("editor","editDate"),
-      ref = "vignettes/validation")
+      ref = "validation")
 
 
     ## check values
@@ -119,7 +115,7 @@ test_that("Scrape roxygen tags from test code works", {
   withr::with_tempdir({
 
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -147,25 +143,23 @@ test_that("Scrape roxygen tags from test code works", {
         )
       ))
 
-    vt_use_validation()
-
     vt_use_test_code("test_code_001",username = "Test User 3")
-    text <- readLines("vignettes/validation/test_code/test_code_001.R")
-    writeLines(gsub("TESTNUMBER","1.1", text),"vignettes/validation/test_code/test_code_001.R")
+    text <- readLines("validation/test_code/test_code_001.R")
+    writeLines(gsub("TESTNUMBER","1.1", text),"validation/test_code/test_code_001.R")
 
     vt_use_test_code("test_code_002",username = "Test User 4")
-    text <- readLines("vignettes/validation/test_code/test_code_002.R")
-    writeLines(gsub("TESTNUMBER","2.1", text),"vignettes/validation/test_code/test_code_002.R")
+    text <- readLines("validation/test_code/test_code_002.R")
+    writeLines(gsub("TESTNUMBER","2.1", text),"validation/test_code/test_code_002.R")
 
     vt_use_test_code("test_code_003",username = "Test User 4")
-    text <- readLines("vignettes/validation/test_code/test_code_003.R")
-    writeLines(gsub("TESTNUMBER","3.1", text),"vignettes/validation/test_code/test_code_003.R")
+    text <- readLines("validation/test_code/test_code_003.R")
+    writeLines(gsub("TESTNUMBER","3.1", text),"validation/test_code/test_code_003.R")
 
     ## scrape
     tag_list <- vt_scrape_tags_from(
       type = "test_code",
       tags = c("editor","editDate"),
-      ref = "vignettes/validation")
+      ref = "validation")
 
     ## check values
     expect_equal(
@@ -199,7 +193,7 @@ test_that("scrape functions from external dir", {
       usethis::create_package(path = "example.package" , open = FALSE,rstudio = TRUE)
     })
 
-    vt_use_validation_config()
+    vt_use_validation()
 
     this_file1 <- file.path("example.package", "R/hello_world.R")
     fs::file_create(path = this_file1)
@@ -321,11 +315,11 @@ test_that("scrape functions from external dir", {
 })
 
 test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
-  
+
   withr::with_tempdir({
-    
+
     ## test setup
-    vt_use_validation_config(
+    vt_use_validation(
       username_list = list(
         vt_user(
           username = "user1",
@@ -340,30 +334,113 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
           title = "Req Writer"
         )
       ))
-    
-    vt_use_validation()
-    
+
     vt_use_test_case("test_case_001.md",username = "Test User")
-    
+
     ## scrape
     warn_val <- capture_warnings({
       tag_list <- vt_scrape_tags_from(
         type = "test_cases",
         tags = c("fake_tag"),
-        ref = "vignettes/validation")
+        ref = "validation")
     })
-    
-    
+
+
     ## check values
     expect_equal(
       tag_list,
       list()
     )
-    
+
     expect_equal(
       warn_val,
       "No blocks with tags `fake_tag`"
     )
-    
+
+  })
+})
+
+
+test_that("Scrape roxygen tags from function authors", {
+
+  withr::with_tempdir({
+
+    ## test setup
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    usethis::proj_set(force = TRUE)
+    usethis::use_r("hello_world.R", open = FALSE)
+
+    writeLines(c(
+      "#' A function to greet someone",
+      "#' @param name someone's name",
+      "#' @editor An author",
+      "#' @editDate 2021-01-01",
+      "#' @return text greeting",
+      "#' @export",
+     " hello_world <- function(name){",
+     "   paste(\"Hello \", name)",
+      "}",
+      "",
+      "#' A function to greet someone with date",
+      "#' @param name someone's name",
+      "#' @editor Another author",
+      "#' @editDate 2021-02-01",
+      "#' @return text greeting with date",
+      "hello_world2 <- function(name){",
+      "  paste(\"Hello \", name, \" today is: \", Sys.Date())",
+      "}"
+    ), file.path(usethis::proj_get(), "R", "hello_world.R"))
+
+
+    expect_equal(vt_scrape_functions(tags = c("editor", "editDate")),
+                 data.frame(functions = c("hello_world", "hello_world2"),
+                            editor = c("An author", "Another author"),
+                            editDate = c("2021-01-01", "2021-02-01")))
+
+    exported_authors <- vt_scrape_functions()
+    expect_equal(exported_authors[!is.na(exported_authors$export), c("functions", "editor", "editDate")],
+                 data.frame(functions = "hello_world",
+                            editor = "An author",
+                            editDate = "2021-01-01"))
+    expect_equal(strsplit(vt_kable_functions(exported_authors), "\n")[[1]][-1],
+                 c(
+                   "\\begin{tabular}{|>{}l|l|l|>{}l|}",
+                   "\\hline",
+                   "Function Name & Editor & Edit Date & Exported?\\\\",
+                   "\\hline",
+                    "hello\\_world & An author & 2021-01-01 & TRUE\\\\",
+                   "\\hline",
+                    "hello\\_world2 & Another author & 2021-02-01 & FALSE\\\\",
+                   "\\hline",
+                    "\\end{tabular}"
+                 ))
+
+    expect_equal(strsplit(vt_kable_functions(exported_authors, format = "html"), "\n")[[1]][-1],
+                 c(" <thead>",
+                 "  <tr>",
+                 "   <th style=\"text-align:left;\"> Function Name </th>",
+                 "   <th style=\"text-align:left;\"> Editor </th>",
+                 "   <th style=\"text-align:left;\"> Edit Date </th>",
+                 "   <th style=\"text-align:left;\"> Exported? </th>",
+                 "  </tr>",
+                 " </thead>",
+                 "<tbody>",
+                 "  <tr>",
+                 "   <td style=\"text-align:left;border-left:1px solid;\"> hello_world </td>",
+                 "   <td style=\"text-align:left;\"> An author </td>",
+                 "   <td style=\"text-align:left;\"> 2021-01-01 </td>",
+                 "   <td style=\"text-align:left;border-right:1px solid;\"> TRUE </td>",
+                 "  </tr>",
+                 "  <tr>",
+                 "   <td style=\"text-align:left;border-left:1px solid;\"> hello_world2 </td>",
+                 "   <td style=\"text-align:left;\"> Another author </td>",
+                 "   <td style=\"text-align:left;\"> 2021-02-01 </td>",
+                 "   <td style=\"text-align:left;border-right:1px solid;\"> FALSE </td>",
+                 "  </tr>",
+                 "</tbody>",
+                 "</table>" ))
+
+
+
   })
 })
