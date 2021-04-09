@@ -5,7 +5,7 @@
 #' @rdname new_item
 #' @export
 vt_use_req <- function(name, username = vt_username(), title = NULL, open = interactive(),
-                       pkg = ".", add_before = NULL, add_after = NULL){
+                       add_before = NULL, add_after = NULL){
 
   # ensure file extensions are of the acceptable type
   name <- vt_set_ext(name, ext = "md")
@@ -31,8 +31,7 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
                     ))
   }
 
-  vt_add_file_to_config(filename = name, pkg = pkg, after = add_after,
-                        before = add_before)
+  vt_add_file_to_config(filename = name, after = add_after, before = add_before)
 
   if(open){
     edit_file(req_name)

@@ -11,7 +11,6 @@ vt_use_test_case(
   username = vt_username(),
   title = NULL,
   open = interactive(),
-  pkg = ".",
   add_before = NULL,
   add_after = NULL
 )
@@ -20,7 +19,6 @@ vt_use_test_code(
   name,
   username = vt_username(),
   open = interactive(),
-  pkg = ".",
   add_before = NULL,
   add_after = NULL
 )
@@ -30,7 +28,6 @@ vt_use_req(
   username = vt_username(),
   title = NULL,
   open = interactive(),
-  pkg = ".",
   add_before = NULL,
   add_after = NULL
 )
@@ -46,8 +43,6 @@ are located at \verb{./inst/validation/<ItemType>/\{name\}}.}
 sans file paths or extensions.}
 
 \item{open}{Should the newly made file be opened for editing.}
-
-\item{pkg}{Top-level of package}
 
 \item{add_before, add_after}{If either parameters is supplied, the location to
 add the validation item to the validation configuration. If no parameter is
