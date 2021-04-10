@@ -7,10 +7,12 @@
 #' look for NEWs entries starting with \code{[version date]}
 #' @export
 #' @importFrom utils news
-#' @importFrom devtools package_file is.package
+#' @importFrom devtools package_file
 vt_scrape_news <- function(pkg = devtools::package_file()){
 
-  if(is.package(pkg)){
+
+  if(suppressWarnings(require(pkg, character.only = TRUE, quietly = TRUE))){
+    # pull from NEWS in library if installed
     db <- news(package = basename(pkg))
   }else{
     db <- read_news(find_file("NEWS.md", ref = pkg, full_names = TRUE))
@@ -63,7 +65,8 @@ vt_kable_news <- function(news_info, format = "latex"){
 
 #' Initiate a NEWS.md file
 #' @param date passed to template
-#' @param open
+#' @param open whether to open the file after
+#' @param version version to set in news file
 #' @note This is an alternative to \code{usethis::use_news_md}.
 #' @export
 #' @importFrom rprojroot find_root has_file

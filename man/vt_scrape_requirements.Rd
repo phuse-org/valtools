@@ -14,9 +14,10 @@ vt_scrape_requirements(
 \arguments{
 \item{tags}{which tags to keep. defaults to editor and editDate}
 
-\item{src}{path to package sources. defaults to current directory and passed to \code{\link{vt_scrape_tags_From}}}
+\item{src}{path to package sources. defaults to current directory and passed to \code{\link{vt_scrape_tags_from}}}
 
-\item{ref}{reference path to whre validation documentation lives. defaults to \code{\link{vt_path}} annd passed to \code{\link{vt_scrape_tags_From}}.}
+\item{ref}{reference path to whre validation documentation lives. defaults
+to \code{\link{vt_path}} annd passed to \code{\link{vt_scrape_tags_from}}.}
 
 \item{dynamic_ref}{dynamic referencer object}
 }

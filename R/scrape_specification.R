@@ -1,7 +1,8 @@
 #' Scrape requirement info
 #' @param tags which tags to keep. defaults to editor and editDate
-#' @param src path to package sources. defaults to current directory and passed to \code{\link{vt_scrape_tags_From}}
-#' @param ref reference path to whre validation documentation lives. defaults to \code{\link{vt_path}} annd passed to \code{\link{vt_scrape_tags_From}}.
+#' @param src path to package sources. defaults to current directory and passed to \code{\link{vt_scrape_tags_from}}
+#' @param ref reference path to whre validation documentation lives. defaults
+#' to \code{\link{vt_path}} annd passed to \code{\link{vt_scrape_tags_from}}.
 #' @param dynamic_ref dynamic referencer object
 #' @export
 vt_scrape_requirements <- function(tags = c("editor", "editDate"), src = ".", ref = vt_path(),
