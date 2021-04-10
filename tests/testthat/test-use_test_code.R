@@ -116,7 +116,7 @@ test_that("Creating test codes adds correct extension", {
     )
 
     test_code_path2 <- vt_use_test_code(
-      name = "testcode001.badext",
+      name = "testcode002.badext",
       open = FALSE
     )
 
@@ -148,7 +148,7 @@ test_that("Test Codes are added to the config file", {
     vt_use_test_code("code1", open = FALSE)
 
     expect_equal(
-      tail(readLines("validation.yml"), 2),
+      tail(readLines("vignettes/validation/validation.yml"), 2),
       c(
         "validation_files:",
         "- code1.R"
@@ -158,7 +158,7 @@ test_that("Test Codes are added to the config file", {
     vt_use_test_code("code2", open = FALSE)
 
     expect_equal(
-      tail(readLines("validation.yml"), 3),
+      tail(readLines("vignettes/validation/validation.yml"), 3),
       c(
         "validation_files:",
         "- code1.R",
@@ -169,7 +169,7 @@ test_that("Test Codes are added to the config file", {
     vt_use_test_code("code1a", add_after = "code1.R", open = FALSE)
 
     expect_equal(
-      tail(readLines("validation.yml"), 4),
+      tail(readLines("vignettes/validation/validation.yml"), 4),
       c(
         "validation_files:",
         "- code1.R",

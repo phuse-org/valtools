@@ -112,7 +112,7 @@ test_that("Creating test cases adds correct extension", {
     )
 
     test_case_path2 <- vt_use_test_case(
-      name = "testcase001.badext",
+      name = "testcase002.badext",
       open = FALSE
     )
 
@@ -144,7 +144,7 @@ test_that("Cases are added to the config file", {
     vt_use_test_case("case1", open = FALSE)
 
     expect_equal(
-      tail(readLines("validation.yml"), 2),
+      tail(readLines("vignettes/validation/validation.yml"), 2),
       c(
         "validation_files:",
         "- case1.md"
@@ -154,7 +154,7 @@ test_that("Cases are added to the config file", {
     vt_use_test_case("case2", open = FALSE)
 
     expect_equal(
-      tail(readLines("validation.yml"), 3),
+      tail(readLines("vignettes/validation/validation.yml"), 3),
       c(
         "validation_files:",
         "- case1.md",
@@ -165,7 +165,7 @@ test_that("Cases are added to the config file", {
     vt_use_test_case("case1a", add_after = "case1.md", open = FALSE)
 
     expect_equal(
-      tail(readLines("validation.yml"), 4),
+      tail(readLines("vignettes/validation/validation.yml"), 4),
       c(
         "validation_files:",
         "- case1.md",
