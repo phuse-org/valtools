@@ -495,9 +495,8 @@ test_that("rendered report is as expected using vt_file", {
         "print(\"hello\")",
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
-        "• Test Case",
-        "– Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-        "– Start documenting test case here!",
+        "• Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "• Start documenting test case here!",
         "1"
       )
     )
@@ -565,9 +564,8 @@ test_that("rendered report works using file.path inside vt_file", {
         "print(\"hello\")",
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
-        "• Test Case",
-        "– Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-        "– Start documenting test case here!",
+        "• Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "• Start documenting test case here!",
         "1"
       )
     )
