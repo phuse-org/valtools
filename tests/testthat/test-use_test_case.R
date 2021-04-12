@@ -31,14 +31,13 @@ test_that("Creating test cases and set user", {
       c("#' @title testcase001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
-        "",
-        "+ _Test Case_",
-        "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-        "",
-        "    + Start documenting test case here!",
+        "#' @coverage",
+        "#' TESTCASE: REQUIREMENT",
         "",
         "",
-        ""
+        "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "",
+        "+ Start documenting test case here!"
       )
     )
 
@@ -77,14 +76,13 @@ test_that("Creating test cases and not setting user takes username", {
       c("#' @title testcase001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
-        "",
-        "+ _Test Case_",
-        "    + Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-        "",
-        "    + Start documenting test case here!",
+        "#' @coverage",
+        "#' TESTCASE: REQUIREMENT",
         "",
         "",
-        ""
+        "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "",
+        "+ Start documenting test case here!"
       )
     )
   })
