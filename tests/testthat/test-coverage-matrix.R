@@ -96,9 +96,9 @@ test_that("coverage matrix from dynam num", {
       rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
     })})
 
-    rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+    rendered_cov_matrix_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
                                                       pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
-                                                                replacement = ".pdf"))))[[1]])
+                                                                replacement = ".pdf"))))))
     expect_equal(rendered_cov_matrix_pdf[2:23],
                  c("Requirement Name  Requirement ID Test Case Name Test Cases",
                    "1.1                           1.1",
@@ -235,33 +235,35 @@ test_that("coverage matrix from dynam num", {
 
     expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
 
-    rendered_cov_matrix2_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))[[1]])
+    rendered_cov_matrix2_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))))
+
+    rendered_cov_matrix2_pdf <- rendered_cov_matrix2_pdf[!grepl("^\\d$",rendered_cov_matrix2_pdf )]
 
     expect_equal(rendered_cov_matrix2_pdf[2:24],
                  c( "Test Case 1     Test Case 2     Test Case 3",
                     "1.1   1.2   1.3 2.1   2.2   2.3 3.1   3.2   3.3",
-                    "1.1   x",
-                    "1.2   x",
-                    "1.2         x",
-                    "1.3         x",
-                    "Requirement 1 1.1               x",
-                    "1.3               x",
-                    "1.4               x",
-                    "2.1                         x",
-                    "2.2                         x",
-                    "2.2                   x",
-                    "2.3                   x",
-                    "Requirement 2 2.1                               x",
-                    "2.3                               x",
-                    "2.4                               x",
-                    "3.1                                   x",
-                    "3.2                                   x",
-                    "3.2                                         x",
-                    "3.3                                         x",
-                    "Requirement 3 3.1                                               x",
-                    "3.3                                               x",
-                    "3.4                                               x"  ))
+                    "1.1  x",
+                    "1.2  x",
+                    "1.2        x",
+                    "1.3        x",
+                    "Requirement 1 1.1              x",
+                    "1.3              x",
+                    "1.4              x",
+                    "2.1                        x",
+                    "2.2                        x",
+                    "2.2                  x",
+                    "2.3                  x",
+                    "Requirement 2 2.1                              x",
+                    "2.3                              x",
+                    "2.4                              x",
+                    "3.1                                  x",
+                    "3.2                                  x",
+                    "3.2                                        x",
+                    "3.3                                        x",
+                    "Requirement 3 3.1                                              x",
+                    "3.3                                              x",
+                    "3.4                                              x"  ))
 
 
 
