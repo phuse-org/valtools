@@ -24,7 +24,6 @@ library(nomnoml)
 
 diagram <- nomnoml::nomnoml("
 [<frame>R Package Validation Framework |
-#direction: down
 
 [<frame> Requirements |
   Goals of Project |
@@ -76,6 +75,6 @@ diagram <- nomnoml::nomnoml("
 
 ]",png = "vignettes/RPVF_diagram.png")
 
-nomnoml::
+diagram
 
 ```
