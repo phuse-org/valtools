@@ -24,6 +24,14 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
         id: install-r
 
+      - uses: r-lib/actions/setup-tinytex@v1
+      - run: tlmgr --version
+      - run: tlmgr install multirow
+
+      - uses: r-lib/actions/setup-pandoc@master
+        with:
+          pandoc-version: '2.7.3'
+
       - name: Install pak and query dependencies
         run: |
           install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
