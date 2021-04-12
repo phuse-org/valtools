@@ -49,9 +49,8 @@ test_that("test running validation.Rmd from source", {
       normalizePath(validation_report_output,winslash = "/"),
       normalizePath(file.path(
         getwd(),
-        paste0("inst/validation/Validation_Report_example.package_v0.0.0.9000_",format(Sys.Date(),"%Y%m%d.pdf")),
+        paste0("inst/validation/Validation_Report_example.package_v0.0.0.9000_",format(Sys.Date(),"%Y%m%d.pdf"))),
         winslash = "/")
-      )
     )
 
     expect_true(
@@ -201,9 +200,8 @@ test_that("test building a validated bundle from source", {
       normalizePath(validated_bundle,winslash = "/"),
       normalizePath(file.path(
         dirname(getwd()),
-        "example.package_0.0.0.9000.tar.gz",
+        "example.package_0.0.0.9000.tar.gz"),
         winslash = "/")
-      )
     )
     expect_true(
       file.exists(validated_bundle)
