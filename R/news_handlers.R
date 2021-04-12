@@ -6,12 +6,12 @@
 #' are news items that start with \code{[validation]}. If no date is provided, will
 #' look for NEWs entries starting with \code{[version date]}
 #' @export
-#' @importFrom utils news
+#' @importFrom utils news installed.packages
 #' @importFrom devtools package_file
 vt_scrape_news <- function(pkg = devtools::package_file()){
 
 
-  if(suppressWarnings(require(pkg, character.only = TRUE, quietly = TRUE))){
+  if(pkg %in% rownames(installed.packages())){
     # pull from NEWS in library if installed
     db <- news(package = basename(pkg))
   }else{
@@ -70,6 +70,7 @@ vt_kable_news <- function(news_info, format = "latex"){
 #' @note This is an alternative to \code{usethis::use_news_md}.
 #' @export
 #' @importFrom rprojroot find_root has_file
+#' @importFrom desc desc
 vt_use_news_md <- function(date = NULL, version = NULL, open = interactive()){
 
   root <- find_root(criterion = has_file("DESCRIPTION") | has_file(".here"))
