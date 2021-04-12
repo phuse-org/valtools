@@ -1,4 +1,5 @@
 test_that("test running validation.Rmd from source", {
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
 
     ## create blank package
@@ -44,7 +45,6 @@ test_that("test running validation.Rmd from source", {
     quiet <- capture.output({
     validation_report_output <- vt_validate_source(pkg = ".", open = FALSE)
     })
-
     expect_equal(
       validation_report_output,
       file.path(
@@ -71,14 +71,17 @@ test_that("test running validation.Rmd from source", {
       )
     )
 
-})})
+})
+})
 
 test_that("test running validation.Rmd from source for failure", {
+  skip_if(!"valtools" %in% rownames(installed.packages()))
+  # browser()
   withr::with_tempdir({
 
     ## create blank package
     quiet <- capture.output({
-      usethis::create_package("example.package")
+      usethis::create_package("example.package", open = FALSE)
     })
 
     setwd("example.package")
@@ -127,6 +130,7 @@ test_that("test running validation.Rmd from source for failure", {
   })})
 
 test_that("test building a validated bundle from source", {
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
 
     ## create blank package
@@ -170,9 +174,9 @@ test_that("test building a validated bundle from source", {
       con = "vignettes/validation.Rmd"
     )
 
-    valtools::vt_use_req("sample_req.md", username = "NewUser", open = FALSE)
-    valtools::vt_use_test_case("sample_test_case.md", username = "NewUser", open = FALSE)
-    valtools::vt_use_test_code("sample_test_code.R", username = "NewUser", open = FALSE)
+    vt_use_req("sample_req.md", username = "NewUser", open = FALSE)
+    vt_use_test_case("sample_test_case.md", username = "NewUser", open = FALSE)
+    vt_use_test_code("sample_test_code.R", username = "NewUser", open = FALSE)
 
     writeLines(c(
       "#' @title Hello World",
@@ -253,6 +257,7 @@ test_that("test building a validated bundle from source", {
   })})
 
 test_that("test installing a validated bundle from source and rerunning report", {
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_temp_libpaths({
   withr::with_tempdir({
 

@@ -4,10 +4,14 @@
 \alias{vt_use_news_md}
 \title{Initiate a NEWS.md file}
 \usage{
-vt_use_news_md(date = NULL)
+vt_use_news_md(date = NULL, version = NULL, open = interactive())
 }
 \arguments{
 \item{date}{passed to template}
+
+\item{version}{version to set in news file}
+
+\item{open}{whether to open the file after}
 }
 \description{
 Initiate a NEWS.md file
