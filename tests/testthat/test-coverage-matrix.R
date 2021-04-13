@@ -4,9 +4,9 @@ test_that("coverage matrix from dynam num", {
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_test_case("testcase3", username = "a user", open = FALSE)
-    vt_use_req("req1", username = "a user", open = FALSE)
-    vt_use_req("req2", username = "a user", open = FALSE)
-    vt_use_req("req3", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE, add_before = "testcase1.md")
+    vt_use_req("req2", username = "a user", open = FALSE, add_before = "testcase2.md")
+    vt_use_req("req3", username = "a user", open = FALSE, add_before = "testcase3.md")
 
     config_wd <- get_config_working_dir()
     cat(
@@ -62,7 +62,7 @@ test_that("coverage matrix from dynam num", {
         "  + T##tc:dynamic_numbering_testcase3.1 More testing. Matches requirements: ##req:dynamic_numbering3.1, ##req:dynamic_numbering3.3, and ##req:dynamic_numbering3.4",
         ""))
 
-    vt_add_file_to_config(c("req1.md", "testcase1.md", "req2.md", "testcase2.md", "req3.md", "testcase3.md"))
+    #vt_add_file_to_config(c("req1.md", "testcase1.md", "req2.md", "testcase2.md", "req3.md", "testcase3.md"))
     cov_matrix <- vt_scrape_coverage_matrix()
     expect_matrix <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
                                 req_id = paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = "."),
@@ -286,9 +286,9 @@ test_that("coverage matrix no dynam num", {
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_test_case("testcase3", username = "a user", open = FALSE)
-    vt_use_req("req1", username = "a user", open = FALSE)
-    vt_use_req("req2", username = "a user", open = FALSE)
-    vt_use_req("req3", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE, add_before = "testcase1.md")
+    vt_use_req("req2", username = "a user", open = FALSE, add_before = "testcase2.md")
+    vt_use_req("req3", username = "a user", open = FALSE, add_before = "testcase3.md")
 
     config_wd <- get_config_working_dir()
     cat(
@@ -344,7 +344,6 @@ test_that("coverage matrix no dynam num", {
         "  + T3.1 More testing. Matches requirements: 3.1, 3.3, and 3.4",
         ""))
 
-    vt_add_file_to_config(c("req1.md", "testcase1.md", "req2.md", "testcase2.md", "req3.md", "testcase3.md"))
     cov_matrix <- vt_scrape_coverage_matrix()
     expect_matrix <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
                                 req_id = paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = "."),
@@ -393,9 +392,9 @@ test_that("existing reference obj", {
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_test_case("testcase3", username = "a user", open = FALSE)
-    vt_use_req("req1", username = "a user", open = FALSE)
-    vt_use_req("req2", username = "a user", open = FALSE)
-    vt_use_req("req3", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE, add_before = "testcase1.md")
+    vt_use_req("req2", username = "a user", open = FALSE, add_before = "testcase2.md")
+    vt_use_req("req3", username = "a user", open = FALSE, add_before = "testcase3.md")
 
     config_wd <- get_config_working_dir()
     cat(
@@ -471,9 +470,6 @@ test_that("existing reference obj", {
         "",
         "+ Start documenting requirements here!",
         ""))
-
-
-    vt_add_file_to_config(c("req1.md", "testcase1.md", "req2.md", "testcase2.md", "req3.md", "testcase3.md"))
 
     references <- vt_dynamic_referencer$new()
     expect_equal(references$list_references(), list())
