@@ -32,7 +32,8 @@ test_that("NEWs with date field", {
       expect_equal(vt_scrape_news("myTestPkg"),
                    data.frame(version = "0.0.0.9000",
                               effective_date = "2021-01-01",
-                              description = "Validation release notes for version 0.0.0.9000"))
+                              description = "Validation release notes for version 0.0.0.9000",
+                              stringsAsFactors = FALSE))
 
       unloadNamespace("myTestPkg")
     })
@@ -56,7 +57,8 @@ test_that("NEWS not in a package", {
       vt_scrape_news(pkg = "."),
       data.frame(version = "0.0.0.9000",
                  effective_date = "2021-01-01",
-                 description = "Validation release notes for version 0.0.0.9000")
+                 description = "Validation release notes for version 0.0.0.9000",
+                 stringsAsFactors = FALSE)
       )
   })
 
@@ -69,7 +71,8 @@ test_that("NEWS not in a package", {
       vt_scrape_news(pkg = "."),
       data.frame(version = "1.0",
                  effective_date = "",
-                 description = "Validation release notes for version 1.0")
+                 description = "Validation release notes for version 1.0",
+                 stringsAsFactors = FALSE)
     )
   })
 
@@ -93,7 +96,8 @@ test_that("NEWS without date, installed", {
       expect_equal(vt_scrape_news("."),
                    data.frame(version = "0.0.0.9000",
                               effective_date = "",
-                              description = "Validation release notes for version 0.0.0.9000"))
+                              description = "Validation release notes for version 0.0.0.9000",
+                              stringsAsFactors = FALSE))
       unloadNamespace("myTestPkg")
     })
 })
@@ -122,7 +126,8 @@ test_that("NEWS with date, installed", {
                  data.frame(version = "0.0.0.9000",
                             effective_date = "2021-02-02",
                             description = c("Validation release notes for version 0.0.0.9000",
-                                            "some other notes")))
+                                            "some other notes"),
+                            stringsAsFactors = FALSE))
     unloadNamespace("myTestPkg")
     })
   })

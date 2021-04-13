@@ -374,7 +374,8 @@ test_that("coverage matrix no dynam num", {
                                  stringsAsFactors = FALSE)
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
-                                                   tc_title = rep(paste("Test Case", 1:3), each = 3))
+                                                   tc_title = rep(paste("Test Case", 1:3), each = 3),
+                                                   stringsAsFactors = FALSE)
 
     expect_equal(cov_matrix2,
                  expect_matrix2)

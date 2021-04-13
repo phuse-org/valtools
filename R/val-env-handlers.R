@@ -37,14 +37,15 @@ vt_scrape_val_env <- function(pkg = "."){
   val_env <- data.frame(
     resource = gsub(c(depends, imports, suggests), pattern = "\\s\\(.*\\)", replacement = ""),
     type = c(rep("package_req", length(c(depends, imports))),
-             rep("extended_req", length(suggests)))
+             rep("extended_req", length(suggests))),
+    stringsAsFactors = FALSE
   )
   # Some packages will specify a R version dependency, otherwise add this row if needed
   if("R" %in% val_env$resource){
     val_env[val_env$resource == "R", "type"] <- "system"
 
   } else {
-    val_env <- rbind(val_env, data.frame(resource = "R", type = "system"))
+    val_env <- rbind(val_env, data.frame(resource = "R", type = "system", stringsAsFactors = FALSE))
   }
 
   val_env$detail  <- sapply(val_env$resource, FUN = function(x){
@@ -55,7 +56,7 @@ vt_scrape_val_env <- function(pkg = "."){
     })
   })
 
-  val_env <- rbind(val_env, data.frame(resource = "OS", type = "system", detail = sessionInfo()[["running"]]))
+  val_env <- rbind(val_env, data.frame(resource = "OS", type = "system", detail = sessionInfo()[["running"]], stringsAsFactors = FALSE))
 
   session_pkg <- names(sessionInfo()[["otherPkgs"]])
   session_pkg <- session_pkg[!session_pkg %in%
@@ -66,7 +67,8 @@ vt_scrape_val_env <- function(pkg = "."){
                      data.frame(resource = session_pkg,
                                 type = "session",
                                 detail = unname(sapply(session_pkg,
-                                                FUN = function(.x){as.character(packageVersion(.x))}))))
+                                                FUN = function(.x){as.character(packageVersion(.x))})),
+                                stringsAsFactors = FALSE))
   }
   val_env$type <- factor(val_env$type, levels = c("system", "package_req", "extended_req", "session"))
   val_env[] <- lapply(val_env[order(val_env$type, val_env$resource),], as.character)
