@@ -136,7 +136,9 @@ test_that("Creating test codes adds correct extension", {
 
 test_that("Test Codes are added to the config file", {
   withr::with_tempdir({
-    vt_create_package("example.package", open = FALSE)
+    quiet <- capture.output({
+      vt_create_package("example.package", open = FALSE)
+    })
     setwd("example.package")
     vt_add_user_to_config(
       username = whoami::username(),
