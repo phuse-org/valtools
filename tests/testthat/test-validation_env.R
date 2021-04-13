@@ -28,8 +28,10 @@ test_that("temp", {
   # bare
   validation_env0 <- vt_scrape_val_env()
 
-  testthat::expect_equal(c("OS", "R"),
-                         validation_env0[validation_env0$type != "session", "resource"])
+  browser()
+
+  testthat::expect_true(all(c("OS", "R")%in%
+                         validation_env0[validation_env0$type != "session", "resource"]))
   kable_output_env0 <- vt_kable_val_env(validation_env0)
   expected_kable_output_env0 <- c(
     "\\begin{tabular}{|>{}l|>{}l||l}",

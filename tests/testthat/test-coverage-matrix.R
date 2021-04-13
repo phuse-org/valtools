@@ -69,7 +69,8 @@ test_that("coverage matrix from dynam num", {
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")))
+                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
@@ -140,7 +141,8 @@ test_that("coverage matrix from dynam num", {
       rmarkdown::render(cov_matrix_rmd_file)
     })})
     this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
-    rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]])
+    rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]],
+                                              stringsAsFactors = FALSE)
     expect_equal(rendered_cov_matrix_html,
                  data.frame(`Requirement Name` = rep(paste("Requirement", 1:3), each = 7),
                             `Requirement ID` = as.double(paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = ".")),
@@ -148,7 +150,8 @@ test_that("coverage matrix from dynam num", {
                             `Test Cases` = as.double(c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                       paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
                                       paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = "."))),
-                            check.names = FALSE))
+                            check.names = FALSE,
+                            stringsAsFactors = FALSE))
 
     cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
     expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
@@ -164,10 +167,12 @@ test_that("coverage matrix from dynam num", {
                                  `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
                                  `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
                                  `3.3` = c(rep("", 18), rep("x", 3)),
-                                 check.names = FALSE)
+                                 check.names = FALSE,
+                                 stringsAsFactors = FALSE)
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
-                                                   tc_title = rep(paste("Test Case", 1:3), each = 3))
+                                                   tc_title = rep(paste("Test Case", 1:3), each = 3),
+                                                   stringsAsFactors = FALSE)
 
     expect_equal(cov_matrix2,
                  expect_matrix2)
@@ -188,7 +193,8 @@ test_that("coverage matrix from dynam num", {
 
     this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
 
-    rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]])
+    rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]],
+                                               stringsAsFactors = FALSE)
     expected_cov_matrix2_html <- data.frame(reqs = c("", rep(paste("Requirement", 1:3), each = 7)),
                                             req_id = as.double(c(NA, paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
                                                                  paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
@@ -202,7 +208,8 @@ test_that("coverage matrix from dynam num", {
                                             `Test Case 3` = c(3.1, rep("", 14), rep("x", 2), rep("", 5)),
                                             `Test Case 3` = c(3.2, rep("", 16), rep("x", 2), rep("", 3)),
                                             `Test Case 3` = c(3.3,rep("", 18), rep("x", 3)),
-                                            check.names = FALSE)
+                                            check.names = FALSE,
+                                            stringsAsFactors = FALSE)
     names(expected_cov_matrix2_html)[1:2] <- c("", "")
     expect_equal(rendered_cov_matrix2_html,
                  expected_cov_matrix2_html )
@@ -344,7 +351,8 @@ test_that("coverage matrix no dynam num", {
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")))
+                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
@@ -363,7 +371,8 @@ test_that("coverage matrix no dynam num", {
                                  `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
                                  `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
                                  `3.3` = c(rep("", 18), rep("x", 3)),
-                                 check.names = FALSE)
+                                 check.names = FALSE,
+                                 stringsAsFactors = FALSE)
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
                                                    tc_title = rep(paste("Test Case", 1:3), each = 3))
@@ -494,7 +503,8 @@ test_that("existing reference obj", {
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")))
+                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
@@ -513,10 +523,12 @@ test_that("existing reference obj", {
                                  `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
                                  `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
                                  `3.3` = c(rep("", 18), rep("x", 3)),
-                                 check.names = FALSE)
+                                 check.names = FALSE,
+                                 stringsAsFactors = FALSE)
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
-                                                   tc_title = rep(paste("Test Case", 1:3), each = 3))
+                                                   tc_title = rep(paste("Test Case", 1:3), each = 3),
+                                                   stringsAsFactors = FALSE)
     expect_equal(cov_matrix2,
                  expect_matrix2)
 
