@@ -16,12 +16,12 @@ test_that("parsing R function files as expected", {
       sep = "\n",
       file = fil
     )
-    
+
     block_list <- vt_scrape_roxygen(fil)
-    
+
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editor")$val,
                  "Sample Editor")
-    
+
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editDate")$val,
                  "1900-01-01")
   })
@@ -44,12 +44,12 @@ test_that("parsing R test files as expected", {
       sep = "\n",
       file = fil
     )
-    
+
     block_list <- vt_scrape_roxygen(fil,type = "r_test_code")
-    
+
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editor")$val,
                  "Sample Editor")
-    
+
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editDate")$val,
                  "1900-01-01")
   })
@@ -71,12 +71,12 @@ test_that("parsing md files as expected", {
       sep = "\n",
       file = fil
     )
-    
+
     block_list <- vt_scrape_roxygen(fil)
-    
+
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editor")$val,
                  "Sample Editor")
-    
+
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editDate")$val,
                  "1900-01-01")
   })

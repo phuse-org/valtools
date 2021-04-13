@@ -116,7 +116,7 @@ test_that("Creating test codes adds correct extension", {
     )
 
     test_code_path2 <- vt_use_test_code(
-      name = "testcode001.badext",
+      name = "testcode002.badext",
       open = FALSE
     )
 
@@ -132,4 +132,50 @@ test_that("Creating test codes adds correct extension", {
 
   })
 
+})
+
+test_that("Test Codes are added to the config file", {
+  withr::with_tempdir({
+    vt_create_package("example.package", open = FALSE)
+    setwd("example.package")
+    vt_add_user_to_config(
+      username = whoami::username(),
+      name = "Sample Name",
+      title = "Sample",
+      role = "example"
+    )
+
+    vt_use_test_code("code1", open = FALSE)
+
+    expect_equal(
+      tail(readLines("vignettes/validation/validation.yml"), 2),
+      c(
+        "validation_files:",
+        "- code1.R"
+      )
+    )
+
+    vt_use_test_code("code2", open = FALSE)
+
+    expect_equal(
+      tail(readLines("vignettes/validation/validation.yml"), 3),
+      c(
+        "validation_files:",
+        "- code1.R",
+        "- code2.R"
+      )
+    )
+
+    vt_use_test_code("code1a", add_after = "code1.R", open = FALSE)
+
+    expect_equal(
+      tail(readLines("vignettes/validation/validation.yml"), 4),
+      c(
+        "validation_files:",
+        "- code1.R",
+        "- code1a.R",
+        "- code2.R"
+      )
+    )
+  })
 })
