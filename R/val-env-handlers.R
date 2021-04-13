@@ -23,6 +23,7 @@
 #' 2021-02-03
 #' @importFrom devtools package_file
 #' @importFrom utils packageVersion sessionInfo
+#' @importFrom rlang abort
 #' @importFrom desc desc
 #' @export
 vt_scrape_val_env <- function(pkg = "."){
@@ -67,7 +68,14 @@ vt_scrape_val_env <- function(pkg = "."){
                      data.frame(resource = session_pkg,
                                 type = "session",
                                 detail = unname(sapply(session_pkg,
-                                                FUN = function(.x){as.character(packageVersion(.x))})),
+                                                FUN = function(.x){
+                                                  if(is_installed_package(.x)){
+                                                    as.character(packageVersion(.x))
+                                                  }else{
+                                                    abort(paste0("there is no package called '",.x,"'"),
+                                                         class = "vt.missing_package")
+                                                  }
+                                                    })),
                                 stringsAsFactors = FALSE))
   }
   val_env$type <- factor(val_env$type, levels = c("system", "package_req", "extended_req", "session"))
@@ -91,4 +99,8 @@ vt_kable_val_env <- function(val_env, format = "latex"){
   t <- collapse_rows(t, 1)
 
   t
+}
+
+is_installed_package <- function(pkg){
+  pkg %in% rownames(installed.packages())
 }
