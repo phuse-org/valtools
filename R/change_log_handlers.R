@@ -43,7 +43,8 @@ vt_scrape_change_log <- function(){
                  description = gsub(pattern = "^-*\\s*\\[validation\\]\\s",
                                     replacement = "",
                                     trimws(this_text[grepl("\\[validation\\]",
-                                                           this_text)])))
+                                                           this_text)])),
+                 stringsAsFactors = FALSE)
     }))
   all_news <- all_news[order(all_news$version, decreasing = TRUE),]
   rownames(all_news) <- 1:nrow(all_news)
