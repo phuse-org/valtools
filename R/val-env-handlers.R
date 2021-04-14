@@ -101,6 +101,8 @@ vt_kable_val_env <- function(val_env, format = "latex"){
   t
 }
 
+#' @importFrom utils installed.packages
+#' @noRd
 is_installed_package <- function(pkg){
   pkg %in% rownames(installed.packages())
 }
