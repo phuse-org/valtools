@@ -312,9 +312,8 @@ test_that("added files and then rendered report is as expected", {
         "print(\"hello\")" ,
         "## [1] \"hello\"" ,
         "• Start documenting requirements here!",
-        "• Test Case",
-        "– Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
-        "– Start documenting test case here!",
+        "• Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "• Start documenting test case here!",
         "1"
       )
     )

@@ -106,7 +106,7 @@ test_that("Creating requirements adds correct extension", {
     )
 
     req_path2 <- vt_use_req(
-      name = "req001.badext",
+      name = "req002.badext",
       open = FALSE
     )
 
@@ -122,4 +122,50 @@ test_that("Creating requirements adds correct extension", {
 
   })
 
+})
+
+test_that("Cases are added to the config file", {
+  withr::with_tempdir({
+    vt_create_package("example.package", open = FALSE)
+    setwd("example.package")
+    vt_add_user_to_config(
+      username = whoami::username(),
+      name = "Sample Name",
+      title = "Sample",
+      role = "example"
+    )
+
+    vt_use_req("req1", open = FALSE)
+
+    expect_equal(
+      tail(readLines("vignettes/validation/validation.yml"), 2),
+      c(
+        "validation_files:",
+        "- req1.md"
+      )
+    )
+
+    vt_use_test_case("req2", open = FALSE)
+
+    expect_equal(
+      tail(readLines("vignettes/validation/validation.yml"), 3),
+      c(
+        "validation_files:",
+        "- req1.md",
+        "- req2.md"
+      )
+    )
+
+    vt_use_test_case("req1a", add_after = "req1.md", open = FALSE)
+
+    expect_equal(
+      tail(readLines("vignettes/validation/validation.yml"), 4),
+      c(
+        "validation_files:",
+        "- req1.md",
+        "- req1a.md",
+        "- req2.md"
+      )
+    )
+  })
 })
