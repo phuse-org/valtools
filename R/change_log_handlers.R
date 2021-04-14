@@ -1,22 +1,31 @@
-#' Scrape news from a package
-#' @param pkg installed package
+#' Scrape change log from a validation project
 #' @return data.frame with variables \code{version}, \code{effective_date}, \code{description}
 #' @note
-#' Uses the function \code{utils::news} to extract version and date. Description
-#' are news items that start with \code{[validation]}. If no date is provided, will
-#' look for NEWs entries starting with \code{[version date]}
+#' Extracts validation version, date, and description from change log items
+#' that start with \code{[validation]}.
+#' @rdname change_log
 #' @export
-#' @importFrom utils news installed.packages
-#' @importFrom devtools package_file
-vt_scrape_news <- function(pkg = devtools::package_file()){
+vt_scrape_change_log <- function(){
 
 
-  if(pkg %in% rownames(installed.packages())){
-    # pull from NEWS in library if installed
-    db <- news(package = basename(pkg))
-  }else{
-    db <- read_news(find_file("NEWS.md", ref = pkg, full_names = TRUE))
-  }
+  tryCatch(
+    change_log_path <- find_file("change_log.md",ref = vt_path(), full_names = TRUE),
+
+    error = function(e){
+      if(inherits(e,"vt.file_not_found")){
+        abort(
+          paste0(
+            "A change log does not exist in the validation folder.\n",
+            "Run `valtools::vt_use_change_log()` to create a change_log.md file."
+          ),
+          class = "vt.validation_change_log_missing"
+        )
+      }else{
+        abort(e)
+      }
+    })
+
+  db <- read_change_log(change_log_path)
 
   all_text <- strsplit(db$Text, split = "\n ")
 
@@ -42,15 +51,32 @@ vt_scrape_news <- function(pkg = devtools::package_file()){
   all_news
 }
 
-#' Format NEWS info table for validation report
-#' @param news_info data.frame as exported from \code{\link{vt_scrape_news}}
+#' Format change log info table for validation report
+#' @param change_log_info data.frame as exported from \code{\link{vt_scrape_change_log}}
 #' @param format passed to \code{knitr::kable}
 #' @return a knitr_kable object
 #' @export
+#' @rdname change_log
+#'
 #' @importFrom knitr kable
 #' @importFrom kableExtra column_spec collapse_rows
-vt_kable_news <- function(news_info, format = "latex"){
-  all_news <- news_info[order(news_info$version, decreasing = TRUE),
+#'
+#' @examples
+#'
+#' withr::with_tempdir({
+#'  file.create(".here")
+#'  vt_use_validation()
+#'
+#'  vt_use_change_log()
+#'
+#'  log_data <- vt_scrape_change_log()
+#'  print(log_data)
+#'
+#'  vt_kable_change_log(log_data)
+#'
+#' })
+vt_kable_change_log <- function(change_log_info, format = "latex"){
+  all_news <- change_log_info[order(change_log_info$version, decreasing = TRUE),
                         c("version", "effective_date", "description")]
   rownames(all_news) <- 1:nrow(all_news)
 
@@ -64,46 +90,60 @@ vt_kable_news <- function(news_info, format = "latex"){
 }
 
 
-#' Initiate a NEWS.md file
+#' Initiate a change_log file
 #' @param date passed to template
 #' @param open whether to open the file after
 #' @param version version to set in news file
-#' @note This is an alternative to \code{usethis::use_news_md}.
 #' @export
+#' @rdname change_log
+#'
+#' @importFrom rlang inform
+#' @importFrom usethis edit_file
 #' @importFrom rprojroot find_root has_file
 #' @importFrom desc desc
-vt_use_news_md <- function(date = NULL, version = NULL, open = interactive()){
+#' @returns path to change log file, used for side effect of creating change_log
+vt_use_change_log <- function(date = NULL, version = NULL, open = interactive()){
 
-  root <- find_root(criterion = has_file("DESCRIPTION") | has_file(".here"))
+  cl_file <- try(find_file("change_log.md", vt_path(),full_names = TRUE),silent = TRUE)
 
-  if(is_package(root)){
-    this_desc <- desc(file = file.path(root,"DESCRIPTION"))
-    fields <- this_desc$get(this_desc$fields())
-  }else{
-    if(is.null(version) & !file.exists("NEWS.md")){
+  if(!inherits(cl_file,"try-error")){
+    inform("'change_log.md' already exists.", class = "vt.change_log_exists")
+    if(open){
+      usethis::edit_file(cl_file)
+    }
+    return(cl_file)
+  }
+
+
+  if(is.null(version)){
+    if(is_package(vt_path())){
+      version <- desc(find_file("DESCRIPTION", find_root(has_file("DESCRIPTION")), full_names = TRUE))$get("Version")[[1]]
+    }else{
       version <- "1.0"
     }
-    fields <- c(Version = version, Package = basename(root))
+  }
+  if(is.null(date)){
+    date <- format(Sys.Date(), "%Y-%m-%d")
   }
 
-  proj_info <- c(Date = date, fields)
-  if("Date" %in% names(proj_info)){
-    proj_info[["Date"]] = paste0("(", proj_info[["Date"]], ")")
-  } else {
-    proj_info[["Date"]] = ""
-  }
+  proj_info <- c(Date = date, Version = version)
 
-  render_template("NEWS.md", data = proj_info)
+  render_template(output = vt_path("change_log.md"), template = "change_log.md", data = proj_info)
 
   if(open){
-    edit_file("NEWS.md")
+    edit_file("change_log.md")
   }
 
-  invisible("NEWS.md")
+  invisible(vt_path("change_log.md"))
 }
 
-## internal function for parsing NEWS.md into a "db" file
-read_news <- function(file){
+
+
+
+
+## internal function for parsing change_log.md into a "db" file similar to
+## utils::news does
+read_change_log <- function(file){
 
   news_file <- readLines(file)
   n_headers <- sum(grepl("^#",news_file))
@@ -126,8 +166,8 @@ read_news <- function(file){
     header <-
       strsplit(news_file[section_headers[[section_idx]]], split = "\\s+")[[1]]
 
-    version <- header[3]
-    date <- ifelse(length(header) == 4, format(lubridate::parse_date_time(header[4],orders = c("ymd","mdy","dmy")), "%Y-%m-%d"), "")
+    version <- header[2]
+    date <- ifelse(length(header) == 3, format(lubridate::parse_date_time(header[3],orders = c("ymd","mdy","dmy")), "%Y-%m-%d"), "")
     body <- paste(
       trimws(substring(trimws(news_file[section_lines]),first = 2)),
         collapse = "\n ")
