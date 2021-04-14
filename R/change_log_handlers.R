@@ -7,7 +7,25 @@
 #' @export
 vt_scrape_change_log <- function(){
 
-  db <- read_change_log(find_file("change_log.md",ref = vt_path(), full_names = TRUE))
+
+  tryCatch(
+    change_log_path <- find_file("change_log.md",ref = vt_path(), full_names = TRUE),
+
+    error = function(e){
+      if(inherits(e,"vt.file_not_found")){
+        abort(
+          paste0(
+            "A change log does not exist in the validation folder.\n",
+            "Run `valtools::vt_use_change_log()` to create a change_log.md file."
+          ),
+          class = "vt.validation_change_log_missing"
+        )
+      }else{
+        abort(e)
+      }
+    })
+
+  db <- read_change_log(change_log_path)
 
   all_text <- strsplit(db$Text, split = "\n ")
 

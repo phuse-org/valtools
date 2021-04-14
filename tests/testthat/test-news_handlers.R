@@ -55,3 +55,19 @@ test_that("change log not in a package", {
   })
 })
 
+
+test_that("Throw informative error when change log does not exist", {
+
+  withr::with_tempdir({
+
+    file.create(".here")
+    vt_use_validation()
+
+    expect_error(
+      vt_scrape_change_log(),
+      "A change log does not exist in the validation folder.\nRun `valtools::vt_use_change_log()` to create a change_log.md file.",
+      fixed = TRUE
+    )
+  })
+
+})
