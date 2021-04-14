@@ -36,7 +36,8 @@ test_that("change log not in a package", {
       vt_scrape_change_log(),
       data.frame(version = "0.0.0.9000",
                  effective_date = "2021-01-01",
-                 description = "Validation release notes for version 0.0.0.9000")
+                 description = "Validation release notes for version 0.0.0.9000",
+                 stringsAsFactors = FALSE)
       )
   })
 
@@ -50,7 +51,8 @@ test_that("change log not in a package", {
       vt_scrape_change_log(),
       data.frame(version = "1.0",
                  effective_date = format(Sys.Date(), "%Y-%m-%d"),
-                 description = "Validation release notes for version 1.0")
+                 description = "Validation release notes for version 1.0",
+                 stringsAsFactors = FALSE)
     )
   })
 })
