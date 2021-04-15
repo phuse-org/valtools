@@ -72,7 +72,7 @@ valtools::vt_use_req("Requirement_001")
 
 Copy the following content:
 
-+ Say Hello to users
++ 1.1 Say Hello to users
 
 
 ## Package development
@@ -112,14 +112,14 @@ devtools::document()
 #GPP: unit testing, update DESCRIPTION, ...
 ```
 
-## News
+## Change log
 
-Document updates and changes in code using a news file. This is also valuable for
-documenting updates to the validation!
+Document updates and changes in validation documentation using the Change Log file. This is valuable for
+documenting when changes occured (version) to the validation and summarizing information for leadership!
 
 ```{r}
 
-valtools::vt_use_news_md()
+valtools::vt_use_change_log()
 
 ```
 
@@ -133,6 +133,9 @@ creates a new test code file. They have the same arguments as `vt_use_req()`.
 valtools::vt_use_test_case("Test_case_001")
 
 ```
+
+
+Replace `TESTCASE` with `1.1`, and `REQUIREMENT` with `1.1`
 
 Copy the following test case into the new document:
 
@@ -201,6 +204,7 @@ vignette: >
 header-includes:
   - \usepackage{float}
   - \usepackage{array}
+  - \usepackage{multirow}
 classoption: dvipsnames
 ---
 ```
@@ -244,12 +248,12 @@ vt_scrape_val_env() %>%
 
 ```
 
-## News
+## Change Log
 
 ```{r}
 
-vt_scrape_news() %>% 
-  vt_kable_news()
+vt_scrape_change_log() %>% 
+  vt_kable_change_log()
 
 ```
 
