@@ -75,11 +75,11 @@ The effective date of this document is the last date of signature.
 
 ## Package Information
 
-### News
+### Change Log
 
 ```{r news-tab}
-vt_scrape_news() %>% 
-  vt_kable_news()
+vt_scrape_change_log() %>% 
+  vt_kable_change_log()
 ```
 
 ### Validation Environment
