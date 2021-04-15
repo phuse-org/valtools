@@ -58,10 +58,14 @@ vt_path <- function(...){
 #'
 #' @export
 vt_find_config <- function(){
+
   root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
-  tryCatch(
-    find_file("validation.yml", root, full_names = TRUE),
-    error = function(e){
+
+  tryCatch({
+
+    config <- find_file("validation.yml", root, full_names = TRUE)
+
+  },error = function(e){
       if(inherits(e,"vt.file_not_found")){
         abort(
           paste0(
@@ -74,12 +78,31 @@ vt_find_config <- function(){
         abort(e)
       }
     })
+
+  if(length(config) > 1){
+    config <- config_selector(config)
+  }
+
+  config
+
+
 }
 
 
 
+#' Find file in reference and return path
+#'
+#' @param filename name of file to find or pattern
+#' @param ref where to start searching for file from
+#' @param full_names boolean whether to return full or relative path
+#' @param preference if there are multiple files found,
+#'     identify if there is a preferred folder location from ref
+#'
+#'
 #' @importFrom rlang abort
 #' @importFrom withr with_dir
+#' @noRd
+#'
 find_file <- function(filename, ref = ".", full_names = FALSE){
 
   with_dir(new = normalizePath(ref,winslash = "/"), {
@@ -93,13 +116,51 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
           class = "vt.file_not_found")
   }
 
-  file_path <- as.list(split_path(file_path))
+  do.call('c',lapply(file_path, function(fp) {
+    fp <- as.list(split_path(fp))
 
-  if(full_names){
-    file_path <- c(ref, file_path)
-  }
 
-  do.call('file.path',file_path)
+    if (full_names) {
+      file_path <- c(ref, fp)
+    }
+
+    fp <- do.call('file.path', fp)
+
+  }))
+
 }
+
+
+
+## read both config files, determine if one is the "source" -
+## it is source by whether it lives in the "Working" or "output" dir
+config_selector <- function(files){
+
+
+  if(interactive()){
+  files[sapply(
+    files,
+    function(config_file){
+      config_file_path <- split_path()
+      config_paths <- read_yaml(config_file)
+      if(dirs$working_dir %in% config_file_path){
+        TRUE
+      }else{
+        FALSE
+      }
+    })]
+  }else{
+
+    wd<- do.call('file.path',as.list(split_path(getwd())))
+
+    files[grepl(wd,normalizePath(files, winslash = "/"), fixed = TRUE)
+
+
+  }
+}
+
+
+
+
 
 
