@@ -1,7 +1,7 @@
 test_that("lua numbering for pdf", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
   ## does not depend on valtools functions for dynamic labeling
-  skip_if_not_installed("valtools")
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
 
   ## create test files
@@ -38,7 +38,7 @@ test_that("lua numbering for pdf", {
     ))
 
   suppressWarnings({
-  capture_output <- capture.output({
+  captured_output <- capture.output({
     rmarkdown::render(input = test_input, clean = FALSE)
   })})
     test_output_rendered <-
@@ -59,7 +59,7 @@ test_that("lua numbering for pdf", {
 test_that("lua numbering for html", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
   ## does not depend on valtools functions for dynamic labeling
-  skip_if_not_installed("valtools")
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
   ## create test files
   test_input <- tempfile(fileext = ".md", tmpdir = getwd())
