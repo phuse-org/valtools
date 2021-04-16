@@ -121,7 +121,7 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
 
 
     if (full_names) {
-      file_path <- c(ref, fp)
+      fp <- c(ref, fp)
     }
 
     fp <- do.call('file.path', fp)
@@ -136,23 +136,20 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
 ## it is source by whether it lives in the "Working" or "output" dir
 ## if not interactive, select file that is within the wd
 config_selector <- function(files){
-  if(interactive()){
-  files[sapply(
-    files,
-    function(config_file){
-      config_file_path <- split_path()
-      config_paths <- read_yaml(config_file)
-      if(dirs$working_dir %in% config_file_path){
-        TRUE
-      }else{
-        FALSE
-      }
-    })]
-  }else{
-
-    wd<- do.call('file.path',as.list(split_path(getwd())))
-    files[grepl(wd,normalizePath(files, winslash = "/"), fixed = TRUE)
-
+  if (interactive()) {
+    files[sapply(files,
+                 function(config_file) {
+                   dirs <- read_yaml(config_file)
+                   wd <- do.call('file.path', as.list(split_path(dirs$working_dir)))
+                   if (grepl(wd, config_file, fixed = TRUE)) {
+                     TRUE
+                   } else{
+                     FALSE
+                   }
+                 })]
+  } else{
+    wd <- do.call('file.path', as.list(split_path(getwd())))
+    files[grepl(wd, normalizePath(files, winslash = "/"), fixed = TRUE)]
   }
 }
 
