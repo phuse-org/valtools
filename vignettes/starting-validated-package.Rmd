@@ -115,7 +115,7 @@ devtools::document()
 ## Change log
 
 Document updates and changes in validation documentation using the Change Log file. This is valuable for
-documenting when changes occured (version) to the validation and summarizing information for leadership!
+documenting when changes occurred (version) to the validation and summarizing information for leadership!
 
 ```{r}
 
@@ -193,7 +193,7 @@ header yaml:
 
 ```
 ---
-title: "validation"
+title: "validation of {example.package}"
 date: "`r Sys.time()`"
 output: 
   rmarkdown::pdf_document:
@@ -232,6 +232,7 @@ library(valtools)
 library(testthat)
 library(knitr)
 library(magrittr)
+library(kableExtra)
 
 ```
 
@@ -318,7 +319,8 @@ vt_file(vt_path("test_cases","Test_case_001.md"))
 ```{r}
 
 vt_run_test_code_file("Test_code_001.R") %>% 
-  vt_kable_test_code()
+  vt_kable_test_code() %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
 
 ```
 
