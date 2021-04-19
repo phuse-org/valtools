@@ -135,8 +135,8 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
 ## if interactive, read both config files, determine if one is the "source" -
 ## it is source by whether it lives in the "Working" or "output" dir
 ## if not interactive, select file that is within the wd
-config_selector <- function(files){
-  if (interactive()) {
+config_selector <- function(files, interactive = interactive()){
+  if (interactive) {
     files[sapply(files,
                  function(config_file) {
                    dirs <- read_yaml(config_file)
@@ -149,7 +149,11 @@ config_selector <- function(files){
                  })]
   } else{
     wd <- do.call('file.path', as.list(split_path(getwd())))
-    files[grepl(wd, normalizePath(files, winslash = "/"), fixed = TRUE)]
+    files <- files[grepl(wd, normalizePath(files, winslash = "/"), fixed = TRUE)]
+    if(length(files) > 1){
+      files <- files[which.min(sapply(files, function(p){length(split_path(p))}))]
+    }
+    files
   }
 }
 
