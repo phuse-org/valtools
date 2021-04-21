@@ -137,7 +137,8 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
                 text <- as.data.frame(lapply(text, gsub,
                                              pattern = paste0(private$reference_indicator, ref),
                                              replacement = ref_value,
-                                             fixed = TRUE))
+                                             fixed = TRUE),
+                                      stringsAsFactors = FALSE)
               } else {
                 text <- gsub(
                   pattern = paste0(private$reference_indicator,ref),

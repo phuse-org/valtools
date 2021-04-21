@@ -78,7 +78,7 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
 
         item <- block$object$topic
 
-        do.call('data.frame', setNames(c(item, tag_values), c(type, tags)))
+        do.call('data.frame', setNames(c(item, tag_values, FALSE), c(type, tags,"stringsAsFactors")))
       }, tags, type)
 
   }else{

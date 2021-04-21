@@ -15,7 +15,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
       this_row["tc_id"] <- trimws(this_row["tc_id"])
 
       this_row["tc_title"] <- x["tc_title"]
-      as.data.frame(t(this_row))
+      as.data.frame(t(this_row), stringsAsFactors = FALSE)
     }))
   }
 
@@ -23,7 +23,8 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
     do.call("rbind", apply(vals, 1, FUN = function(x){
       req_one_row <- data.frame(tc_title = x[["tc_title"]],
                                 tc_id = x[["tc_id"]],
-                                req_id = strsplit(trimws(x[["req_id"]]), split = ", ")[[1]])
+                                req_id = strsplit(trimws(x[["req_id"]]), split = ", ")[[1]],
+                                stringsAsFactors = FALSE)
       req_one_row$req_title <- paste0("Requirement ", gsub(req_one_row$req_id,
                                                            pattern = "^(\\d+)\\.*.*",
                                                            replacement = "\\1"))
@@ -37,7 +38,8 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
       as.data.frame(list2(req_id = x[["req_id"]],
                           req_title = x[["req_title"]],
                           !!x[["tc_id"]] := "x"),
-                    check.names = FALSE)
+                    check.names = FALSE,
+                    stringsAsFactors = FALSE)
     })
 
     all_names <- unique(unlist(lapply(list_x, names)))
@@ -58,7 +60,8 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
 
   indiv_vals <- do.call("rbind", apply(cov_raw_values, 1, FUN = function(x){
     data.frame(tc_title = x[["title"]],
-               coverage = strsplit(x[["coverage"]], split = "\n")[[1]], check.names = FALSE)
+               coverage = strsplit(x[["coverage"]], split = "\n")[[1]], check.names = FALSE,
+               stringsAsFactors = FALSE)
   }))
 
   vals_title <- dynamic_reference_rendering(indiv_vals, reference = reference)
@@ -119,7 +122,8 @@ kable_cov_matrix_wide<- function(x, format = "latex"){
 
   this_header_info <- data.frame(count = sapply(unique(this_tc_title$tc_title),
                                                  function(y){nrow(this_tc_title[this_tc_title$tc_title == y,])}),
-                                 tc_title = unique(this_tc_title$tc_title))
+                                 tc_title = unique(this_tc_title$tc_title),
+                                 stringsAsFactors = FALSE)
   rownames(this_header_info) <- NULL
   this_final_header <- c(2, this_header_info$count)
   names(this_final_header) <- c(" ", paste(unique(this_header_info$tc_title)))

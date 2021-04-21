@@ -148,7 +148,7 @@ config_selector <- function(files, interactive = interactive()){
                    }
                  })]
   } else{
-    wd <- do.call('file.path', as.list(split_path(getwd())))
+    wd <- normalizePath(do.call('file.path', as.list(split_path(getwd()))), winslash = "/")
     files <- files[grepl(wd, normalizePath(files, winslash = "/"), fixed = TRUE)]
     if(length(files) > 1){
       files <- files[which.min(sapply(files, function(p){length(split_path(p))}))]

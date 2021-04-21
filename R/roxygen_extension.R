@@ -74,7 +74,8 @@ format_coverage_text <- function(x){
       if(grepl("deprecate", tc, ignore.case = TRUE)){
         data.frame(
           test_case = "Deprecated",
-          requirements = NA
+          requirements = NA,
+          stringsAsFactors = FALSE
         )
       }else{
         tc_rel <- gregexpr(":",tc)[[1]]
@@ -82,7 +83,8 @@ format_coverage_text <- function(x){
         reqs <- trimws(strsplit(substr(tc,  tc_rel[1]+attr(tc_rel,"match.length")[1], nchar(tc)), ",")[[1]])
         data.frame(
           test_case = test_case,
-          requirements = reqs
+          requirements = reqs,
+          stringsAsFactors = FALSE
           )
     }
   })
