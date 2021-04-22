@@ -66,8 +66,12 @@ vt_add_user_to_config(
  )
 # Create req at the cases top level `inst/validation/cases/case1`
 vt_use_test_case("case1", open = FALSE)
+
 # Create req at `inst/validation/cases/regTests/Update2/case2`
 vt_use_test_case("regTests/Update2/case2", open = FALSE, add_before = "case1.md")
+
+# Create a test case using tidy select
+vt_use_test_case("case1a", open = FALSE, add_after = tidyselect::starts_with("case1"))
 
 })
 }

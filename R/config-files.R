@@ -4,11 +4,16 @@
 #'
 #' Impose ordering of validation child files
 #' @param filename character vector containing filenames in order
-#' @param before,after Optional destination of new filenames, default is end of existing list. Specifying both is error.
-#' @returns Used for side effect of adding validation file ordering to validation config
-#'     file. Invisibly returns TRUE on success.
+#' @param before,after Optional destination of new filenames, default is end of
+#'   existing list. Supports <[`tidy-select`][dplyr::dplyr_tidy_select]> functions.
+#'   Specifying both is error.
+#' @returns Used for side effect of adding validation file ordering to
+#'   validation config file. Invisibly returns TRUE on success.
 #'
 #' @rdname validation_config
+#'
+#' @importFrom utils tail head
+#' @importFrom tidyselect eval_select
 #'
 #' @examples
 #' \dontrun{
@@ -26,6 +31,20 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
   # check whether these files are already listed
   # handle whether filename value is list or vector
   validation_file_list_old <- validation_config$validation_files
+
+  if(length(validation_file_list_old) > 0) {
+    df <- data.frame(matrix(1:length(validation_file_list_old),
+                            ncol = length(validation_file_list_old)))
+    names(df) <- validation_file_list_old
+
+    tidy_before <- head(eval_select(before, df), 1)
+    if(length(tidy_before) == 1) before <- names(tidy_before)
+    tidy_after <- tail(eval_select(after, df), 1)
+    if(length(tidy_after) == 1) after <- names(tidy_after)
+  }
+
+
+
   if(length(validation_file_list_old[validation_file_list_old %in% unlist(filename)]) > 0 ){
     abort(
       paste0(
@@ -141,10 +160,16 @@ get_config_report_naming_format <- function(){
 }
 
 insert_list_locator <- function(validation_file_list_old, filename, list_locator){
+  n_old <- length(validation_file_list_old)
+
   if(list_locator == 1){
     return(c(as.list(filename), validation_file_list_old))
+
+  } else if(list_locator == n_old + 1) {
+    return(c(validation_file_list_old,
+             as.list(filename)))
+
   } else {
-    n_old <- length(validation_file_list_old)
     return(c(validation_file_list_old[1:(list_locator - 1)],
              as.list(filename),
              validation_file_list_old[list_locator:n_old]))
