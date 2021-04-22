@@ -135,8 +135,9 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
 ## if interactive, read both config files, determine if one is the "source" -
 ## it is source by whether it lives in the "Working" or "output" dir
 ## if not interactive, select file that is within the wd
-config_selector <- function(files, interactive = interactive()){
-  if (interactive) {
+config_selector <- function(files, is_live = interactive()){
+  if (is_live) {
+
     files[sapply(files,
                  function(config_file) {
                    dirs <- read_yaml(config_file)
