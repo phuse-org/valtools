@@ -14,7 +14,7 @@ test_that("ensure the correct config is selected when not interactive", {
           find_file("validation.yml", ref = "..", full_names = TRUE),
           winslash = "/"
         ),
-        interactive = FALSE),
+        is_live = FALSE),
         normalizePath(file.path(getwd(), "validation/validation.yml"),
                       winslash = "/")
       )
@@ -29,7 +29,7 @@ test_that("ensure the correct config is selected when not interactive", {
           find_file("validation.yml", ref = "..", full_names = TRUE),
           winslash = "/"
         ),
-        interactive = FALSE),
+        is_live = FALSE),
         normalizePath(file.path(getwd(), "validation/validation.yml"),
                       winslash = "/")
       )
@@ -54,7 +54,7 @@ test_that("ensure the correct config is selected when not interactive", {
           find_file("validation.yml", ref = "..", full_names = TRUE),
           winslash = "/"
         ),
-        interactive = FALSE),
+        is_live = FALSE),
         normalizePath(file.path(getwd(), "validation/validation.yml"),
                       winslash = "/")
       )
