@@ -37,9 +37,9 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
                             ncol = length(validation_file_list_old)))
     names(df) <- validation_file_list_old
 
-    tidy_before <- head(eval_select(before, df), 1)
+    tidy_before <- head(eval_select(before, df, strict = FALSE), 1)
     if(length(tidy_before) == 1) before <- names(tidy_before)
-    tidy_after <- tail(eval_select(after, df), 1)
+    tidy_after <- tail(eval_select(after, df, strict = FALSE), 1)
     if(length(tidy_after) == 1) after <- names(tidy_after)
   }
 
