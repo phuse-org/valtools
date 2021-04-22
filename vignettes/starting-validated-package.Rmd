@@ -47,7 +47,7 @@ occur during validation.
 
 ```{r}
 
-fs::dir_ls()
+fs::dir_tree(recurse = TRUE)
 
 cat(readLines("vignettes/validation/validation.yml"),sep = "\n")
 
@@ -73,6 +73,7 @@ valtools::vt_use_req("Requirement_001")
 Copy the following content:
 
 + 1.1 Say Hello to users
++ 1.2 Say Hello to multiple users at once
 
 
 ## Package development
@@ -135,12 +136,20 @@ valtools::vt_use_test_case("Test_case_001")
 ```
 
 
-Replace `TESTCASE` with `1.1`, and `REQUIREMENT` with `1.1`
+Replace `TESTCASE` with `1.1`, and `REQUIREMENT` with `1.1` to indicate test case 1.1 shows that requirement 1.1 is being met.
 
-Copy the following test case into the new document:
+
+Add a new line underneath the line above (at line 6) line that contains:
+`#' 1.2: 1.1, 1.2`
+
+This is to indicate test case 1.2 shows requirements 1.1 and 1.2 are being met.
+
+Copy the following test case into file where test cases are to be documented:
 
 + 1.1 test that the software can say "hello, Johnny" by passing a user "Johnny" 
 to the hello_world function
++ 1.2 test that the software can say hello to multiple people by passing a vector of users - "Johnny", "Beth", "Andy","Elisabeth"
+to the hello_world function and getting back a vector of: c("Hello, Johnny", "Hello, Beth", "Hello, Andy","Hello, Elisabeth")
 
 
 ```{r}
@@ -163,7 +172,24 @@ into the body of the test:
  )
 
 ```
+add a new test with the following beneath the test. Replace "TODAYS DATE" with todays date.
 
+```r
+
+#' @editor Not Ellis
+#' @editDate TODAYS DATE
+test_that("1.2",{
+
+ hello_result <- hello_world(c("Johnny", "Beth", "Andy","Elisabeth"))
+ 
+ expect_equal(
+  hello_result,
+  c("Hello, Johnny", "Hello, Beth", "Hello, Andy","Hello, Elisabeth")
+ )
+})
+
+
+```
 
 ## Generating the Validation Report
 
@@ -183,6 +209,7 @@ We currently have code in `develop` for the following:
 - capture validation environment with `vt_scrape_val_env()`
 - record the NEWS.md with `vt_scrape_news()`
 - scraping authorship from requirements, functions, test cases and test code
+- scraping and generating a traceability matrix
 - evaluating test code
 - dynamic referencing (Will cover later)
 
@@ -205,6 +232,7 @@ header-includes:
   - \usepackage{float}
   - \usepackage{array}
   - \usepackage{multirow}
+  - \usepackage{longtable}
 classoption: dvipsnames
 ---
 ```
@@ -263,18 +291,18 @@ vt_scrape_change_log() %>%
 ### Requirement Authors
 
 ```{r}
-requirement_author_list <- vt_scrape_tags_from(type = "requirements")
 
-kable(do.call('rbind', requirement_author_list))
+vt_scrape_requirements() %>% 
+  vt_kable_requirements()
 
 ```
 
 ### Function Authors
 
 ```{r}
-function_author_list <- vt_scrape_tags_from(type = "functions")
 
-kable(do.call('rbind', function_author_list))
+vt_scrape_functions() %>% 
+  vt_kable_functions()
 
 ```
 
@@ -295,6 +323,16 @@ test_code_author_list <- vt_scrape_tags_from(type = "test_code")
 kable(do.call('rbind', test_code_author_list))
 
 ```
+
+## Traceability
+
+```{r}
+
+vt_scrape_coverage_matrix() %>% 
+ vt_kable_coverage_matrix
+
+```
+
 
 ## Requirements
 
