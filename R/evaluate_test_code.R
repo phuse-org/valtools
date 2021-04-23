@@ -24,7 +24,7 @@ vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_pat
 #' @returns kableExtra object with formatting
 #'
 #' @importFrom knitr kable
-#' @importFrom kableExtra column_spec kable_styling cell_spec
+#' @importFrom kableExtra column_spec kable_styling cell_spec kable_styling
 #' @importFrom rlang abort
 #'
 #' @export
@@ -72,6 +72,8 @@ vt_kable_test_code <- function(results, format = NULL) {
     color = Pass_Fail_colorized
   )
   }
+
+  t <- kable_styling(t, latex_options = "hold_position")
 
   return(t)
 }
