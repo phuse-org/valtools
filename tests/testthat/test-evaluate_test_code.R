@@ -299,22 +299,23 @@ test_that("vt_kable_test_code returns formatted kable object",{
     stringsAsFactors = FALSE
     ))
 
-  expect_equal(
+  expect_equivalent(
     output_pass,
     kable_styling(
+      column_spec(
       column_spec(
         kable(
           data.frame(
             Test = "test_example",
             Results = "As expected ",
-            Pass_Fail = "\\shortstack{\\textcolor{OliveGreen}{Pass}}",
+            Pass_Fail = "Pass",
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-        ),2:3, width = "10em"
-    ),position = "center")
+        ),2:3, width = "10em"),
+        3, color = "Green"),
+    position = "center")
   )
 
   output_fail <- vt_kable_test_code(data.frame(
@@ -328,17 +329,18 @@ test_that("vt_kable_test_code returns formatted kable object",{
     output_fail,
     kable_styling(
       column_spec(
+      column_spec(
         kable(
           data.frame(
             Test = "test_example",
             Results = "Failure Reasons ",
-            Pass_Fail = "\\shortstack{\\textcolor{red}{Fail}}",
+            Pass_Fail = "Fail",
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-        ),2:3, width = "10em"
+        ),2:3, width = "10em"),
+      3, color = "Red"
       ),position = "center")
   )
 
@@ -353,17 +355,18 @@ test_that("vt_kable_test_code returns formatted kable object",{
     output_skip,
     kable_styling(
       column_spec(
+        column_spec(
         kable(
           data.frame(
             Test = "test_example",
             Results = "Skipped test for reasons",
-            Pass_Fail = "\\shortstack{\\textcolor{YellowOrange}{Skip}}",
+            Pass_Fail = "Skip",
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-        ),2:3, width = "10em"
+        ),2:3, width = "10em"),
+        3, color = "Orange"
       ),position = "center")
   )
 
@@ -384,12 +387,10 @@ test_that("vt_kable_test_code returns formatted kable object",{
             Pass_Fail = character(),
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
       ),position = "center")
   )
-
 
 })
 

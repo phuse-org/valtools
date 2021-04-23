@@ -24,13 +24,13 @@ vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_pat
 #' @returns kableExtra object with formatting
 #'
 #' @importFrom knitr kable
-#' @importFrom kableExtra column_spec kable_styling
+#' @importFrom kableExtra column_spec kable_styling cell_spec
 #' @importFrom rlang abort
 #'
 #' @export
 #'
 #' @rdname eval_test_code
-vt_kable_test_code <- function(results) {
+vt_kable_test_code <- function(results, format = NULL) {
   ## check column names
   if (!all(c("Test", "Results", "Pass_Fail") %in% colnames(results))) {
     abort("Results data must contain the fields `Test`, `Results`, and `Pass_Fail`")
@@ -38,20 +38,24 @@ vt_kable_test_code <- function(results) {
 
   rownames(results) <- NULL
 
+  Pass_Fail_colorized <- NULL
+
   if( nrow(results) > 0 & any(results$Pass_Fail %in% c("Pass", "Fail", "Skip"))) {
 
-    Pass_Fail_colorized <-  c(Pass = "\\shortstack{\\textcolor{OliveGreen}{Pass}}",
-                              Skip = "\\shortstack{\\textcolor{YellowOrange}{Skip}}",
-                              Fail = "\\shortstack{\\textcolor{red}{Fail}}")[results$Pass_Fail]
-
-    results$Pass_Fail[results$Pass_Fail %in% c("Pass", "Fail", "Skip")] <-
-      Pass_Fail_colorized[results$Pass_Fail %in% c("Pass", "Fail", "Skip")]
-
+    Pass_Fail_colorized <- ifelse(
+      results$Pass_Fail == "Pass", "Green",
+      ifelse(
+        results$Pass_Fail == "Skip", "Orange",
+        ifelse(
+          results$Pass_Fail == "Fail", "Red",
+          "black"
+        )
+      ))
   }
 
   t <- kable(
     results[, c("Test", "Results", "Pass_Fail")],
-    format = "latex",
+    format = format,
     escape = FALSE,
     col.names = c("Test", "Results", "Pass/Fail")
   )
@@ -61,6 +65,13 @@ vt_kable_test_code <- function(results) {
   }
 
   t <- kable_styling(t, position = "center")
+  if(!is.null(Pass_Fail_colorized)){
+  t <- column_spec(
+    t,
+    3,
+    color = Pass_Fail_colorized
+  )
+  }
 
   return(t)
 }
