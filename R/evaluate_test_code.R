@@ -20,6 +20,7 @@ vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_pat
 #' Turn test code results data.frame into kable output
 #'
 #' @param results results data.frame from `vt_run_test_code_file()`
+#' @param format passed to \code{knitr::kable}
 #'
 #' @returns kableExtra object with formatting
 #'
