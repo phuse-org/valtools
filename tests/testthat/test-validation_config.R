@@ -469,8 +469,9 @@ test_that("adding and removing validation files from list", {
                  ))
     expect_error(
       vt_add_file_to_config(filename = "test_case1.Rmd"),
-      "Filename(s): `test_case1.Rmd` already exists validation config file. Run `valtools::vt_drop_file_from_config(filename)` first!",
+      "File already exists in validation config file. Run `valtools::vt_drop_file_from_config(c(\"test_case1.Rmd\"))` first!",
       fixed = TRUE)
+
 
     expect_message(vt_drop_file_from_config("test_case1.Rmd"),
                    "Filename(s): test_case1.Rmd removed from validation config file.",
@@ -491,7 +492,7 @@ test_that("adding and removing validation files from list", {
                    "- test_code1.R"
                  ))
     expect_error(vt_drop_file_from_config("test_case1.Rmd"),
-                   "Filename(s): `test_case1.Rmd` not present validation config file. Run `valtools::vt_add_file_to_config(filename)` first!",
+                   "File does not exist in validation config file. Run `valtools::vt_add_file_to_config(c(\"test_case1.Rmd\"))` first!",
                    fixed = TRUE)
 
     # make sure that playing with user entries doesn't break files list
