@@ -12,7 +12,7 @@
 #'
 #' @returns a list of roxygen blocks found in the file.
 
-vt_scrape_roxygen <- function(file, ..., type = tools::file_ext(file)){
+scrape_roxygen <- function(file, ..., type = tools::file_ext(file)){
 
   text <- readLines(file)
 
