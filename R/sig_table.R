@@ -7,7 +7,7 @@
 #' @export
 vt_scrape_sig_table <- function(usernames = NULL){
   if(is.null(usernames)){
-    people <- do.call('rbind', lapply(vt_get_all_users(), data.frame))
+    people <- do.call('rbind', lapply(vt_get_all_users(), data.frame, stringsAsFactors = FALSE))
     rownames(people) <- NULL
     people
   } else {
@@ -28,7 +28,7 @@ vt_scrape_sig_table <- function(usernames = NULL){
 
 convert_vtname_table <- function(usernames){
   people <- lapply(usernames, FUN = function(x){
-    this_user <- data.frame(x)
+    this_user <- data.frame(x, stringsAsFactors = FALSE)
     names(this_user) <- c("name", "title", "role")
     this_user
   })

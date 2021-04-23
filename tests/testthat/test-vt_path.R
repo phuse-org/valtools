@@ -9,14 +9,17 @@ test_that("vt_path returns expected path", {
     setwd("validation/")
     path_check2 <- vt_path()
 
+
+
+
     expect_equal(
-      path_check,
-      actual_dir
+      normalizePath(path_check,winslash = "/"),
+      normalizePath(actual_dir,winslash = "/")
     )
 
     expect_equal(
-      path_check2,
-      actual_dir
+      normalizePath(path_check2,winslash = "/"),
+      normalizePath(actual_dir,winslash = "/")
     )
 
   })

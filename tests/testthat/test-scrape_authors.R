@@ -37,17 +37,20 @@ test_that("Scrape roxygen tags from reqs works", {
        data.frame(
          requirements = "req001",
          editor = "Test User",
-         editDate = format(Sys.Date(),"%Y-%m-%d")
+         editDate = format(Sys.Date(),"%Y-%m-%d"),
+         stringsAsFactors = FALSE
        ),
        data.frame(
          requirements = "req002",
          editor = "Test User",
-         editDate = format(Sys.Date(),"%Y-%m-%d")
+         editDate = format(Sys.Date(),"%Y-%m-%d"),
+         stringsAsFactors = FALSE
        ) ,
        data.frame(
          requirements = "req003",
          editor = "Test User 2",
-         editDate = format(Sys.Date(),"%Y-%m-%d")
+         editDate = format(Sys.Date(),"%Y-%m-%d"),
+         stringsAsFactors = FALSE
        )
       )
     )
@@ -93,17 +96,20 @@ test_that("Scrape roxygen tags from test cases works", {
         data.frame(
           test_cases = "test_case_001",
           editor = "Test User",
-          editDate = format(Sys.Date(),"%Y-%m-%d")
+          editDate = format(Sys.Date(),"%Y-%m-%d"),
+          stringsAsFactors = FALSE
         ),
         data.frame(
           test_cases = "test_case_002",
           editor = "Test User",
-          editDate = format(Sys.Date(),"%Y-%m-%d")
+          editDate = format(Sys.Date(),"%Y-%m-%d"),
+          stringsAsFactors = FALSE
         ) ,
         data.frame(
           test_cases = "test_case_003",
           editor = "Test User 2",
-          editDate = format(Sys.Date(),"%Y-%m-%d")
+          editDate = format(Sys.Date(),"%Y-%m-%d"),
+          stringsAsFactors = FALSE
         )
       )
     )
@@ -168,17 +174,20 @@ test_that("Scrape roxygen tags from test code works", {
         data.frame(
           test_code = "1.1",
           editor = "Test User 3",
-          editDate = format(Sys.Date(),"%Y-%m-%d")
+          editDate = format(Sys.Date(),"%Y-%m-%d"),
+          stringsAsFactors = FALSE
         ),
         data.frame(
           test_code = "2.1",
           editor = "Test User 4",
-          editDate = format(Sys.Date(),"%Y-%m-%d")
+          editDate = format(Sys.Date(),"%Y-%m-%d"),
+          stringsAsFactors = FALSE
         ) ,
         data.frame(
           test_code = "3.1",
           editor = "Test User 4",
-          editDate = format(Sys.Date(),"%Y-%m-%d")
+          editDate = format(Sys.Date(),"%Y-%m-%d"),
+          stringsAsFactors = FALSE
         )
       )
     )
@@ -290,17 +299,20 @@ test_that("scrape functions from external dir", {
         data.frame(
           functions = "Fourth_Function",
           editor = "Author Name",
-          editDate = "2021-12-01"
+          editDate = "2021-12-01",
+          stringsAsFactors = FALSE
         ),
         data.frame(
           functions = "second_func",
           editor = "Author Name",
-          editDate = "2021-01-01"
+          editDate = "2021-01-01",
+          stringsAsFactors = FALSE
         ),
         data.frame(
           functions = "third_func",
           editor = "Author2 Name",
-          editDate = "2021-12-01"
+          editDate = "2021-12-01",
+          stringsAsFactors = FALSE
         )
      ))
 
@@ -395,13 +407,15 @@ test_that("Scrape roxygen tags from function authors", {
     expect_equal(vt_scrape_functions(tags = c("editor", "editDate")),
                  data.frame(functions = c("hello_world", "hello_world2"),
                             editor = c("An author", "Another author"),
-                            editDate = c("2021-01-01", "2021-02-01")))
+                            editDate = c("2021-01-01", "2021-02-01"),
+                            stringsAsFactors = FALSE))
 
     exported_authors <- vt_scrape_functions()
     expect_equal(exported_authors[!is.na(exported_authors$export), c("functions", "editor", "editDate")],
                  data.frame(functions = "hello_world",
                             editor = "An author",
-                            editDate = "2021-01-01"))
+                            editDate = "2021-01-01",
+                            stringsAsFactors = FALSE))
     expect_equal(strsplit(vt_kable_functions(exported_authors), "\n")[[1]][-1],
                  c(
                    "\\begin{tabular}{|>{}l|l|l|>{}l|}",
@@ -458,12 +472,14 @@ test_that("scrape roxygen tags requirement authors", {
     expect_equal(rendered_req,
                  data.frame(requirements = "1",
                             editor = "B user",
-                            editDate = as.character(Sys.Date())))
+                            editDate = as.character(Sys.Date()),
+                            stringsAsFactors = FALSE))
 
     expect_equal(vt_scrape_requirements(),
                  data.frame(requirements = "##req:req1",
                             editor = "B user",
-                            editDate = as.character(Sys.Date())))
+                            editDate = as.character(Sys.Date()),
+                            stringsAsFactors = FALSE))
 
     expect_equal(strsplit(vt_kable_requirements(rendered_req), split = "\n")[[1]][-1],
                  c(
