@@ -4,3 +4,8 @@
 
 + Start documenting requirements here!
 
+{{#reqs}}
+{{ID}}  {{Requirement}}    
+
+{{/reqs}}
+
