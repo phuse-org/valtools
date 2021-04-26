@@ -302,7 +302,8 @@ test_that("vt_kable_test_code returns formatted kable object",{
   expect_equivalent(
     output_pass,
     kable_styling(
-      column_spec(
+      kable_styling(
+        column_spec(
       column_spec(
         kable(
           data.frame(
@@ -315,7 +316,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           col.names = c("Test", "Results", "Pass/Fail")
         ),2:3, width = "10em"),
         3, color = "Green"),
-    position = "center")
+    position = "center"), latex_options = "hold_position")
   )
 
   output_fail <- vt_kable_test_code(data.frame(
@@ -327,7 +328,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
 
   expect_equal(
     output_fail,
-    kable_styling(
+    kable_styling(kable_styling(
       column_spec(
       column_spec(
         kable(
@@ -341,7 +342,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           col.names = c("Test", "Results", "Pass/Fail")
         ),2:3, width = "10em"),
       3, color = "Red"
-      ),position = "center")
+      ), latex_options = "hold_position"), position = "center")
   )
 
   output_skip <- vt_kable_test_code(data.frame(
@@ -353,7 +354,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
 
   expect_equal(
     output_skip,
-    kable_styling(
+    kable_styling(kable_styling(
       column_spec(
         column_spec(
         kable(
@@ -367,7 +368,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           col.names = c("Test", "Results", "Pass/Fail")
         ),2:3, width = "10em"),
         3, color = "Orange"
-      ),position = "center")
+      ),position = "center"), latex_options = "hold_position")
   )
 
   output_empty <- vt_kable_test_code(data.frame(
@@ -380,6 +381,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
   expect_equal(
     output_empty,
     kable_styling(
+    kable_styling(
         kable(
           data.frame(
             Test = character(),
@@ -389,7 +391,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           ),
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-      ),position = "center")
+      ),position = "center"), latex_options = "hold_position")
   )
 
 })
