@@ -51,7 +51,7 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
 
   roxyblock_list <- do.call('c',lapply(
     dir_ref_files, function(ref_file, type){
-      vt_scrape_roxygen(
+      scrape_roxygen(
         file = ref_file,
         type = ifelse(type == "test_code", "r_test_code", tools::file_ext(ref_file))
       )
