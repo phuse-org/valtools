@@ -291,13 +291,17 @@ test_that("Can run tests with vt_run_test_code_file()", {
 
 
 test_that("vt_kable_test_code returns formatted kable object",{
-
-  output_pass <- vt_kable_test_code(data.frame(
+  pass_ex <- data.frame(
     Test = "test_example",
     Results = "As expected ",
     Pass_Fail = "Pass",
     stringsAsFactors = FALSE
-    ))
+  )
+
+
+
+
+  output_pass <- vt_kable_test_code(pass_ex)
 
   expect_equivalent(
     output_pass,
@@ -394,6 +398,42 @@ test_that("vt_kable_test_code returns formatted kable object",{
       ),position = "center"), latex_options = "hold_position")
   )
 
+
+  skip_on_cran()
+  withr::with_tempfile(
+    "tf", fileext = ".Rmd", {
+      cat("---",
+          "output: ",
+          "  pdf_document:",
+          "    fig_crop: false",
+          "header-includes:",
+          "  - \\usepackage{array}",
+          "  - \\usepackage{multirow}",
+          "---",
+          "\n\n",
+          "```{r}",
+          "library(knitr)",
+          "library(kableExtra)",
+          "library(tidyverse)",
+          "pass_ex <- data.frame(",
+          "Test = \"test\\\\_example\",",
+          "Results = \"As expected \",",
+          "Pass_Fail = \"Pass\",",
+          "stringsAsFactors = FALSE",
+          ")",
+          "```",
+          "\n\n",
+          "```{r results=\"asis\"}",
+          "vt_kable_test_code(pass_ex, format = \"latex\")",
+          "```",
+          "\n\n", file = tf, sep = "\n")
+
+      rmarkdown::render(tf)
+
+      testthat::expect_true(file.exists(gsub(tf, pattern = '.Rmd', replacement = ".pdf")))
+
+
+    })
 })
 
 test_that("vt_kable_test_code returns error when incorrect data are entered",{
