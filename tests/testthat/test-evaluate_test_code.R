@@ -319,7 +319,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
         ),2:3, width = "10em"),
-        3, color = "Green"),
+        3, color = "#006400"),
     position = "center"), latex_options = "hold_position")
   )
 
@@ -345,7 +345,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
         ),2:3, width = "10em"),
-      3, color = "Red"
+      3, color = "#FF0000"
       ), latex_options = "hold_position"), position = "center")
   )
 
@@ -371,7 +371,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
         ),2:3, width = "10em"),
-        3, color = "Orange"
+        3, color = "#FFC800"
       ),position = "center"), latex_options = "hold_position")
   )
 
@@ -428,9 +428,11 @@ test_that("vt_kable_test_code returns formatted kable object",{
           "```",
           "\n\n", file = tf, sep = "\n")
 
-      rmarkdown::render(tf)
+      quiet <- capture.output({
+        rmarkdown::render(tf)
+      })
 
-      testthat::expect_true(file.exists(gsub(tf, pattern = '.Rmd', replacement = ".pdf")))
+      testthat::expect_true(file.exists(gsub(tf, pattern = '.Rmd$', replacement = ".pdf")))
 
 
     })

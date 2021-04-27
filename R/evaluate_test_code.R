@@ -44,11 +44,11 @@ vt_kable_test_code <- function(results, format = NULL) {
   if( nrow(results) > 0 & any(results$Pass_Fail %in% c("Pass", "Fail", "Skip"))) {
 
     Pass_Fail_colorized <- ifelse(
-      results$Pass_Fail == "Pass", "Green",
+      results$Pass_Fail == "Pass", "#006400",
       ifelse(
-        results$Pass_Fail == "Skip", "Orange",
+        results$Pass_Fail == "Skip", "#FFC800",
         ifelse(
-          results$Pass_Fail == "Fail", "Red",
+          results$Pass_Fail == "Fail", "#FF0000",
           "black"
         )
       ))
