@@ -80,10 +80,27 @@ Cannot pull information from installed R/ location.
 withr::with_tempdir({
 
 captured_output <- capture.output({vt_create_package(open = FALSE)})
-vt_use_req(name = "req1", username = "B user", title = "Requirement 1", open = FALSE)
-writeLines(c("#' @title Say Hello", "#' @editor B User","#' @editDate 2021-04-27","#' @export","hello <- function(){print(\"Hello\")}"), con = "R/hello.R")
-vt_use_test_case(name = "testcase1", username = "B user", title = "TesT Case 1", open = FALSE)
-vt_use_test_code(name = "testcode1", username = "C user", open = FALSE)
+vt_use_req(
+     name = "req1",
+     username = "B user",
+     title = "Requirement 1",
+     open = FALSE)
+writeLines(c(
+    "#' @title Say Hello",
+    "#' @editor B User",
+    "#' @editDate 2021-04-27",
+    "#' @export",
+    "hello <- function(){print(\"Hello\")}"
+    ), con = "R/hello.R")
+vt_use_test_case(
+    name = "testcase1",
+    username = "B user",
+    title = "TesT Case 1",
+    open = FALSE)
+vt_use_test_code(
+    name = "testcode1",
+    username = "C user",
+    open = FALSE)
 
 req_editors <- vt_scrape_requirement_editors()
 vt_kable_requirement_editors(req_editors)
