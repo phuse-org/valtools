@@ -96,32 +96,7 @@ test_that("coverage matrix from dynam num", {
       rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
     })})
 
-    rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                                                      pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
-                                                                replacement = ".pdf"))))[[1]])
-    expect_equal(rendered_cov_matrix_pdf[2:23],
-                 c("Requirement Name  Requirement ID Test Case Name Test Cases",
-                   "1.1                           1.1",
-                   "1.1                           1.3",
-                   "1.2                           1.1",
-                   "Requirement 1     1.2            Test Case 1    1.2",
-                   "1.3                           1.2",
-                   "1.3                           1.3",
-                   "1.4                           1.3",
-                   "2.1                           2.2",
-                   "2.1                           2.3",
-                   "2.2                           2.2",
-                   "Requirement 2     2.2            Test Case 2    2.1",
-                   "2.3                           2.1",
-                   "2.3                           2.3",
-                   "2.4                           2.3",
-                   "3.1                           3.1",
-                   "3.1                           3.3",
-                   "3.2                           3.1",
-                   "Requirement 3     3.2            Test Case 3    3.2",
-                   "3.3                           3.2",
-                   "3.3                           3.3",
-                   "3.4                           3.3" ) )
+
 
     cov_matrix_rmd_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
     writeLines(
@@ -207,7 +182,7 @@ test_that("coverage matrix from dynam num", {
     expect_equal(rendered_cov_matrix2_html,
                  expected_cov_matrix2_html )
 
-    skip_on_os("mac")
+
     cov_matrix2_tex_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
 
     writeLines(
@@ -228,40 +203,70 @@ test_that("coverage matrix from dynam num", {
         vt_kable_coverage_matrix(cov_matrix2, format = "latex")),
       con = cov_matrix2_tex_file)
 
+
+
+    # Skip checks of pdf on cran
+    skip_on_cran()
     suppressWarnings({
-    capture_output <- capture.output({
-      rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
-    })})
+      capture_output <- capture.output({
+        rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
+      })})
 
     expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
+    rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                                                    pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
+                                                                                            replacement = ".pdf"))))[[1]])
+    expect_equal(rendered_cov_matrix_pdf[2:23],
+                 c("Requirement Name  Requirement ID Test Case Name Test Cases",
+                   "1.1                           1.1",
+                   "1.1                           1.3",
+                   "1.2                           1.1",
+                   "Requirement 1     1.2            Test Case 1    1.2",
+                   "1.3                           1.2",
+                   "1.3                           1.3",
+                   "1.4                           1.3",
+                   "2.1                           2.2",
+                   "2.1                           2.3",
+                   "2.2                           2.2",
+                   "Requirement 2     2.2            Test Case 2    2.1",
+                   "2.3                           2.1",
+                   "2.3                           2.3",
+                   "2.4                           2.3",
+                   "3.1                           3.1",
+                   "3.1                           3.3",
+                   "3.2                           3.1",
+                   "Requirement 3     3.2            Test Case 3    3.2",
+                   "3.3                           3.2",
+                   "3.3                           3.3",
+                   "3.4                           3.3" ) )
 
     rendered_cov_matrix2_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))[[1]])
+                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))[[2]])
 
-    expect_equal(rendered_cov_matrix2_pdf[2:24],
+    expect_equal(rendered_cov_matrix2_pdf[1:23],
                  c( "Test Case 1     Test Case 2     Test Case 3",
                     "1.1   1.2   1.3 2.1   2.2   2.3 3.1   3.2   3.3",
-                    "1.1   x",
-                    "1.2   x",
-                    "1.2         x",
-                    "1.3         x",
-                    "Requirement 1 1.1               x",
-                    "1.3               x",
-                    "1.4               x",
-                    "2.1                         x",
-                    "2.2                         x",
-                    "2.2                   x",
-                    "2.3                   x",
-                    "Requirement 2 2.1                               x",
-                    "2.3                               x",
-                    "2.4                               x",
-                    "3.1                                   x",
-                    "3.2                                   x",
-                    "3.2                                         x",
-                    "3.3                                         x",
-                    "Requirement 3 3.1                                               x",
-                    "3.3                                               x",
-                    "3.4                                               x"  ))
+                    "1.1  x",
+                    "1.2  x",
+                    "1.2        x",
+                    "1.3        x",
+                    "Requirement 1 1.1              x",
+                    "1.3              x",
+                    "1.4              x",
+                    "2.1                        x",
+                    "2.2                        x",
+                    "2.2                  x",
+                    "2.3                  x",
+                    "Requirement 2 2.1                              x",
+                    "2.3                              x",
+                    "2.4                              x",
+                    "3.1                                  x",
+                    "3.2                                  x",
+                    "3.2                                        x",
+                    "3.3                                        x",
+                    "Requirement 3 3.1                                              x",
+                    "3.3                                              x",
+                    "3.4                                              x"  ))
 
 
 
