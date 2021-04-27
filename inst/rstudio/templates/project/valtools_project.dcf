@@ -1,3 +1,2 @@
-Binding: vt_create_package
+Binding: vt_create_package_wizard
 Title: R Package using valtools
-OpenFiles: index
