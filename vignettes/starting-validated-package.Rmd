@@ -70,6 +70,11 @@ valtools::vt_use_req("Requirement_001")
 
 ```
 
+In the newly opened requirements file, on line 5, Replace `REQUIEMENTS` with `1.1`, and `ASSESSMENT` with `1, Low Risk, Small Impact` to indicate requirement 1.1 has a risk assessment that determined it has a low risk and small impact when it is wrong.
+
+Add a new line underneath the line above (at line 6) line that contains:
+`#' 1.2: 5, Low risk, Medium Impact`
+
 Copy the following content:
 
 + 1.1 Say Hello to users
@@ -268,6 +273,15 @@ library(kableExtra)
 library(example.package)
 ```
 
+## Signatures
+
+```{r}
+
+vt_scrape_sig_table() %>% 
+ vt_kable_sig_table()
+
+```
+
 ## Validation Environment
 
 ```{r}
@@ -333,7 +347,6 @@ vt_scrape_coverage_matrix() %>%
 
 ```
 
-
 ## Requirements
 
 ```{r}
@@ -357,8 +370,8 @@ vt_file(vt_path("test_cases","Test_case_001.md"))
 ```{r}
 
 vt_run_test_code_file("Test_code_001.R") %>% 
-  vt_kable_test_code() %>% 
-  kableExtra::kable_styling(latex_options = "hold_position")
+  vt_kable_test_code()
+  
 
 ```
 
