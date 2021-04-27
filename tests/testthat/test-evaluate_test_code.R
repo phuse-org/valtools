@@ -414,7 +414,6 @@ test_that("vt_kable_test_code returns formatted kable object",{
           "```{r}",
           "library(knitr)",
           "library(kableExtra)",
-          "library(tidyverse)",
           "pass_ex <- data.frame(",
           "Test = \"test\\\\_example\",",
           "Results = \"As expected \",",
