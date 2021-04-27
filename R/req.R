@@ -7,6 +7,8 @@
 #'   current R environment, then the gadget will be displayed in the system's 
 #'   default web browser.
 #'
+#' @importFrom whisker rowSplit
+#'
 #' @rdname new_item
 #' @export
 vt_use_req <- function(name, username = vt_username(), title = NULL, open = interactive(),
@@ -68,6 +70,10 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
 #' @param username username from vt_use_req()
 #' @param title title from vt_use_req()
 #' 
+#' @importFrom shiny textInput observeEvent reactiveValues paneViewer runGadget stopApp
+#' @importFrom miniUI miniPage gadgetTitleBar miniContentPanel
+#' @importFrom rhandsontable rhandsontable rHandsontableOutput renderRHandsontable hot_to_r
+#' 
 #' @noRd
 vt_use_req_shiny <- function(name, username, title){
   
@@ -78,39 +84,39 @@ vt_use_req_shiny <- function(name, username, title){
   
   # Our ui will display a simple gadget page to collect 
   # user input
-  ui <- miniUI::miniPage(
-    miniUI::gadgetTitleBar(name),
-    miniUI::miniContentPanel(
-      shiny::textInput("title", "Title:", value= title),
-      shiny::textInput("username", "Editor's name:", value= username),
-      shiny::textInput("editDate", "Edit date:", value = as.character(Sys.Date())),
-      rhandsontable::rHandsontableOutput("reqTable")
+  ui <- miniPage(
+    gadgetTitleBar(name),
+    miniContentPanel(
+      textInput("title", "Title:", value= title),
+      textInput("username", "Editor's name:", value= username),
+      textInput("editDate", "Edit date:", value = as.character(Sys.Date())),
+      rHandsontableOutput("reqTable")
     )
   )
   
   server <- function(input, output, session) {
     rvReqs <- reactiveValues(data= dfReqs)
-    output$reqTable <- rhandsontable::renderRHandsontable(
-      rhandsontable::rhandsontable(rvReqs$data, rowHeaders = NULL))
+    output$reqTable <- renderRHandsontable(
+      rhandsontable(rvReqs$data, rowHeaders = NULL))
     
     #Saves the added or removed row 
     observeEvent(input$reqTable,{
-      rvReqs$data <- rhandsontable::hot_to_r(input$reqTable)
+      rvReqs$data <- hot_to_r(input$reqTable)
     })
     
     # Listen for 'done' events. When we're finished, we'll
     # pass on the data in reqList list.
-    shiny::observeEvent(input$done, {
+    observeEvent(input$done, {
       lsReqs <- list(username = input$username,
                       title = input$title,
                       editDate = input$editDate,
                       reqs = rvReqs$data)
-      shiny::stopApp(lsReqs)
+      stopApp(lsReqs)
     })
     
   }
   
   # Use a paneViewer, and set the minimum height at 400
-  viewer <- shiny::paneViewer('maximize')
-  shiny::runGadget(ui, server, viewer = viewer)
+  viewer <- paneViewer('maximize')
+  runGadget(ui, server, viewer = viewer)
 }
