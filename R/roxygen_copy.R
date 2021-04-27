@@ -32,7 +32,7 @@ roxygen_copy <- function(from, to, overwrite = FALSE) {
 
     suppressWarnings({
       roxygen_block_list <-
-        do.call('c', lapply(list_r_files, vt_scrape_roxygen))
+        do.call('c', lapply(list_r_files, scrape_roxygen))
     })
 
     write_roxygen_block(

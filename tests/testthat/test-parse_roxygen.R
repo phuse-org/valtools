@@ -306,7 +306,7 @@ test_that("parsing md files as expected", {
   expect_equal(
     roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
     structure(
-      list(data.frame(test_case = "test_case_1", requirements= c("Req_2","Req_4"))),
+      list(data.frame(test_case = "test_case_1", requirements= c("Req_2","Req_4"), stringsAsFactors = FALSE)),
       class = "vt_test_req_coverage")
   )
 
@@ -367,7 +367,7 @@ test_that("parsing md files with the old nomeclature as expected", {
     expect_equal(
       roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
       structure(
-        list(data.frame(test_case = "test_case_1", requirements= c("Req_2","Req_4"))),
+        list(data.frame(test_case = "test_case_1", requirements= c("Req_2","Req_4"), stringsAsFactors = FALSE)),
         class = "vt_test_req_coverage")
     )
 
@@ -425,7 +425,7 @@ test_that("parsing deprecated md files as expected", {
     expect_equal(
       roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
       structure(
-        list(data.frame(test_case = "Deprecated", requirements= NA)),
+        list(data.frame(test_case = "Deprecated", requirements= NA, stringsAsFactors = FALSE)),
         class = "vt_test_req_coverage")
     )
   })
@@ -524,7 +524,7 @@ test_that("writing the block list can subset to keep blocks with specific tags",
     ""),
     con = "hello.r")
 
-  block_list <- vt_scrape_roxygen("hello.r")
+  block_list <- scrape_roxygen("hello.r")
 
   subset_list <- subset_blocks(
     block_list,
