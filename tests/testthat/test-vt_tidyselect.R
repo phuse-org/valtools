@@ -188,7 +188,6 @@ test_that("tidyselect ends_with operator works as expected", {
 test_that("tidyselect contains operator works as expected", {
 
   withr::with_tempdir({
-
     quiet <- capture.output({
       vt_create_package("example.package", open = FALSE)
     })

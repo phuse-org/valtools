@@ -14,7 +14,6 @@
 #'
 #' @importFrom tidyselect eval_select
 #' @importFrom rlang abort enquo quo_is_null seq2 quo_is_call quo_get_expr
-
 #' @examples
 #' \dontrun{
 #'
@@ -190,4 +189,4 @@ get_config_report_naming_format <- function(){
 
 is_empty_env <- function(env){
   length(ls(envir = env)) == 0
-}
+
