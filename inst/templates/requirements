@@ -1,6 +1,8 @@
 #' @title {{ title }}
 #' @editor {{ username }}
 #' @editDate {{ editDate }}
+#' @riskAssessment
+#' REQUIREMENT: ASSESSMENT
 
 + Start documenting requirements here!
 
