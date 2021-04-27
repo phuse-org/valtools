@@ -58,10 +58,7 @@ Imports:
     glue,
     knitr,
     kableExtra,
-    testthat,
-    rhandsontable,
-    shiny,
-    miniUI
+    testthat
 VignetteBuilder: knitr
 SystemRequirements:
     lua
