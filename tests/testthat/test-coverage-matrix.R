@@ -251,7 +251,7 @@ test_that("coverage matrix from dynam num", {
 
     rendered_cov_matrix2_pdf <- rendered_cov_matrix2_pdf[!grepl("^\\d$",rendered_cov_matrix2_pdf )]
 
-    expect_equal(rendered_cov_matrix2_pdf[1:23],
+    expect_equal(rendered_cov_matrix2_pdf[2:24],
                  c( "Test Case 1     Test Case 2     Test Case 3",
                     "1.1   1.2   1.3 2.1   2.2   2.3 3.1   3.2   3.3",
                     "1.1  x",
