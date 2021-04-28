@@ -416,8 +416,9 @@ test_that("Scrape roxygen tags from function authors", {
                             editor = "An author",
                             editDate = "2021-01-01",
                             stringsAsFactors = FALSE))
-    expect_equal(strsplit(vt_kable_function_editors(exported_authors), "\n")[[1]][-1],
-                 c(
+
+    expect_equal(strsplit(vt_kable_function_editors(exported_authors, format = "latex"), "\n")[[1]][-1],
+                 c("\\centering",
                    "\\begin{tabular}{|>{}l|l|l|>{}l|}",
                    "\\hline",
                    "Function Name & Editor & Edit Date & Exported?\\\\",
@@ -426,7 +427,8 @@ test_that("Scrape roxygen tags from function authors", {
                    "\\hline",
                     "hello\\_world2 & Another author & 2021-02-01 & FALSE\\\\",
                    "\\hline",
-                    "\\end{tabular}"
+                    "\\end{tabular}",
+                   "\\end{table}"
                  ))
 
     expect_equal(strsplit(vt_kable_function_editors(exported_authors, format = "html"), "\n")[[1]][-1],
@@ -482,14 +484,15 @@ test_that("scrape roxygen tags requirement authors", {
                             stringsAsFactors = FALSE))
 
     expect_equal(strsplit(vt_kable_requirement_editors(rendered_req, format = "latex"), split = "\n")[[1]][-1],
-                 c(
+                 c("\\centering",
                    "\\begin{tabular}{|>{}l|l|>{}l|}",
                    "\\hline",
                    "Requirement ID & Editor & Edit Date\\\\",
                    "\\hline",
                    paste0("Requirement 1 & B user & ", as.character(Sys.Date()), "\\\\"),
                    "\\hline",
-                   "\\end{tabular}"))
+                   "\\end{tabular}",
+                   "\\end{table}"))
 
     expect_equal(strsplit(vt_kable_requirement_editors(rendered_req, format = "html"), split = "\n")[[1]][-1],
                  c(

@@ -144,6 +144,7 @@ vt_kable_requirement_editors  <- function(x, format = NULL){
              col.names = all_colnames)
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, ncol(x), border_right = TRUE)
+  t <- kable_styling(t, latex_options = "hold_position")
   t
 }
 
@@ -167,6 +168,7 @@ vt_kable_function_editors  <- function(x, format = "latex"){
              col.names = unname(this_colnames))
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, ncol(x), border_right = TRUE)
+  t <- kable_styling(t, latex_options = "hold_position")
   t
 }
 
@@ -186,6 +188,7 @@ vt_kable_test_case_editors  <- function(x, format = NULL){
              col.names = all_colnames)
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, length(all_colnames), border_right = TRUE)
+  t <- kable_styling(t, latex_options = "hold_position")
   t
 }
 
@@ -205,6 +208,7 @@ vt_kable_test_code_editors <- function(x, format = NULL){
              col.names = all_colnames)
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, ncol(x), border_right = TRUE)
+  t <- kable_styling(t, latex_options = "hold_position")
   t
 }
 
