@@ -11,17 +11,7 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
                           template = "validation_report.Rmd",
                           open = FALSE){
 
-  tryCatch({
-    dir <- vt_find_config()
-  },
-  error = function(e){
-    abort(
-      paste0("Validation config file missing; instantiate via `vt_use_config()`."),
-      class = "vt.validation_config_missing"
-    )
-  })
-
-  val_leads <- get_val_leads(dir = dirname(dir))
+  val_leads <- get_val_leads()
 
   if(length(val_leads) == 0){
     val_leads <-  tryCatch({
@@ -73,18 +63,8 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
 
 #' @noRd
 #' @keywords internal
-get_val_leads <- function(dir = vt_path()){
+get_val_leads <- function(){
 
-
-  if(!file.exists(file.path(dir,"validation.yml"))){
-    abort(
-      paste0(
-        "A validation config file does not exist.\n",
-        "Run `valtools::vt_use_validation_config()` to create a validation config file."
-      ),
-      class = "vt.validation_config_missing"
-    )
-  }
   usernames <- read_validation_config()$usernames
   unlist(lapply(seq_along(usernames), FUN = function(x){
     if(grepl(pattern = "validation lead", x = tolower(usernames[[x]]$role))){
