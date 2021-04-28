@@ -153,7 +153,7 @@ vt_kable_requirement_editors  <- function(x, format = NULL){
 #' @importFrom kableExtra column_spec
 #' @rdname scraping
 #'
-vt_kable_function_editors  <- function(x, format = "latex"){
+vt_kable_function_editors  <- function(x, format = NULL){
   all_colnames <- c(functions = "Function Name",
                     editor = "Editor",
                     editDate = "Edit Date",
@@ -211,4 +211,3 @@ vt_kable_test_code_editors <- function(x, format = NULL){
   t <- kable_styling(t, latex_options = "hold_position")
   t
 }
-
