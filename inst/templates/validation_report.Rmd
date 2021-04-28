@@ -1,11 +1,12 @@
 ---
 title: {{title}}
-author: {{username}}
+author: {{author}}
 output: 
   pdf_document:
     toc: true
+    fig_crop: false
 vignette: >
-  %\VignetteIndexEntry{Validation Report}
+  %\VignetteIndexEntry{ {{title}} }
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 header-includes:

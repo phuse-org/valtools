@@ -1,7 +1,7 @@
 test_that("integration test for CRAN", {
   withr::with_tempdir({
     # using the default .validation Validation Lead user
-    test_user <- whoami::username(fallback = "")
+    test_user <- whoami::username(fallback = "runner")
     report_name <- paste0("Validation_Report_", basename(getwd()),
                           "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
     captured_output <- capture.output(vt_create_package(open = FALSE))
@@ -86,15 +86,14 @@ test_that("integration test for CRAN", {
     vt_use_report()
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
     withr::with_temp_libpaths({
-      install.packages(getwd(), type = "source", repos = NULL)
-      browser()
-      rmarkdown::render(file.path(getwd(), "vignettes", report_name))
+      install.packages(getwd(), type = "source", repos = NULL, quiet = TRUE)
+      rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
     })
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[10], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
     expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
 
 
@@ -116,7 +115,7 @@ test_that("validation report in package",{
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[10], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
     expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
 
   })

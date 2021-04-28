@@ -15,7 +15,8 @@
 #'   vt_get_child_files(loc = "yml")
 #'
 #'   # as ordered in validation subfolders
-#'   vt_get_child_files(loc = "folder", validation_order = c("requirements", "test_cases", "test_code"))
+#'   vt_get_child_files(loc = "folder",
+#'     validation_order = c("requirements", "test_cases", "test_code"))
 #'
 #' })
 vt_get_child_files <- function(loc = c("folder", "yml"),
