@@ -200,4 +200,3 @@ test_that("multiple authors",{
 
   })
 })
-
