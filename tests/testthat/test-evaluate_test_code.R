@@ -290,7 +290,8 @@ test_that("Can run tests with vt_run_test_code_file()", {
 })
 
 
-test_that("vt_kable_test_code returns formatted kable object",{
+test_that("vt_kable_test_code_results returns formatted kable object",{
+
   pass_ex <- data.frame(
     Test = "test_example",
     Results = "As expected ",
@@ -298,10 +299,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
     stringsAsFactors = FALSE
   )
 
-
-
-
-  output_pass <- vt_kable_test_code(pass_ex)
+  output_pass <- vt_kable_test_code_results(pass_ex)
 
   expect_equivalent(
     output_pass,
@@ -323,7 +321,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
     position = "center"), latex_options = "hold_position")
   )
 
-  output_fail <- vt_kable_test_code(data.frame(
+  output_fail <- vt_kable_test_code_results(data.frame(
     Test = "test_example",
     Results = "Failure Reasons ",
     Pass_Fail = "Fail",
@@ -349,7 +347,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
       ), latex_options = "hold_position"), position = "center")
   )
 
-  output_skip <- vt_kable_test_code(data.frame(
+  output_skip <- vt_kable_test_code_results(data.frame(
     Test = "test_example",
     Results = "Skipped test for reasons",
     Pass_Fail = "Skip",
@@ -375,7 +373,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
       ),position = "center"), latex_options = "hold_position")
   )
 
-  output_empty <- vt_kable_test_code(data.frame(
+  output_empty <- vt_kable_test_code_results(data.frame(
     Test = character(),
     Results = character(),
     Pass_Fail = character(),
@@ -423,7 +421,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
           "```",
           "\n\n",
           "```{r results=\"asis\"}",
-          "vt_kable_test_code(pass_ex, format = \"latex\")",
+          "vt_kable_test_code_results(pass_ex, format = \"latex\")",
           "```",
           "\n\n", file = tf, sep = "\n")
 
@@ -437,10 +435,10 @@ test_that("vt_kable_test_code returns formatted kable object",{
     })
 })
 
-test_that("vt_kable_test_code returns error when incorrect data are entered",{
+test_that("vt_kable_test_code_results returns error when incorrect data are entered",{
 
   expect_error(
-    vt_kable_test_code(data.frame(bad_entry = 1)),
+    vt_kable_test_code_results(data.frame(bad_entry = 1)),
     "Results data must contain the fields `Test`, `Results`, and `Pass_Fail`",
     fixed = TRUE
   )

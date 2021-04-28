@@ -404,20 +404,21 @@ test_that("Scrape roxygen tags from function authors", {
     ), file.path(usethis::proj_get(), "R", "hello_world.R"))
 
 
-    expect_equal(vt_scrape_functions(tags = c("editor", "editDate")),
+    expect_equal(vt_scrape_function_editors(tags = c("editor", "editDate")),
                  data.frame(functions = c("hello_world", "hello_world2"),
                             editor = c("An author", "Another author"),
                             editDate = c("2021-01-01", "2021-02-01"),
                             stringsAsFactors = FALSE))
 
-    exported_authors <- vt_scrape_functions()
+    exported_authors <- vt_scrape_function_editors()
     expect_equal(exported_authors[!is.na(exported_authors$export), c("functions", "editor", "editDate")],
                  data.frame(functions = "hello_world",
                             editor = "An author",
                             editDate = "2021-01-01",
                             stringsAsFactors = FALSE))
-    expect_equal(strsplit(vt_kable_functions(exported_authors), "\n")[[1]][-1],
-                 c(
+
+    expect_equal(strsplit(vt_kable_function_editors(exported_authors, format = "latex"), "\n")[[1]][-1],
+                 c("\\centering",
                    "\\begin{tabular}{|>{}l|l|l|>{}l|}",
                    "\\hline",
                    "Function Name & Editor & Edit Date & Exported?\\\\",
@@ -426,10 +427,11 @@ test_that("Scrape roxygen tags from function authors", {
                    "\\hline",
                     "hello\\_world2 & Another author & 2021-02-01 & FALSE\\\\",
                    "\\hline",
-                    "\\end{tabular}"
+                    "\\end{tabular}",
+                   "\\end{table}"
                  ))
 
-    expect_equal(strsplit(vt_kable_functions(exported_authors, format = "html"), "\n")[[1]][-1],
+    expect_equal(strsplit(vt_kable_function_editors(exported_authors, format = "html"), "\n")[[1]][-1],
                  c(" <thead>",
                  "  <tr>",
                  "   <th style=\"text-align:left;\"> Function Name </th>",
@@ -468,30 +470,31 @@ test_that("scrape roxygen tags requirement authors", {
     dynamic_ref <- vt_dynamic_referencer$new()
 
 
-    rendered_req <- vt_scrape_requirements(dynamic_ref = dynamic_ref)
+    rendered_req <- vt_scrape_requirement_editors(dynamic_ref = dynamic_ref)
     expect_equal(rendered_req,
                  data.frame(requirements = "1",
                             editor = "B user",
                             editDate = as.character(Sys.Date()),
                             stringsAsFactors = FALSE))
 
-    expect_equal(vt_scrape_requirements(),
+    expect_equal(vt_scrape_requirement_editors(),
                  data.frame(requirements = "##req:req1",
                             editor = "B user",
                             editDate = as.character(Sys.Date()),
                             stringsAsFactors = FALSE))
 
-    expect_equal(strsplit(vt_kable_requirements(rendered_req), split = "\n")[[1]][-1],
-                 c(
+    expect_equal(strsplit(vt_kable_requirement_editors(rendered_req, format = "latex"), split = "\n")[[1]][-1],
+                 c("\\centering",
                    "\\begin{tabular}{|>{}l|l|>{}l|}",
                    "\\hline",
                    "Requirement ID & Editor & Edit Date\\\\",
                    "\\hline",
                    paste0("Requirement 1 & B user & ", as.character(Sys.Date()), "\\\\"),
                    "\\hline",
-                   "\\end{tabular}"))
+                   "\\end{tabular}",
+                   "\\end{table}"))
 
-    expect_equal(strsplit(vt_kable_requirements(rendered_req, format = "html"), split = "\n")[[1]][-1],
+    expect_equal(strsplit(vt_kable_requirement_editors(rendered_req, format = "html"), split = "\n")[[1]][-1],
                  c(
                    " <thead>",
                    "  <tr>",
@@ -513,3 +516,73 @@ test_that("scrape roxygen tags requirement authors", {
 
 })
 })
+
+test_that("scrape roxygen tags from all sections authors", {
+  withr::with_tempdir({
+
+    ## test setup
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    vt_use_req(name = "req1", username = "B user", title = "##req:req1", open = FALSE)
+    writeLines(c(
+      "#' Hello World",
+      "#' @param name name to say hello to",
+      "#' @returns character string saying hello",
+      "#' @editor B user",
+      paste("#' @editDate",format(Sys.Date(),"%Y-%m-%d")),
+      "#' @export",
+      "hello_world <- function(name){",
+      "paste(\"Hello,\",name)",
+      "}",
+      "",
+      "#' @editor B user",
+      paste("#' @editDate",format(Sys.Date(),"%Y-%m-%d")),
+      "hello_world2 <- function(name){",
+      "paste(\"Hello,\",name)",
+      "}",
+      ""),
+      con = "R/hello_world.R")
+    vt_use_test_case(name = "testcase1", username = "B user", title = "##tc:test_case_1", open = FALSE)
+    vt_use_test_code(name = "testcode1", username = "C user", open = FALSE)
+    writeLines(c(
+      "#' @editor C user",
+      paste("#' @editDate",format(Sys.Date(),"%Y-%m-%d")),
+      "test_that(\"##tc:test_case_1.1\",{",
+      "expect_equal(1,1)",
+      "})"),
+      con = vt_path("test_code","testcode1.R"))
+
+
+    dynamic_ref <- vt_dynamic_referencer$new()
+
+    rendered_req <- vt_scrape_requirement_editors(dynamic_ref = dynamic_ref)
+    expect_equal(rendered_req,
+                 data.frame(requirements = "1",
+                            editor = "B user",
+                            editDate = as.character(Sys.Date()),
+                            stringsAsFactors = FALSE))
+
+    rendered_funcs <- vt_scrape_function_editors()
+    expect_equal(rendered_funcs,
+                 data.frame(functions = c("hello_world","hello_world2"),
+                            editor = c("B user","B user"),
+                            editDate = c(as.character(Sys.Date()),as.character(Sys.Date())),
+                            export = c("",NA),
+                            stringsAsFactors = FALSE))
+
+    rendered_test_cases <- vt_scrape_test_case_editors(dynamic_ref = dynamic_ref)
+    expect_equal(rendered_test_cases,
+                 data.frame(test_cases = "1",
+                            editor = "B user",
+                            editDate = as.character(Sys.Date()),
+                            stringsAsFactors = FALSE))
+
+    rendered_test_code <- vt_scrape_test_code_editors(dynamic_ref = dynamic_ref)
+    expect_equal(rendered_test_code,
+                 data.frame(test_code = "1.1",
+                            editor = "C user",
+                            editDate = as.character(Sys.Date()),
+                            stringsAsFactors = FALSE))
+
+  })
+})
+
