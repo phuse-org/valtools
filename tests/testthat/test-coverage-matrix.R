@@ -97,33 +97,6 @@ test_that("coverage matrix from dynam num", {
       rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
     })})
 
-    rendered_cov_matrix_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                                                      pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
-                                                                replacement = ".pdf"))))))
-    expect_equal(rendered_cov_matrix_pdf[2:23],
-                 c("Requirement Name  Requirement ID Test Case Name Test Cases",
-                   "1.1                           1.1",
-                   "1.1                           1.3",
-                   "1.2                           1.1",
-                   "Requirement 1     1.2            Test Case 1    1.2",
-                   "1.3                           1.2",
-                   "1.3                           1.3",
-                   "1.4                           1.3",
-                   "2.1                           2.2",
-                   "2.1                           2.3",
-                   "2.2                           2.2",
-                   "Requirement 2     2.2            Test Case 2    2.1",
-                   "2.3                           2.1",
-                   "2.3                           2.3",
-                   "2.4                           2.3",
-                   "3.1                           3.1",
-                   "3.1                           3.3",
-                   "3.2                           3.1",
-                   "Requirement 3     3.2            Test Case 3    3.2",
-                   "3.3                           3.2",
-                   "3.3                           3.3",
-                   "3.4                           3.3" ) )
-
     cov_matrix_rmd_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
     writeLines(
       c("---",
@@ -214,7 +187,7 @@ test_that("coverage matrix from dynam num", {
     expect_equal(rendered_cov_matrix2_html,
                  expected_cov_matrix2_html )
 
-    skip_on_os("mac")
+
     cov_matrix2_tex_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
 
     writeLines(
@@ -236,11 +209,42 @@ test_that("coverage matrix from dynam num", {
       con = cov_matrix2_tex_file)
 
     suppressWarnings({
-    capture_output <- capture.output({
-      rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
-    })})
+      capture_output <- capture.output({
+        rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
+      })})
+
+    # Skip checks of pdf on cran
+    skip_on_cran()
+
 
     expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
+    rendered_cov_matrix_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                                                                pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
+                                                                                                        replacement = ".pdf"))))))
+    expect_equal(rendered_cov_matrix_pdf[2:23],
+                 c("Requirement Name  Requirement ID Test Case Name Test Cases",
+                   "1.1                           1.1",
+                   "1.1                           1.3",
+                   "1.2                           1.1",
+                   "Requirement 1     1.2            Test Case 1    1.2",
+                   "1.3                           1.2",
+                   "1.3                           1.3",
+                   "1.4                           1.3",
+                   "2.1                           2.2",
+                   "2.1                           2.3",
+                   "2.2                           2.2",
+                   "Requirement 2     2.2            Test Case 2    2.1",
+                   "2.3                           2.1",
+                   "2.3                           2.3",
+                   "2.4                           2.3",
+                   "3.1                           3.1",
+                   "3.1                           3.3",
+                   "3.2                           3.1",
+                   "Requirement 3     3.2            Test Case 3    3.2",
+                   "3.3                           3.2",
+                   "3.3                           3.3",
+                   "3.4                           3.3" ) )
+
 
     rendered_cov_matrix2_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
                  pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))))

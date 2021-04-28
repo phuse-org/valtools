@@ -2,12 +2,12 @@
 % Please edit documentation in R/evaluate_test_code.R
 \name{vt_run_test_code_file}
 \alias{vt_run_test_code_file}
-\alias{vt_kable_test_code}
+\alias{vt_kable_test_code_results}
 \title{Evaluate the test code file}
 \usage{
 vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
 
-vt_kable_test_code(results, format = NULL)
+vt_kable_test_code_results(results, format = NULL)
 }
 \arguments{
 \item{file}{full path to test code file.}

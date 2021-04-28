@@ -31,7 +31,7 @@ vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_pat
 #' @export
 #'
 #' @rdname eval_test_code
-vt_kable_test_code <- function(results, format = NULL) {
+vt_kable_test_code_results <- function(results, format = NULL) {
   ## check column names
   if (!all(c("Test", "Results", "Pass_Fail") %in% colnames(results))) {
     abort("Results data must contain the fields `Test`, `Results`, and `Pass_Fail`")
