@@ -105,7 +105,7 @@ vt_scrape_val_env() %>%
 #   
 ```
 
-```{r}
+```{r child-files}
 child_files <- vt_get_child_files()
 quiet <- sapply(file.path(vt_path(), child_files), vt_file, dynamic_referencing = TRUE)
 ```
