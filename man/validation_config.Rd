@@ -36,7 +36,9 @@ vt_user(username, name, title, role, ...)
 \arguments{
 \item{filename}{character vector containing filenames in order}
 
-\item{before, after}{Optional destination of new filenames, default is end of existing list. Specifying both is error.}
+\item{before, after}{Optional destination of new filenames, default is end of
+existing list. Supports <\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> functions.
+Specifying both is error.}
 
 \item{username}{username of the user.}
 
@@ -74,8 +76,8 @@ Validation report content will be populated using this list in order.}
 Defaults to FALSE.}
 }
 \value{
-Used for side effect of adding validation file ordering to validation config
-file. Invisibly returns TRUE on success.
+Used for side effect of adding validation file ordering to
+validation config file. Invisibly returns TRUE on success.
 
 Used for side effect of removing file ordering information from validation config
 file. Invisibly returns TRUE on success.

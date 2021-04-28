@@ -2,12 +2,12 @@
 % Please edit documentation in R/evaluate_test_code.R
 \name{vt_run_test_code_file}
 \alias{vt_run_test_code_file}
-\alias{vt_kable_test_code}
+\alias{vt_kable_test_code_results}
 \title{Evaluate the test code file}
 \usage{
 vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
 
-vt_kable_test_code(results)
+vt_kable_test_code_results(results, format = NULL)
 }
 \arguments{
 \item{file}{full path to test code file.}
@@ -19,6 +19,8 @@ vt_kable_test_code(results)
 \item{ref}{reference path to use. Defaults to vt_path()}
 
 \item{results}{results data.frame from \code{vt_run_test_code_file()}}
+
+\item{format}{passed to \code{knitr::kable}}
 }
 \value{
 a kable with variables: \code{Test}, \code{Expected}, \code{Results},
