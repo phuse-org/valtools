@@ -40,7 +40,7 @@ vt_scrape_function_editors(
 
 vt_kable_requirement_editors(x, format = NULL)
 
-vt_kable_function_editors(x, format = "latex")
+vt_kable_function_editors(x, format = NULL)
 
 vt_kable_test_case_editors(x, format = NULL)
 
