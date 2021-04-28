@@ -103,3 +103,10 @@ all_func_details[!is.na(all_function_details$export), c("functions", "editor", "
   vt_kable_functions()
   
 ```
+
+# Risk Assessment
+
+```{r risk}
+vt_scrape_risk_assessment() %>% 
+  vt_kable_risk_assessment()
+```
