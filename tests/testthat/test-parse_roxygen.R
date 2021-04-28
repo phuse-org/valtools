@@ -524,7 +524,7 @@ test_that("writing the block list can subset to keep blocks with specific tags",
     ""),
     con = "hello.r")
 
-  block_list <- vt_scrape_roxygen("hello.r")
+  block_list <- scrape_roxygen("hello.r")
 
   subset_list <- subset_blocks(
     block_list,

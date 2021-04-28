@@ -64,7 +64,7 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
   }
 
   # Add file to validation configuration
-  vt_add_file_to_config(filename = name, after = add_after, before = add_before)
+  vt_add_file_to_config(filename = name, after = {{add_after}}, before = {{add_before}})
 
   if(open){
     edit_file(case_name)
