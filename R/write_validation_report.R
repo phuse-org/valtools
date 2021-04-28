@@ -15,8 +15,10 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
     dir <- vt_find_config()
   },
   error = function(e){
-    vt_use_config(pkg = vt_path())
-    dir <- vt_find_config()
+    abort(
+      paste0("Validation config file missing; instantiate via `vt_use_config()`."),
+      class = "vt.validation_config_missing"
+    )
   })
 
   val_leads <- get_val_leads(dir = dirname(dir))
@@ -71,7 +73,7 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
 
 #' @noRd
 #' @keywords internal
-get_val_leads <- function(dir = "."){
+get_val_leads <- function(dir = vt_path()){
 
 
   if(!file.exists(file.path(dir,"validation.yml"))){
