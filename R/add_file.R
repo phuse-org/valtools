@@ -84,7 +84,7 @@ add_file.r_test_code <- function(file, report, ..., dynamic_referencing = FALSE)
     paste0("```{r ", chunk_name(file),", echo = FALSE, results = 'asis'}"),
     paste0("results <- vt_run_test_code_file(file=\"",basename(file),"\")"),
     ifelse(dynamic_referencing,"results <- dynamic_reference_rendering(results)", NA),
-    "vt_kable_test_code(results)",
+    "vt_kable_test_code_results(results)",
     "```"
   )
 

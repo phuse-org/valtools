@@ -573,3 +573,86 @@ test_that("rendered report works using file.path inside vt_file", {
   })
 })
 
+test_that("rendered report works using file.path inside vt_file - vectorized", {
+  withr::with_tempdir({
+
+    vt_use_validation()
+    vt_use_req("example_req.md",username = "sample")
+    vt_use_test_case("example_test_case.md",username = "sample")
+    vt_use_test_code("example_test_code.r",username = "sample")
+
+    writeLines(c(
+      "## header",
+      "Content",
+      "",
+      "  - bullet 1",
+      "  - bullet 2",
+      "```{r}",
+      "print(\"hello\")",
+      "```"
+    ),
+    con = vt_path("rando_file.Rmd"))
+
+    writeLines(c(
+      "## header",
+      "test_that(\"1.1\",{",
+      " expect_equal(1,1)",
+      "})"
+    ),
+    con = vt_path("test_code","example_test_code.r"))
+
+    writeLines(
+      c("---",
+        "title: test report",
+        "output: pdf_document",
+        "header-includes:",
+        "  - \\usepackage{float}",
+        "  - \\usepackage{array}",
+        "  - \\usepackage{multirow}",
+        "  - \\usepackage{longtable}",
+        "---",
+        "",
+        "```{r rando-file, echo = FALSE, results = 'asis'}",
+        "vt_file(file=c(\"rando_file.Rmd\",
+                        \"example_req.md\",
+                        \"example_test_case.md\",
+                        \"example_test_code.r\"))",
+        "```"
+      ), con = "report.Rmd"
+    )
+
+
+    ## test rendering report
+    quiet <- capture_warnings({
+      quiet <- capture.output({
+        rmarkdown::render("report.Rmd")
+      })})
+
+    browser()
+
+    test_report_rendered <-
+      trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                           pdftools::pdf_text("report.pdf")))[[1]])
+
+    expect_equal(
+      test_report_rendered,
+      c(
+        "test report",
+        "header",
+        "Content",
+        "• bullet 1",
+        "• bullet 2",
+        "print(\"hello\")",
+        "## [1] \"hello\"" ,
+        "• Start documenting requirements here!",
+        "• Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "• Start documenting test case here!",
+        "Test    Results          Pass/Fail",
+        "1.1     As expected      Pass",
+        "1"
+      )
+    )
+
+  })
+})
+
