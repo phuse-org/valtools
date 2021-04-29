@@ -2,8 +2,6 @@
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
 #' one of "validation" (default) or "requirements" (forthcoming)
-#' @param open boolean whether to open the validation report, passed to \code{usetthis::use_template}
-#' @importFrom usethis use_template proj_set
 #' @importFrom tools file_ext
 #' @importFrom rlang with_interactive
 #' @export
