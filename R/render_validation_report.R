@@ -49,7 +49,7 @@ vt_render_validation_report <- function(report_path, output_dir = dirname(report
 #'
 #' @noRd
 #'
-evaluate_filename <- function(pkg = ".", package, version){
+evaluate_filename <- function(pkg = ".", package = get_config_package(), version){
 
   filename_format <- get_config_report_naming_format()
 
@@ -57,12 +57,12 @@ evaluate_filename <- function(pkg = ".", package, version){
     filename_format <- "Validation_Report_{package}_v{version}_{date}"
   }
 
-  if(missing(package)){
-    package <- desc_get_field("Package",file = pkg)
-  }
-
   if(missing(version)){
-    version <- desc_get_field("Version",file = pkg)
+    if(is_package(pkg = pkg)){
+      version <- desc_get_field("Version",file = pkg)
+    }else{
+      version <- packageVersion(package)
+    }
   }
 
   date <- format(Sys.Date(),"%Y%m%d")
