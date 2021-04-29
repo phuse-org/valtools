@@ -48,7 +48,7 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
   root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
 
   template_files <- c(validation = "validation_report.Rmd")
-  report_filename <- file.path(get_config_working_dir(), "validation.Rmd")
+  report_filename <- file.path(get_config_working_dir(), template_files[[template]])
 
   render_template( template = template_files[[template]],
                 output = report_filename,

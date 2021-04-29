@@ -2,8 +2,7 @@ test_that("integration test for CRAN", {
   withr::with_tempdir({
     # using the default .validation Validation Lead user
     test_user <- whoami::username(fallback = "runner")
-    report_name <- paste0("Validation_Report_", basename(getwd()),
-                          "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
+    report_name <- "validation_report.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "auser", name = "A user", title = "staff",
                           role = "Project Lead")
@@ -115,8 +114,7 @@ test_that("validation report in package",{
   withr::with_tempdir({
     # using the default .validation Validation Lead user
     test_user <- whoami::username(fallback = "")
-    report_name <- paste0("Validation_Report_", basename(getwd()),
-                          "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
+    report_name <- "validation_report.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_use_report()
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
@@ -136,8 +134,7 @@ test_that("validation report in package",{
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
-    report_name <- paste0("Validation_Report_", basename(getwd()),
-                          "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
+    report_name <- "validation_report.Rmd"
     captured_output <- capture.output({vt_create_package(open = FALSE)})
     vt_add_user_to_config(username = "aperson",
                           name = "An author",
@@ -160,8 +157,7 @@ test_that("multiple authors",{
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
-    report_name <- paste0("Validation_Report_", basename(getwd()),
-                          "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
+    report_name <- "validation_report.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "aperson",
                           name = "An author",
@@ -196,8 +192,7 @@ test_that("multiple authors",{
   withr::with_tempdir({
     # using the default Validation Lead user
     test_user <- whoami::username(fallback = "")
-    report_name <- paste0("Validation_Report_", basename(getwd()),
-                          "_v0.0.0.9000_", format(Sys.Date(), "%Y%m%d"), ".Rmd")
+    report_name <- "validation_report.Rmd"
     captured_output <- capture.output({vt_create_package(open = FALSE)})
 
     vt_use_req("requirement1.md", username = "author1", open = FALSE)
