@@ -22,6 +22,7 @@ vt_get_user_info(username, type = c("name", "title", "role"))
 
 vt_use_config(
   pkg = ".",
+  package,
   working_dir,
   output_dir,
   report_naming_format = "Validation_Report_{package}_v{version}_{date}",
@@ -170,6 +171,7 @@ vt_get_user_info(username = "ellis", type = c("name","title"))
 
 withr::with_tempdir({
 vt_use_validation(
+              package = "test.package",
               working_dir = ".",
               output_dir  = ".",
               report_naming_format = "Validation_Report_{package}_v{version}_{date}",
