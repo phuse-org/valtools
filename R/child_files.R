@@ -23,8 +23,8 @@ vt_get_child_files <- function(loc = c("folder", "yml"),
                                validation_order = c("requirements", "test_cases", "test_code")){
   validation_folder <- vt_path()
   all_validation_files <- unname(do.call("c", lapply(validation_order, FUN = function(x){
-    file.path(x, list.files(path = file.path(validation_folder, x),
-                            full.names = FALSE))
+    list.files(path = file.path(validation_folder, x),
+                            full.names = FALSE)
     })))
 
 

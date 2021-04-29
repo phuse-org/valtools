@@ -46,11 +46,12 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
       })
   }
 
+  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
 
   render_template( template = template,
                 output = file.path(get_config_working_dir(),
                                    paste0(evaluate_filename(), ".", file_ext(template))),
-                data = list(pkg_name = desc_get_field("Package", file = dirname(dir)),
+                data = list(pkg_name = basename(root),
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,

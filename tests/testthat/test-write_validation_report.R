@@ -59,7 +59,17 @@ test_that("integration test for CRAN", {
                "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
                "",
                "+ Start documenting test case here!"))
-
+    vt_use_test_code("test_code1.R", username = "another user")
+    writeLines(con = file.path("vignettes", "validation", "test_code", "test_code1.R"),
+               c(
+                 "# Test setup",
+                 "\n",
+                 "#' @editor another user",
+                 "#' @editDate 2021-04-28",
+                 "test_that(\"1.1\", {",
+                 "  testthat::expect_true(TRUE)",
+                 "})"
+               ))
     file.create(file.path("R", "hello_world.R"))
     writeLines(con = file.path("R", "hello_world.R"),
                c("#' dummy function",
