@@ -7,7 +7,7 @@
 vt_use_report(
   pkg_name = desc::desc_get_field("Package"),
   template = "validation",
-  open = FALSE
+  open = is_interactive()
 )
 }
 \arguments{
@@ -15,6 +15,8 @@ vt_use_report(
 
 \item{template}{what validation report template from {valtools} to use,
 one of "validation" (default) or "requirements" (forthcoming)}
+
+\item{open}{boolean to open the validation report for further editing}
 }
 \description{
 Create validation report from template

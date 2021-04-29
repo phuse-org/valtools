@@ -2,12 +2,13 @@
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
 #' one of "validation" (default) or "requirements" (forthcoming)
+#' @param open boolean to open the validation report for further editing
 #' @importFrom tools file_ext
-#' @importFrom rlang with_interactive
+#' @importFrom rlang with_interactive is_interactive
 #' @export
 vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
                           template = "validation",
-                          open = FALSE){
+                          open = is_interactive()){
 
   val_leads <- get_val_leads()
 
@@ -47,11 +48,10 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
   root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
 
   template_files <- c(validation = "validation_report.Rmd")
-
+  report_filename <- file.path(get_config_working_dir(), "validation.Rmd")
 
   render_template( template = template_files[[template]],
-                output = file.path(get_config_working_dir(),
-                                   paste0(evaluate_filename(), ".", file_ext(template_files[[template]]))),
+                output = report_filename,
                 data = list(pkg_name = basename(root),
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
@@ -59,7 +59,7 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
                                                  type = "name")), collapse = ', ')))
 
   if(open){
-    edit_file(req_name)
+    edit_file(report_filename)
   }
   invisible(TRUE)
 }
