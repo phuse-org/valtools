@@ -39,14 +39,14 @@ test_that("evaluting markdown files works", {
     })
 
     sample_output3 <- capture.output({
-      cat(vt_file(file = "sample.md"))
+      vt_file(file = "sample.md")
     })
 
     sample_output4 <- capture.output({
-      cat(vt_file(
+      vt_file(
         file = "sample2.md",
         reference = referencer,
-        dynamic_referencing = TRUE))
+        dynamic_referencing = TRUE)
     })
 
     expect_equal(
@@ -269,11 +269,11 @@ test_that("evaluating default files works", {
     })
 
     sample_output3 <- capture.output({
-      cat(vt_file(file = "sample.html"))
+      vt_file(file = "sample.html")
     })
 
     sample_output4 <- capture.output({
-      cat(vt_file(file = "sample.tex"))
+      vt_file(file = "sample.tex")
     })
 
     sample_output_dynamic <- capture.output({
@@ -291,17 +291,17 @@ test_that("evaluating default files works", {
     })
 
     sample_output3_dynamic <- capture.output({
-      cat(vt_file(
+      vt_file(
         file = "sample_dynamic.html",
         reference = referencer,
-        dynamic_referencing = TRUE))
+        dynamic_referencing = TRUE)
     })
 
     sample_output4_dynamic <- capture.output({
-      cat(vt_file(
+      vt_file(
         file = "sample_dynamic.tex",
         reference = referencer,
-        dynamic_referencing = TRUE))
+        dynamic_referencing = TRUE)
     })
 
     expect_equal(
@@ -613,10 +613,10 @@ test_that("rendered report works using file.path inside vt_file - vectorized", {
         "---",
         "",
         "```{r rando-file, echo = FALSE, results = 'asis'}",
-        "vt_file(file=c(\"rando_file.Rmd\",
-                        \"example_req.md\",
-                        \"example_test_case.md\",
-                        \"example_test_code.r\"))",
+        "vt_file(file=c(vt_path(\"rando_file.Rmd\"),
+                        vt_path(\"requirements\",\"example_req.md\"),
+                        vt_path(\"test_cases\",\"example_test_case.md\"),
+                        vt_path(\"test_code\",\"example_test_code.r\")))",
         "```"
       ), con = "report.Rmd"
     )
@@ -627,8 +627,6 @@ test_that("rendered report works using file.path inside vt_file - vectorized", {
       quiet <- capture.output({
         rmarkdown::render("report.Rmd")
       })})
-
-    browser()
 
     test_report_rendered <-
       trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",

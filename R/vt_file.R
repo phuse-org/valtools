@@ -30,19 +30,18 @@ vt_file_serial <- function(file, ..., dynamic_referencing = FALSE){
 vt_file_vectorized <- Vectorize(vt_file_serial)
 
 
-vignette_file_path <- function(file, type, ref = vt_path(), ...){
+vignette_file_path <- function(file, type, ...){
 
-  path <- find_file(file, ref=ref,full_names = TRUE)
 
   if(missing(type)){
-    type <- tools::file_ext(path)
-    if("test_code" %in% split_path(path)){
+    type <- tools::file_ext(file)
+    if("test_code" %in% split_path(file) & tolower(type) == "r"){
       type <- "r_test_code"
     }
   }
 
   structure(
-    path,
+    file,
     type = type,
     class = c(tolower(type),"vignette_file_path")
   )
