@@ -5,7 +5,7 @@
 #' Impose ordering of validation child files
 #' @param filename character vector containing filenames in order
 #' @param before,after Optional destination of new filenames, default is end of
-#'   existing list. Supports <[`tidy-select`][dplyr::dplyr_tidy_select]> functions.
+#'   existing list. Supports <[`tidy-select`][tidyselect::language]> functions.
 #'   Specifying both is error.
 #' @returns Used for side effect of adding validation file ordering to
 #'   validation config file. Invisibly returns TRUE on success.

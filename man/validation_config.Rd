@@ -38,7 +38,7 @@ vt_user(username, name, title, role, ...)
 \item{filename}{character vector containing filenames in order}
 
 \item{before, after}{Optional destination of new filenames, default is end of
-existing list. Supports <\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> functions.
+existing list. Supports <\code{\link[tidyselect:language]{tidy-select}}> functions.
 Specifying both is error.}
 
 \item{username}{username of the user.}
@@ -52,6 +52,8 @@ Specifying both is error.}
 \item{type}{type of information to pull. select at least one: name, title, role}
 
 \item{pkg}{where to write config file}
+
+\item{package}{\link{character} name of package or set validation is being performed for.}
 
 \item{working_dir}{\link{character} which directory to be have working validation
 contents that are used interactively}

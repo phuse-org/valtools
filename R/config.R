@@ -6,6 +6,7 @@
 #'     Provides a single location for setting behaviors.
 #'
 #' @param pkg where to write config file
+#' @param package [character] name of package or set validation is being performed for.
 #' @param working_dir [character] which directory to be have working validation
 #'  contents that are used interactively
 #' @param output_dir [character] which folder should the contents for validation
