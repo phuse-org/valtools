@@ -11,6 +11,7 @@ test_that("test running validation.Rmd from source", {
 
     ## create config file
     writeLines(text = c(
+      "package: example.package",
       "working_dir: vignettes",
       "output_dir: inst",
       "usernames:",
@@ -88,6 +89,7 @@ test_that("test running validation.Rmd from source for failure", {
 
     ## create config file
     writeLines(text = c(
+      "package: example.package",
       "working_dir: vignettes",
       "output_dir: inst",
       "usernames:",
@@ -142,6 +144,7 @@ test_that("test building a validated bundle from source", {
 
     ## create config file
     writeLines(text = c(
+      "package: example.package",
       "working_dir: vignettes",
       "output_dir: inst",
       "usernames:",
@@ -272,6 +275,7 @@ test_that("test installing a validated bundle from source and rerunning report",
 
     ## create config file
     writeLines(text = c(
+      "package: example.package",
       "working_dir: vignettes",
       "output_dir: inst",
       "usernames:",
