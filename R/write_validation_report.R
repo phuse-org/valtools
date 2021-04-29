@@ -1,14 +1,14 @@
 #' Create validation report from template
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
-#' passed to \code{usethis::use_template}
+#' one of "validation" (default) or "requirements" (forthcoming)
 #' @param open boolean whether to open the validation report, passed to \code{usetthis::use_template}
 #' @importFrom usethis use_template proj_set
 #' @importFrom tools file_ext
 #' @importFrom rlang with_interactive
 #' @export
 vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
-                          template = "validation_report.Rmd",
+                          template = "validation",
                           open = FALSE){
 
   val_leads <- get_val_leads()
@@ -48,18 +48,22 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
 
   root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
 
-  render_template( template = template,
+  template_files <- c(validation = "validation_report.Rmd")
+
+
+  render_template( template = template_files[[template]],
                 output = file.path(get_config_working_dir(),
-                                   paste0(evaluate_filename(), ".", file_ext(template))),
+                                   paste0(evaluate_filename(), ".", file_ext(template_files[[template]]))),
                 data = list(pkg_name = basename(root),
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
                                                  type = "name")), collapse = ', ')))
 
-
-  file_list <- get_config_validation_files()
-  file_list
+  if(open){
+    edit_file(req_name)
+  }
+  invisible(TRUE)
 }
 
 #' @noRd

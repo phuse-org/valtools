@@ -59,7 +59,7 @@ test_that("integration test for CRAN", {
                "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
                "",
                "+ Start documenting test case here!"))
-    vt_use_test_code("test_code1.R", username = "another user")
+    vt_use_test_code("test_code1.R", username = "another user", open = FALSE)
     writeLines(con = file.path("vignettes", "validation", "test_code", "test_code1.R"),
                c(
                  "# Test setup",
