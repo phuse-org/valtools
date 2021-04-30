@@ -28,7 +28,7 @@ render_template <- function(template, output = template, data = list()){
 
     output_text <- whisker.render(
       template = template_text,
-      data = data)
+      data = data, debug = TRUE)
 
     file_con <- file(output)
     on.exit(close(file_con))
