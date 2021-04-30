@@ -105,7 +105,6 @@ test_that("test running validation.Rmd from source for failure", {
     con = "vignettes/validation/validation.yml")
 
     ## make vignette
-    dir.create("vignettes")
     writeLines( text = c(
       "---",
       "title: \"Validation Report\"",
@@ -160,10 +159,6 @@ test_that("test building a validated bundle from source", {
       "    title: new",
       "    role: user"),
     con = "vignettes/validation/validation.yml")
-
-    ## make vignette
-    dir.create("vignettes")
-    dir.create("vignettes/validation")
 
     writeLines( text = c(
       "---",
