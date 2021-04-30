@@ -2,7 +2,7 @@
 title: "Starting New Validation Package using {valtools}"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Starting New Validation Package}
+  %\VignetteIndexEntry{Starting New Validation Package using {valtools}}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
