@@ -128,11 +128,20 @@ vt_use_change_log <- function(date = NULL, version = NULL, open = interactive())
 
   proj_info <- c(Date = date, Version = version)
 
-  render_template(output = vt_path("change_log.md"), template = "change_log.md", data = proj_info)
+
+  tryCatch({
+
+    render_template(output = vt_path("change_log.md"), template = "change_log.md", data = proj_info)
+    inform("Change log created in the validation folder.")
+
+  }, error = function(e) {
+    abort(paste0("Failed to create Change log.\n",e),
+          class = "vt.change_log_create_fail")
+  })
 
 
   if(open){
-    edit_file("change_log.md")
+    edit_file(vt_path("change_log.md"))
   }
 
   invisible(vt_path("change_log.md"))

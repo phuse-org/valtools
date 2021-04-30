@@ -469,8 +469,9 @@ test_that("adding and removing validation files from list", {
                  ))
     expect_error(
       vt_add_file_to_config(filename = "test_case1.Rmd"),
-      "Filename(s): `test_case1.Rmd` already exists validation config file. Run `valtools::vt_drop_file_from_config(filename)` first!",
+      "File already exists in validation config file. Run `valtools::vt_drop_file_from_config(c(\"test_case1.Rmd\"))` first!",
       fixed = TRUE)
+
 
     expect_message(vt_drop_file_from_config("test_case1.Rmd"),
                    "Filename(s): test_case1.Rmd removed from validation config file.",
@@ -491,7 +492,7 @@ test_that("adding and removing validation files from list", {
                    "- test_code1.R"
                  ))
     expect_error(vt_drop_file_from_config("test_case1.Rmd"),
-                   "Filename(s): `test_case1.Rmd` not present validation config file. Run `valtools::vt_add_file_to_config(filename)` first!",
+                   "File does not exist in validation config file. Run `valtools::vt_add_file_to_config(c(\"test_case1.Rmd\"))` first!",
                    fixed = TRUE)
 
     # make sure that playing with user entries doesn't break files list
@@ -598,6 +599,29 @@ test_that("inserting validation file at diff location", {
                    "- test_case1.Rmd",
                    "- test_code1.R"))
 
+    # using tidyselect
+    vt_drop_file_from_config("report_content_from_template.Rmd")
+    vt_drop_file_from_config("another_file.Rmd")
+    vt_add_file_to_config("another_file.Rmd", after = last_col())
+    vt_add_file_to_config("report_content_from_template.Rmd", before = starts_with("test"))
+    validation_config4 <- readLines("validation/validation.yml")
+    expect_equal(validation_config4,
+                 c(
+                   "working_dir: '.'",
+                   "output_dir: '.'" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- report_content_from_template.Rmd",
+                   "- test_case1.Rmd",
+                   "- test_code1.R",
+                   "- another_file.Rmd"))
+
   # position locator doesn't exist in file list
   expect_error(vt_add_file_to_config("another_file2.Rmd", before = "req2.Rmd"),
                class = "vt.validation_config_file_not_listed")
@@ -620,5 +644,7 @@ test_that("inserting validation file at diff location", {
   expect_error(vt_add_file_to_config("a_new_file.md", after = "req1.Rmd"),
                class = "vt.validation_config_file_not_listed")
   })
+
+
 
 })

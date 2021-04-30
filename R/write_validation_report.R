@@ -1,26 +1,16 @@
 #' Create validation report from template
-
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
-#' passed to \code{usethis::use_template}
-#' @param open boolean whether to open the validation report, passed to \code{usetthis::use_template}
-#' @importFrom usethis use_template proj_set
+#' one of "validation" (default) or "requirements" (forthcoming)
+#' @param open boolean to open the validation report for further editing
 #' @importFrom tools file_ext
-#' @importFrom rlang with_interactive
+#' @importFrom rlang with_interactive is_interactive
 #' @export
 vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
-                          template = "validation_report.Rmd",
-                          open = FALSE){
+                          template = "validation",
+                          open = is_interactive()){
 
-  tryCatch({
-    dir <- vt_find_config()
-  },
-  error = function(e){
-    vt_use_config(pkg = vt_path())
-    dir <- vt_find_config()
-  })
-
-  val_leads <- get_val_leads(dir = dirname(dir))
+  val_leads <- get_val_leads()
 
   if(length(val_leads) == 0){
     val_leads <-  tryCatch({
@@ -55,35 +45,31 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
       })
   }
 
+  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
 
-  render_template( template = template,
-                output = file.path(get_config_working_dir(),
-                                   paste0(evaluate_filename(), ".", file_ext(template))),
-                data = list(pkg_name = desc_get_field("Package", file = dirname(dir)),
+  template_files <- c(validation = "validation_report.Rmd")
+  report_filename <- file.path(get_config_working_dir(), template_files[[template]])
+
+  render_template( template = template_files[[template]],
+                output = report_filename,
+                data = list(pkg_name = basename(root),
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
                                                  type = "name")), collapse = ', ')))
 
 
-  file_list <- get_config_validation_files()
-  file_list
+  if(open){
+    edit_file(report_filename)
+  }
+  invisible(TRUE)
 }
 
 #' @noRd
 #' @keywords internal
-get_val_leads <- function(dir = "."){
 
+get_val_leads <- function(){
 
-  if(!file.exists(file.path(dir,"validation.yml"))){
-    abort(
-      paste0(
-        "A validation config file does not exist.\n",
-        "Run `valtools::vt_use_validation_config()` to create a validation config file."
-      ),
-      class = "vt.validation_config_missing"
-    )
-  }
   usernames <- read_validation_config()$usernames
   unlist(lapply(seq_along(usernames), FUN = function(x){
     if(grepl(pattern = "validation lead", x = tolower(usernames[[x]]$role))){

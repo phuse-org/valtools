@@ -17,7 +17,7 @@ test_that("parsing R function files as expected", {
       file = fil
     )
 
-    block_list <- vt_scrape_roxygen(fil)
+    block_list <- scrape_roxygen(fil)
 
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editor")$val,
                  "Sample Editor")
@@ -45,7 +45,7 @@ test_that("parsing R test files as expected", {
       file = fil
     )
 
-    block_list <- vt_scrape_roxygen(fil,type = "r_test_code")
+    block_list <- scrape_roxygen(fil,type = "r_test_code")
 
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editor")$val,
                  "Sample Editor")
@@ -72,7 +72,7 @@ test_that("parsing md files as expected", {
       file = fil
     )
 
-    block_list <- vt_scrape_roxygen(fil)
+    block_list <- scrape_roxygen(fil)
 
     expect_equal(roxygen2::block_get_tag(block_list[[1]], "editor")$val,
                  "Sample Editor")

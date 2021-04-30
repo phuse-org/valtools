@@ -58,7 +58,8 @@ Imports:
     glue,
     knitr,
     kableExtra,
-    testthat
+    testthat,
+    tidyselect
 VignetteBuilder: knitr
 SystemRequirements:
     lua

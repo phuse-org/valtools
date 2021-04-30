@@ -18,7 +18,8 @@ test_that("vt_generate_sig_table generates the expected dataframe", {
                            "Marie, Developer",
                            "Ellis H, Developer"),
         signature = NA,
-        date = NA
+        date = NA,
+        stringsAsFactors = FALSE
       )
     )
 
@@ -164,7 +165,8 @@ test_that("render returns the expected html", {
 
       this_test <- xml2::read_html(html_report_name)
       test_output_rendered <- rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]]
-      expect_equal(as.data.frame(test_output_rendered),
+      expect_equal(as.data.frame(test_output_rendered,
+                                 stringsAsFactors = FALSE),
                    data.frame(
                      Role = rep("dev", 3),
                      `Name and Title` = c( "Eli Miller, Developer", "Marie, Developer", "Ellis H, Developer"),
@@ -199,7 +201,8 @@ test_that("`vt_scrape_sig_table` throws errors", {
                  role = c("A role", "Their Role"),
                  name_and_title = c("A user, A title", "Another user, Their Title"),
                  signature = NA,
-                 date = NA
+                 date = NA,
+                 stringsAsFactors = FALSE
                ))
 })
 
@@ -230,7 +233,8 @@ test_that("`vt_kable_sig_table` errors when not given expected columns", {
     vt_kable_sig_table(
       data.frame(
         role = "aRole",
-        name = "Eli"
+        name = "Eli",
+        stringsAsFactors = FALSE
         )
     )
   }, c("people table must have variables: role, Name and Title, Signature, and Date "))

@@ -6,17 +6,17 @@
 \usage{
 vt_use_report(
   pkg_name = desc::desc_get_field("Package"),
-  template = "validation_report.Rmd",
-  open = FALSE
+  template = "validation",
+  open = is_interactive()
 )
 }
 \arguments{
 \item{pkg_name}{name of package}
 
 \item{template}{what validation report template from {valtools} to use,
-passed to \code{usethis::use_template}}
+one of "validation" (default) or "requirements" (forthcoming)}
 
-\item{open}{boolean whether to open the validation report, passed to \code{usetthis::use_template}}
+\item{open}{boolean to open the validation report for further editing}
 }
 \description{
 Create validation report from template

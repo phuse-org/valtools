@@ -32,6 +32,8 @@ test_that("Creating requirements and set user/title", {
         "#' @title Requirement 001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
+        "#' @riskAssessment",
+        "#' REQUIREMENT: ASSESSMENT",
         "",
         "+ Start documenting requirements here!",
         ""
@@ -75,6 +77,8 @@ test_that("Creating requirements and not setting user takes username", {
         "#' @title req001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
+        "#' @riskAssessment",
+        "#' REQUIREMENT: ASSESSMENT",
         "",
         "+ Start documenting requirements here!",
         ""
@@ -126,7 +130,10 @@ test_that("Creating requirements adds correct extension", {
 
 test_that("Cases are added to the config file", {
   withr::with_tempdir({
+
+    quiet <- capture.output({
     vt_create_package("example.package", open = FALSE)
+    })
     setwd("example.package")
     vt_add_user_to_config(
       username = whoami::username(),

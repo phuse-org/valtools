@@ -69,7 +69,8 @@ test_that("coverage matrix from dynam num", {
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")))
+                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
@@ -96,9 +97,130 @@ test_that("coverage matrix from dynam num", {
       rmarkdown::render(cov_matrix_tex_file, output_format = "pdf_document")
     })})
 
-    rendered_cov_matrix_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                                                      pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
-                                                                replacement = ".pdf"))))[[1]])
+    cov_matrix_rmd_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
+    writeLines(
+      c("---",
+        "title: validation report",
+        "output: ",
+        "  html_document:",
+        "    fig_crop: false",
+        "---",
+        "\n\n",
+        vt_kable_coverage_matrix(cov_matrix, format = "html")),
+      con = cov_matrix_rmd_file)
+
+    suppressWarnings({
+    capture_output <- capture.output({
+      rmarkdown::render(cov_matrix_rmd_file)
+    })})
+    this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
+    rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]],
+                                              stringsAsFactors = FALSE)
+    expect_equal(rendered_cov_matrix_html,
+                 data.frame(`Requirement Name` = rep(paste("Requirement", 1:3), each = 7),
+                            `Requirement ID` = as.double(paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = ".")),
+                            `Test Case Name` = rep(paste("Test Case", 1:3), each = 7),
+                            `Test Cases` = as.double(c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
+                                      paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
+                                      paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = "."))),
+                            check.names = FALSE,
+                            stringsAsFactors = FALSE))
+
+    cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
+    expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
+                                 req_id = c(paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                            paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                            paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = ".")),
+                                 `1.1` = c(rep("x", 2), rep("", 19)),
+                                 `1.2` = c(rep("", 2), rep("x", 2), rep("", 17)),
+                                 `1.3` = c(rep("", 4), rep("x", 3), rep("", 14)),
+                                 `2.1` = c(rep("", 9), rep("x", 2), rep("", 10)),
+                                 `2.2` = c(rep("", 7), rep("x", 2), rep("", 12)),
+                                 `2.3` = c(rep("", 11 ), rep("x", 3), rep("", 7)),
+                                 `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
+                                 `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
+                                 `3.3` = c(rep("", 18), rep("x", 3)),
+                                 check.names = FALSE,
+                                 stringsAsFactors = FALSE)
+    attr(expect_matrix2, "table_type") <- "wide"
+    attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
+                                                   tc_title = rep(paste("Test Case", 1:3), each = 3),
+                                                   stringsAsFactors = FALSE)
+
+    expect_equal(cov_matrix2,
+                 expect_matrix2)
+
+    cov_matrix2_rmd_file <-  tempfile(fileext = ".Rmd", tmpdir = getwd())
+    writeLines(
+      c("---",
+        "title: validation report",
+        "output: html_document",
+        "---",
+        "\n\n",
+        vt_kable_coverage_matrix(cov_matrix2, format = "html")),
+      con = cov_matrix2_rmd_file)
+
+    capture_output <- capture.output({
+      rmarkdown::render(cov_matrix2_rmd_file)
+    })
+
+    this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
+
+    rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]],
+                                               stringsAsFactors = FALSE)
+    expected_cov_matrix2_html <- data.frame(reqs = c("", rep(paste("Requirement", 1:3), each = 7)),
+                                            req_id = as.double(c(NA, paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                                                 paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                                                 paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = "."))),
+                                            `Test Case 1` = c("1.1", rep("x", 2), rep("", 19)),
+                                            `Test Case 1` = c(1.2, rep("", 2), rep("x", 2), rep("", 17)),
+                                            `Test Case 1` = c(1.3, rep("", 4), rep("x", 3), rep("", 14)),
+                                            `Test Case 2` = c(2.1, rep("", 9), rep("x", 2), rep("", 10)),
+                                            `Test Case 2` = c(2.2, rep("", 7), rep("x", 2), rep("", 12)),
+                                            `Test Case 2` = c(2.3, rep("", 11 ), rep("x", 3), rep("", 7)),
+                                            `Test Case 3` = c(3.1, rep("", 14), rep("x", 2), rep("", 5)),
+                                            `Test Case 3` = c(3.2, rep("", 16), rep("x", 2), rep("", 3)),
+                                            `Test Case 3` = c(3.3,rep("", 18), rep("x", 3)),
+                                            check.names = FALSE,
+                                            stringsAsFactors = FALSE)
+    names(expected_cov_matrix2_html)[1:2] <- c("", "")
+    expect_equal(rendered_cov_matrix2_html,
+                 expected_cov_matrix2_html )
+
+
+    cov_matrix2_tex_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
+
+    writeLines(
+      c("---",
+        "title: validation report",
+        "output: ",
+        "  pdf_document:",
+        "    fig_crop: false",
+        "header-includes:",
+        "  - \\usepackage{array}",
+        "  - \\usepackage{longtable}",
+        "  - \\usepackage{multirow}",
+        "  - \\usepackage{float}",
+        "  - \\usepackage{booktabs}",
+        "classoption: dvipsnames",
+        "---",
+        "\n\n",
+        vt_kable_coverage_matrix(cov_matrix2, format = "latex")),
+      con = cov_matrix2_tex_file)
+
+    suppressWarnings({
+      capture_output <- capture.output({
+        rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
+      })})
+
+    # Skip checks of pdf on cran
+    skip_on_cran()
+
+
+    expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
+    rendered_cov_matrix_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                                                                pdftools::pdf_text(gsub(cov_matrix_tex_file, pattern = ".tex",
+                                                                                                        replacement = ".pdf"))))))
     expect_equal(rendered_cov_matrix_pdf[2:23],
                  c("Requirement Name  Requirement ID Test Case Name Test Cases",
                    "1.1                           1.1",
@@ -123,145 +245,36 @@ test_that("coverage matrix from dynam num", {
                    "3.3                           3.3",
                    "3.4                           3.3" ) )
 
-    cov_matrix_rmd_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
-    writeLines(
-      c("---",
-        "title: validation report",
-        "output: ",
-        "  html_document:",
-        "    fig_crop: false",
-        "---",
-        "\n\n",
-        vt_kable_coverage_matrix(cov_matrix, format = "html")),
-      con = cov_matrix_rmd_file)
 
-    suppressWarnings({
-    capture_output <- capture.output({
-      rmarkdown::render(cov_matrix_rmd_file)
-    })})
-    this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
-    rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]])
-    expect_equal(rendered_cov_matrix_html,
-                 data.frame(`Requirement Name` = rep(paste("Requirement", 1:3), each = 7),
-                            `Requirement ID` = as.double(paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = ".")),
-                            `Test Case Name` = rep(paste("Test Case", 1:3), each = 7),
-                            `Test Cases` = as.double(c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
-                                      paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                      paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = "."))),
-                            check.names = FALSE))
+    rendered_cov_matrix2_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))))
 
-    cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
-    expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
-                                 req_id = c(paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
-                                            paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
-                                            paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = ".")),
-                                 `1.1` = c(rep("x", 2), rep("", 19)),
-                                 `1.2` = c(rep("", 2), rep("x", 2), rep("", 17)),
-                                 `1.3` = c(rep("", 4), rep("x", 3), rep("", 14)),
-                                 `2.1` = c(rep("", 9), rep("x", 2), rep("", 10)),
-                                 `2.2` = c(rep("", 7), rep("x", 2), rep("", 12)),
-                                 `2.3` = c(rep("", 11 ), rep("x", 3), rep("", 7)),
-                                 `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
-                                 `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
-                                 `3.3` = c(rep("", 18), rep("x", 3)),
-                                 check.names = FALSE)
-    attr(expect_matrix2, "table_type") <- "wide"
-    attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
-                                                   tc_title = rep(paste("Test Case", 1:3), each = 3))
-
-    expect_equal(cov_matrix2,
-                 expect_matrix2)
-
-    cov_matrix2_rmd_file <-  tempfile(fileext = ".Rmd", tmpdir = getwd())
-    writeLines(
-      c("---",
-        "title: validation report",
-        "output: html_document",
-        "---",
-        "\n\n",
-        vt_kable_coverage_matrix(cov_matrix2, format = "html")),
-      con = cov_matrix2_rmd_file)
-
-    capture_output <- capture.output({
-      rmarkdown::render(cov_matrix2_rmd_file)
-    })
-
-    this_test2 <- xml2::read_html(gsub(cov_matrix2_rmd_file, pattern = ".Rmd", replacement = ".html"))
-
-    rendered_cov_matrix2_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test2, "table")[1], fill = TRUE)[[1]])
-    expected_cov_matrix2_html <- data.frame(reqs = c("", rep(paste("Requirement", 1:3), each = 7)),
-                                            req_id = as.double(c(NA, paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
-                                                                 paste(2, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
-                                                                 paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = "."))),
-                                            `Test Case 1` = c("1.1", rep("x", 2), rep("", 19)),
-                                            `Test Case 1` = c(1.2, rep("", 2), rep("x", 2), rep("", 17)),
-                                            `Test Case 1` = c(1.3, rep("", 4), rep("x", 3), rep("", 14)),
-                                            `Test Case 2` = c(2.1, rep("", 9), rep("x", 2), rep("", 10)),
-                                            `Test Case 2` = c(2.2, rep("", 7), rep("x", 2), rep("", 12)),
-                                            `Test Case 2` = c(2.3, rep("", 11 ), rep("x", 3), rep("", 7)),
-                                            `Test Case 3` = c(3.1, rep("", 14), rep("x", 2), rep("", 5)),
-                                            `Test Case 3` = c(3.2, rep("", 16), rep("x", 2), rep("", 3)),
-                                            `Test Case 3` = c(3.3,rep("", 18), rep("x", 3)),
-                                            check.names = FALSE)
-    names(expected_cov_matrix2_html)[1:2] <- c("", "")
-    expect_equal(rendered_cov_matrix2_html,
-                 expected_cov_matrix2_html )
-
-    skip_on_os("mac")
-    cov_matrix2_tex_file <- tempfile(fileext = ".Rmd", tmpdir = getwd())
-
-    writeLines(
-      c("---",
-        "title: validation report",
-        "output: ",
-        "  pdf_document:",
-        "    fig_crop: false",
-        "header-includes:",
-        "  - \\usepackage{array}",
-        "  - \\usepackage{longtable}",
-        "  - \\usepackage{multirow}",
-        "  - \\usepackage{float}",
-        "  - \\usepackage{booktabs}",
-        "classoption: dvipsnames",
-        "---",
-        "\n\n",
-        vt_kable_coverage_matrix(cov_matrix2, format = "latex")),
-      con = cov_matrix2_tex_file)
-
-    suppressWarnings({
-    capture_output <- capture.output({
-      rmarkdown::render(cov_matrix2_tex_file, output_format = "pdf_document")
-    })})
-
-    expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
-
-    rendered_cov_matrix2_pdf <- trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
-                 pdftools::pdf_text(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf'))))[[1]])
+    rendered_cov_matrix2_pdf <- rendered_cov_matrix2_pdf[!grepl("^\\d$",rendered_cov_matrix2_pdf )]
 
     expect_equal(rendered_cov_matrix2_pdf[2:24],
                  c( "Test Case 1     Test Case 2     Test Case 3",
                     "1.1   1.2   1.3 2.1   2.2   2.3 3.1   3.2   3.3",
-                    "1.1   x",
-                    "1.2   x",
-                    "1.2         x",
-                    "1.3         x",
-                    "Requirement 1 1.1               x",
-                    "1.3               x",
-                    "1.4               x",
-                    "2.1                         x",
-                    "2.2                         x",
-                    "2.2                   x",
-                    "2.3                   x",
-                    "Requirement 2 2.1                               x",
-                    "2.3                               x",
-                    "2.4                               x",
-                    "3.1                                   x",
-                    "3.2                                   x",
-                    "3.2                                         x",
-                    "3.3                                         x",
-                    "Requirement 3 3.1                                               x",
-                    "3.3                                               x",
-                    "3.4                                               x"  ))
+                    "1.1  x",
+                    "1.2  x",
+                    "1.2        x",
+                    "1.3        x",
+                    "Requirement 1 1.1              x",
+                    "1.3              x",
+                    "1.4              x",
+                    "2.1                        x",
+                    "2.2                        x",
+                    "2.2                  x",
+                    "2.3                  x",
+                    "Requirement 2 2.1                              x",
+                    "2.3                              x",
+                    "2.4                              x",
+                    "3.1                                  x",
+                    "3.2                                  x",
+                    "3.2                                        x",
+                    "3.3                                        x",
+                    "Requirement 3 3.1                                              x",
+                    "3.3                                              x",
+                    "3.4                                              x"  ))
 
 
 
@@ -341,7 +354,8 @@ test_that("coverage matrix no dynam num", {
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")))
+                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
@@ -360,10 +374,12 @@ test_that("coverage matrix no dynam num", {
                                  `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
                                  `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
                                  `3.3` = c(rep("", 18), rep("x", 3)),
-                                 check.names = FALSE)
+                                 check.names = FALSE,
+                                 stringsAsFactors = FALSE)
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
-                                                   tc_title = rep(paste("Test Case", 1:3), each = 3))
+                                                   tc_title = rep(paste("Test Case", 1:3), each = 3),
+                                                   stringsAsFactors = FALSE)
 
     expect_equal(cov_matrix2,
                  expect_matrix2)
@@ -488,7 +504,8 @@ test_that("existing reference obj", {
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")))
+                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
@@ -507,10 +524,12 @@ test_that("existing reference obj", {
                                  `3.1` = c(rep("", 14), rep("x", 2), rep("", 5)),
                                  `3.2` = c(rep("", 16), rep("x", 2), rep("", 3)),
                                  `3.3` = c(rep("", 18), rep("x", 3)),
-                                 check.names = FALSE)
+                                 check.names = FALSE,
+                                 stringsAsFactors = FALSE)
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
-                                                   tc_title = rep(paste("Test Case", 1:3), each = 3))
+                                                   tc_title = rep(paste("Test Case", 1:3), each = 3),
+                                                   stringsAsFactors = FALSE)
     expect_equal(cov_matrix2,
                  expect_matrix2)
 
