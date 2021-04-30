@@ -11,7 +11,8 @@
 #'  contents that are used interactively
 #' @param output_dir [character] which folder should the contents for validation
 #'  output to.
-#'@param report_naming_format [character] a \link[glue]{glue} friendly string
+#' @param report_rmd_name [character] name of rmarkdown document that is to be used for validation.
+#' @param report_naming_format [character] a \link[glue]{glue} friendly string
 #'  of the naming structure of the output validation report. use `{package}`
 #'  for package name, `{version}` to record package version, and `{date}` to
 #'  capture the date the report was run.
