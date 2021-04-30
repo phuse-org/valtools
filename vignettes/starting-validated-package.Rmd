@@ -59,7 +59,7 @@ cat(readLines("vignettes/validation/validation.yml"),sep = "\n")
 To add the content required for validation, we extended the `usethis` process to
 create a family of "vt_use_*" functions.
 
-`vt_use_req()` creates new requirements. It accepts the name of the requirement, 
+`vt_use_req()` creates a new requirement. It accepts the name of the requirement, 
 and optionally a username. If not passed, valtools will automatically get the username
 of the person creating the requirement. If the user has not created any contents 
 before, it will ask the user some questions.
