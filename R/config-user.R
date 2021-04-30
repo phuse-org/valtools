@@ -46,6 +46,7 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
     path = dirname(vt_find_config()),
     working_dir = validation_config$working_dir,
     output_dir = validation_config$output_dir,
+    report_rmd_name = validation_config$report_rmd_name,
     report_naming_format = validation_config$report_naming_format,
     username_list = user_list,
     validation_files = validation_config$validation_files
@@ -115,6 +116,7 @@ vt_drop_user_from_config <- function(username){
       path = dirname(vt_find_config()),
       working_dir = validation_config$working_dir,
       output_dir = validation_config$output_dir,
+      report_rmd_name = validation_config$report_rmd_name,
       report_naming_format = validation_config$report_naming_format,
       username_list = user_list,
       validation_files = validation_config$validation_files

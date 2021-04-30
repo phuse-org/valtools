@@ -9,19 +9,23 @@ test_that("test running validation.Rmd from source", {
 
     setwd("example.package")
 
+    ## make vignette and validation dir
+    dir.create("vignettes")
+    dir.create("vignettes/validation")
+
     ## create config file
     writeLines(text = c(
       "working_dir: vignettes",
       "output_dir: inst",
+      "report_rmd_name: validation.Rmd",
       "usernames:",
       "  NewUser:",
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = "validation.yml")
+    con = "vignettes/validation/validation.yml")
 
-    ## make vignette
-    dir.create("vignettes")
+
     writeLines( text = c(
         "---",
         "title: \"Validation Report\"",
@@ -86,16 +90,19 @@ test_that("test running validation.Rmd from source for failure", {
 
     setwd("example.package")
 
+    dir.create("vignettes/validation",recursive = TRUE, showWarnings = FALSE)
+
     ## create config file
     writeLines(text = c(
       "working_dir: vignettes",
       "output_dir: inst",
+      "report_rmd_name: validation.Rmd",
       "usernames:",
       "  NewUser:",
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = "validation.yml")
+    con = "vignettes/validation/validation.yml")
 
     ## make vignette
     dir.create("vignettes")
@@ -140,16 +147,19 @@ test_that("test building a validated bundle from source", {
 
     setwd("example.package")
 
+    dir.create("vignettes/validation",recursive = TRUE, showWarnings = FALSE)
+
     ## create config file
     writeLines(text = c(
       "working_dir: vignettes",
       "output_dir: inst",
+      "report_rmd_name: validation.Rmd",
       "usernames:",
       "  NewUser:",
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = "validation.yml")
+    con = "vignettes/validation/validation.yml")
 
     ## make vignette
     dir.create("vignettes")
@@ -231,16 +241,17 @@ test_that("test building a validated bundle from source", {
     )
 
     ## validation content were copied properly
-    expect_true(
-      all(validation_docs %in% c(
+    expect_true(all(
+      c(
         "R/Function_Roxygen_Blocks.R",
         "requirements/sample_req.md",
         "test_cases/sample_test_case.md",
         "test_code/sample_test_code.R",
         "validation.Rmd",
         "validation.yml"
-      ))
-    )
+      ) %in%
+        validation_docs
+    ))
 
     ## check roxygen blocks
     expect_equal(
@@ -270,20 +281,23 @@ test_that("test installing a validated bundle from source and rerunning report",
 
     setwd(pkg_name)
 
+    ## make vignette and validation dir
+    dir.create("vignettes")
+    dir.create("vignettes/validation")
+
     ## create config file
     writeLines(text = c(
       "working_dir: vignettes",
       "output_dir: inst",
+      "report_rmd_name: validation.Rmd",
       "usernames:",
       "  NewUser:",
       "    name: New User",
       "    title: new",
       "    role: user"),
-      con = "validation.yml")
+      con = "vignettes/validation/validation.yml")
 
-    ## make vignette
-    dir.create("vignettes")
-    dir.create("vignettes/validation")
+
 
     writeLines( text = c(
       "---",
@@ -361,8 +375,8 @@ test_that("test installing a validated bundle from source and rerunning report",
     )
 
     ## validation content were copied properly
-    expect_true(
-      all(validation_docs %in% c(
+    expect_true(all(
+      c(
         "R/Function_Roxygen_Blocks.R",
         "requirements/sample_req.md",
         "test_cases/sample_test_case.md",
@@ -370,8 +384,8 @@ test_that("test installing a validated bundle from source and rerunning report",
         "validation.Rmd",
         "validation.yml"
 
-      ))
-    )
+      ) %in% validation_docs
+    ))
 
     ## check roxygen blocks
     expect_equal(
@@ -407,7 +421,9 @@ test_that("test installing a validated bundle from source and rerunning report",
       )
     )
 
-  })})})
+  })
+  })
+})
 
 test_that("Attempting rerunning report for package not built for validation throws error", {
 

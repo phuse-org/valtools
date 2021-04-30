@@ -15,6 +15,11 @@ test_that("Accessing config dirs works", {
       )
 
       expect_equal(
+        get_config_report_rmd_name(),
+        "validation.Rmd"
+      )
+
+      expect_equal(
         get_config_report_naming_format(),
         "Validation_Report_{package}_v{version}_{date}"
       )
@@ -26,6 +31,7 @@ test_that("Accessing config dirs works", {
     vt_use_validation(
       working_dir = "new/dir",
       output_dir = "test",
+      report_rmd_name = "test_validation.Rmd",
       report_naming_format = "{package}_v{version}_Validation_report"
     )
 
@@ -37,6 +43,11 @@ test_that("Accessing config dirs works", {
     expect_equal(
       get_config_output_dir(),
       "test"
+    )
+
+    expect_equal(
+      get_config_report_rmd_name(),
+      "test_validation.Rmd"
     )
 
   })
