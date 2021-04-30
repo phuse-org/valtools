@@ -29,8 +29,12 @@
 #'  )
 #' # Create req at the cases top level `inst/validation/cases/case1`
 #' vt_use_test_case("case1", open = FALSE)
+#'
 #' # Create req at `inst/validation/cases/regTests/Update2/case2`
 #' vt_use_test_case("regTests/Update2/case2", open = FALSE, add_before = "case1.md")
+#'
+#' # Create a test case using tidy select
+#' vt_use_test_case("case1a", open = FALSE, add_after = tidyselect::starts_with("case1"))
 #'
 #' })
 vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(),
@@ -60,7 +64,7 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
   }
 
   # Add file to validation configuration
-  vt_add_file_to_config(filename = name, after = add_after, before = add_before)
+  vt_add_file_to_config(filename = name, after = {{add_after}}, before = {{add_before}})
 
   if(open){
     edit_file(case_name)

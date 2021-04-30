@@ -1,7 +1,9 @@
 test_that("Test creation of the config file", {
   withr::with_tempdir({
 
-    vt_use_validation(username_list = list(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(
                                vt_user(
                                name = "test",
                                title = "test",
@@ -16,7 +18,7 @@ test_that("Test creation of the config file", {
 
     expect_equal(
       validation_config,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -41,6 +43,7 @@ test_that("Test creation of the config file with invalid username list", {
 
     expect_error(
     vt_use_validation(
+      package = "test.package",
       username_list = list(vt_user(
         username = "test",
         name = "test",
@@ -58,14 +61,14 @@ test_that("Test creation of the config file with invalid username list", {
 test_that("Test creation of the config file without passed values in a non-interative environment", {
   withr::with_tempdir({
 
-    vt_use_validation()
+    vt_use_validation(package = "test.package")
 
     validation_config <- readLines("validation/validation.yml")
 
 
     expect_equal(
       validation_config,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -81,13 +84,13 @@ test_that("Test creation of the config file without passed values in a non-inter
 test_that("Test creation of the config file without passed values in a non-interative environment and adding a user", {
   withr::with_tempdir({
 
-    vt_use_validation()
+    vt_use_validation(package = "test.package")
 
     validation_config <- readLines("validation/validation.yml")
 
     expect_equal(
       validation_config,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -109,7 +112,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     expect_equal(
       validation_config2,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -135,7 +138,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     expect_equal(
       validation_config3,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -159,23 +162,27 @@ test_that("Test creation of the config file without passed values in a non-inter
 test_that("Test creation of the config file without passed values in a non-interative environment and overriding a user", {
   withr::with_tempdir({
 
-    vt_use_validation(username_list = list(
-                               vt_user(
-                               name = "test",
-                               title = "test",
-                               role = "tester",
-                               username = "test"
-                             )),
-                             validation_files = list("req1.Rmd",
-                                                     "test_case1.Rmd",
-                                                     "test_code1.R"))
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(
+        vt_user(
+          name = "test",
+          title = "test",
+          role = "tester",
+          username = "test"
+        )
+      ),
+      validation_files = list("req1.Rmd",
+                              "test_case1.Rmd",
+                              "test_code1.R")
+    )
 
     validation_config <- readLines("validation/validation.yml")
 
 
     expect_equal(
       validation_config,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -204,7 +211,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     expect_equal(
       validation_config2,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -227,7 +234,9 @@ test_that("Test creation of the config file without passed values in a non-inter
 test_that("Test overwriting of the config file", {
   withr::with_tempdir({
 
-    vt_use_validation(username_list = list(vt_user(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(vt_user(
                                name = "test",
                                title = "test",
                                role = "tester",
@@ -240,7 +249,9 @@ test_that("Test overwriting of the config file", {
     validation_config<- readLines("validation/validation.yml")
 
     expect_error(
-      vt_use_config(pkg = "."),
+      vt_use_config(
+        package = "test.package",
+        pkg = "."),
       paste0(
         "Validation config file already exists.\n",
         "To overwrite, set `overwrite` to `TRUE` in `vt_use_config()`"
@@ -248,13 +259,13 @@ test_that("Test overwriting of the config file", {
       fixed = TRUE
     )
 
-    vt_use_config(pkg = ".", overwrite = TRUE)
+    vt_use_config(pkg = ".", package = "test.package", overwrite = TRUE)
 
     validation_config_new <- readLines("validation/validation.yml")
 
     expect_equal(
       validation_config_new,
-      c(
+      c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -282,6 +293,7 @@ test_that("Test when in a package validation.yml is added to .Rbuildignore of th
 
 
     vt_use_validation(
+      package = "test.package",
                              username_list = list(vt_user(
                                name = "test",
                                title = "test",
@@ -308,7 +320,9 @@ test_that("Test removal of individual from config file", {
 
   withr::with_tempdir({
 
-    vt_use_validation(username_list = list(vt_user(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(vt_user(
                                name = "test",
                                title = "test",
                                role = "tester",
@@ -350,7 +364,7 @@ test_that("Test removal of individual from config file", {
 test_that("retrieve all users from config", {
   withr::with_tempdir({
 
-    vt_use_validation()
+    vt_use_validation(package = "test.package")
 
     expect_equal(vt_get_all_users(), list())
 
@@ -409,6 +423,7 @@ test_that("adding and removing validation files from list", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "test.package",
       username_list = list(vt_user(
                                name = "test",
                                title = "test2",
@@ -418,7 +433,7 @@ test_that("adding and removing validation files from list", {
 
     validation_config <- readLines("validation/validation.yml")
     expect_equal(validation_config,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -435,7 +450,7 @@ test_that("adding and removing validation files from list", {
 
     validation_config2 <- readLines("validation/validation.yml")
     expect_equal(validation_config2,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -453,7 +468,7 @@ test_that("adding and removing validation files from list", {
                    fixed = TRUE)
     validation_config3 <- readLines("validation/validation.yml")
     expect_equal(validation_config3,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -469,15 +484,16 @@ test_that("adding and removing validation files from list", {
                  ))
     expect_error(
       vt_add_file_to_config(filename = "test_case1.Rmd"),
-      "Filename(s): `test_case1.Rmd` already exists validation config file. Run `valtools::vt_drop_file_from_config(filename)` first!",
+      "File already exists in validation config file. Run `valtools::vt_drop_file_from_config(c(\"test_case1.Rmd\"))` first!",
       fixed = TRUE)
+
 
     expect_message(vt_drop_file_from_config("test_case1.Rmd"),
                    "Filename(s): test_case1.Rmd removed from validation config file.",
                    fixed = TRUE)
     validation_config4 <- readLines("validation/validation.yml")
     expect_equal(validation_config4,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -491,7 +507,7 @@ test_that("adding and removing validation files from list", {
                    "- test_code1.R"
                  ))
     expect_error(vt_drop_file_from_config("test_case1.Rmd"),
-                   "Filename(s): `test_case1.Rmd` not present validation config file. Run `valtools::vt_add_file_to_config(filename)` first!",
+                   "File does not exist in validation config file. Run `valtools::vt_add_file_to_config(c(\"test_case1.Rmd\"))` first!",
                    fixed = TRUE)
 
     # make sure that playing with user entries doesn't break files list
@@ -499,7 +515,7 @@ test_that("adding and removing validation files from list", {
     vt_drop_user_from_config("test")
     validation_config5 <- readLines("validation/validation.yml")
     expect_equal(validation_config5,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -512,7 +528,7 @@ test_that("adding and removing validation files from list", {
     vt_add_user_to_config(username = "test2", name = "a person", role = "a role", title = "title")
     validation_config6 <- readLines("validation/validation.yml")
     expect_equal(validation_config6,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -534,7 +550,9 @@ test_that("inserting validation file at diff location", {
     # "adding and removing validation files from list"
 
     # various permutation of position locator
-    vt_use_validation(username_list = list(vt_user(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(vt_user(
                                name = "test",
                                title = "test2",
                                role = "tester2",
@@ -545,7 +563,7 @@ test_that("inserting validation file at diff location", {
                                                      "test_code1.R"))
     validation_config <- readLines("validation/validation.yml")
     expect_equal(validation_config,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -564,7 +582,7 @@ test_that("inserting validation file at diff location", {
                    fixed = TRUE)
     validation_config2 <- readLines("validation/validation.yml")
     expect_equal(validation_config2,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -582,7 +600,7 @@ test_that("inserting validation file at diff location", {
     vt_add_file_to_config("another_file.Rmd", after = "report_content_from_template.Rmd")
     validation_config3 <- readLines("validation/validation.yml")
     expect_equal(validation_config3,
-                 c(
+                 c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
@@ -597,6 +615,29 @@ test_that("inserting validation file at diff location", {
                    "- req1.Rmd",
                    "- test_case1.Rmd",
                    "- test_code1.R"))
+
+    # using tidyselect
+    vt_drop_file_from_config("report_content_from_template.Rmd")
+    vt_drop_file_from_config("another_file.Rmd")
+    vt_add_file_to_config("another_file.Rmd", after = last_col())
+    vt_add_file_to_config("report_content_from_template.Rmd", before = starts_with("test"))
+    validation_config4 <- readLines("validation/validation.yml")
+    expect_equal(validation_config4,
+                 c("package: test.package",
+                   "working_dir: '.'",
+                   "output_dir: '.'" ,
+                   "report_naming_format: Validation_Report_{package}_v{version}_{date}",
+                   "usernames:",
+                   "  test:",
+                   "    name: test",
+                   "    title: test2" ,
+                   "    role: tester2",
+                   "validation_files:",
+                   "- req1.Rmd",
+                   "- report_content_from_template.Rmd",
+                   "- test_case1.Rmd",
+                   "- test_code1.R",
+                   "- another_file.Rmd"))
 
   # position locator doesn't exist in file list
   expect_error(vt_add_file_to_config("another_file2.Rmd", before = "req2.Rmd"),
@@ -621,4 +662,9 @@ test_that("inserting validation file at diff location", {
                class = "vt.validation_config_file_not_listed")
   })
 
+
+
 })
+
+
+
