@@ -77,7 +77,6 @@ test_that("test running validation.Rmd from source", {
 
 test_that("test running validation.Rmd from source for failure", {
   skip_if(!"valtools" %in% rownames(installed.packages()))
-  # browser()
   withr::with_tempdir({
 
     ## create blank package

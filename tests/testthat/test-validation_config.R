@@ -34,8 +34,6 @@ test_that("Test creation of the config file", {
       )
     )
 
-    browser()
-
   })
 
 })
