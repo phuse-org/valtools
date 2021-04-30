@@ -5,7 +5,7 @@
 \title{Create validation report from template}
 \usage{
 vt_use_report(
-  pkg_name = desc::desc_get_field("Package"),
+  pkg_name = NULL,
   template = "validation",
   open = is_interactive()
 )
