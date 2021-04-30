@@ -22,7 +22,7 @@ library(valtools)
 
 ## Intro
 
-This vignette steps through creating an R package that is intended to be 
+This vignette steps through the process of creating an R package that is intended to be 
 validated, by extending `usethis` and `devtools` functionality to provide a 
 seamless validation process. 
 
