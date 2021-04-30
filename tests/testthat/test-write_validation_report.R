@@ -2,7 +2,7 @@ test_that("integration test for CRAN", {
   withr::with_tempdir({
     # using the default .validation Validation Lead user
     test_user <- whoami::username(fallback = "runner")
-    report_name <- "validation_report.Rmd"
+    report_name <- "validation.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "auser", name = "A user", title = "staff",
                           role = "Project Lead")
@@ -94,10 +94,13 @@ test_that("integration test for CRAN", {
 
     vt_use_report()
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
-    withr::with_temp_libpaths({
-      install.packages(getwd(), type = "source", repos = NULL, quiet = TRUE)
-      rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
-    })
+
+    # suppressWarnings({
+      withr::with_temp_libpaths({
+        install.packages(".", type = "source", repos = NULL, quiet = TRUE)
+        rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
+      })
+    # })
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")
@@ -114,8 +117,25 @@ test_that("validation report in package",{
   withr::with_tempdir({
     # using the default .validation Validation Lead user
     test_user <- whoami::username(fallback = "")
-    report_name <- "validation_report.Rmd"
+    report_name <- "validation.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
+    vt_use_report()
+    report_code <- readLines(file.path(getwd(), "vignettes", report_name))
+
+    expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
+    # lines in rmd template that are updated via vt_use_report calls
+    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[3], paste0("author: ", test_user))
+    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
+
+  })
+
+  withr::with_tempdir({
+    # using the default .validation Validation Lead user
+    test_user <- whoami::username(fallback = "")
+    report_name <- "validation_report.Rmd"
+    captured_output <- capture.output(vt_create_package(open = FALSE, report_rmd_name = report_name))
     vt_use_report()
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
 
@@ -134,8 +154,27 @@ test_that("validation report in package",{
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
-    report_name <- "validation_report.Rmd"
+    report_name <- "validation.Rmd"
     captured_output <- capture.output({vt_create_package(open = FALSE)})
+    vt_add_user_to_config(username = "aperson",
+                          name = "An author",
+                          title = "Programmer",
+                          role = "Validation Lead")
+    vt_use_report()
+    report_code <- readLines(file.path(getwd(), "vignettes", report_name))
+
+    expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
+    # lines in rmd template that are updated via vt_use_report calls
+    expect_equal(report_code[3], paste0("author: An author"))
+
+
+  })
+
+  withr::with_tempdir({
+    # using the default .validation Validation Lead user
+
+    report_name <- "validation_report.Rmd"
+    captured_output <- capture.output(vt_create_package(open = FALSE, report_rmd_name = report_name))
     vt_add_user_to_config(username = "aperson",
                           name = "An author",
                           title = "Programmer",
@@ -157,7 +196,7 @@ test_that("multiple authors",{
   withr::with_tempdir({
     # using the default .validation Validation Lead user
 
-    report_name <- "validation_report.Rmd"
+    report_name <- "validation.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "aperson",
                           name = "An author",
@@ -192,7 +231,7 @@ test_that("multiple authors",{
   withr::with_tempdir({
     # using the default Validation Lead user
     test_user <- whoami::username(fallback = "")
-    report_name <- "validation_report.Rmd"
+    report_name <- "validation.Rmd"
     captured_output <- capture.output({vt_create_package(open = FALSE)})
 
     vt_use_req("requirement1.md", username = "author1", open = FALSE)

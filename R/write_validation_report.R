@@ -49,7 +49,7 @@ vt_use_report <- function(pkg_name = NULL,
   }
 
   template_files <- c(validation = "validation_report.Rmd")
-  report_filename <- file.path(get_config_working_dir(), template_files[[template]])
+  report_filename <- file.path(get_config_working_dir(), get_config_report_rmd_name())
 
   render_template( template = template_files[[template]],
                 output = report_filename,
