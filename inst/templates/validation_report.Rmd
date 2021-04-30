@@ -1,16 +1,18 @@
 ---
 title: {{title}}
-author: {{username}}
+author: {{author}}
 output: 
   pdf_document:
     toc: true
+    fig_crop: false
 vignette: >
-  %\VignetteIndexEntry{scharpnabValidation Report}
+  %\VignetteIndexEntry{ {{title}} }
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 header-includes:
-  - \usepackage[dvipsnames, table]{xcolor}
+  - \usepackage{array}
   - \usepackage{float}
+  - \usepackage{multirow}
 ---
 
 ```{r, setup, echo=FALSE,warning=FALSE}
@@ -98,8 +100,18 @@ vt_scrape_val_env() %>%
 #   vt_kable_functions()
 
 # include only exported function details
-all_func_details <- vt_scrape_functions()
-all_func_details[!is.na(all_function_details$export), c("functions", "editor", "editDate")] %>% 
-  vt_kable_functions()
-  
+# all_func_details <- vt_scrape_functions()
+# all_func_details[!is.na(all_function_details$export), c("functions", "editor", "editDate")] %>% 
+#   vt_kable_functions()
+#   
 ```
+
+
+```{r child-files}
+child_files <- vt_get_child_files()
+vt_file(child_files, dynamic_referencing = TRUE)
+```
+
+# more coming
+
+
