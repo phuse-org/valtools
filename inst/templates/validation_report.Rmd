@@ -36,7 +36,10 @@ opts_chunk$set(
   tidy = FALSE
 )
 
-options(knitr.kable.NA = '')
+options(
+  knitr.kable.NA = '',
+  knitr.duplicate.label = "allow"
+)
 
 ```
 
@@ -48,7 +51,7 @@ options(knitr.kable.NA = '')
 
 **APPROVAL** I have reviewed this document and approve its content.
 
-```{r other-roles-sig-block}
+```{r sig-block}
 
 vt_scrape_sig_table()  %>% 
   vt_kable_sig_table()
@@ -81,7 +84,7 @@ vt_scrape_val_env() %>%
 
 ### Requirements 
 
-```{r}
+```{r req-authors}
 vt_scrape_requirement_editors() %>% 
   vt_kable_requirement_editors()
 
@@ -89,7 +92,7 @@ vt_scrape_requirement_editors() %>%
 
 ### Functions
 
-```{r func}
+```{r func-authors}
 
 ## report all functions, exported or not, with editor information
 vt_scrape_function_editors(tags = c("editor", "editDate")) %>%
@@ -104,7 +107,7 @@ vt_scrape_function_editors(tags = c("editor", "editDate")) %>%
 
 ### Test Case Authors
 
-```{r}
+```{r test-case-authors}
 
 vt_scrape_test_case_editors() %>%
  vt_kable_test_case_editors()
@@ -113,7 +116,7 @@ vt_scrape_test_case_editors() %>%
 
 ### Test Code Authors
 
-```{r}
+```{r test-code-authors}
 
 vt_scrape_test_code_editors() %>%
  vt_kable_test_code_editors()
@@ -122,7 +125,7 @@ vt_scrape_test_code_editors() %>%
 
 ## Traceability
 
-```{r}
+```{r traceability}
 
 vt_scrape_coverage_matrix() %>% 
  vt_kable_coverage_matrix()
@@ -133,7 +136,7 @@ vt_scrape_coverage_matrix() %>%
 
 # Validation
 
-```{r child-files}
+```{r child-files-evaluation}
 child_files <- vt_get_child_files()
 vt_file(vt_path(child_files),dynamic_referencing = {{enable_dynamic_referencing}})
 ```
