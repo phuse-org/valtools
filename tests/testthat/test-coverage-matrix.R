@@ -64,6 +64,7 @@ test_that("coverage matrix from dynam num", {
 
     #vt_add_file_to_config(c("req1.md", "testcase1.md", "req2.md", "testcase2.md", "req3.md", "testcase3.md"))
     cov_matrix <- vt_scrape_coverage_matrix()
+
     expect_matrix <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
                                 req_id = paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = "."),
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
@@ -89,7 +90,7 @@ test_that("coverage matrix from dynam num", {
           "classoption: dvipsnames",
           "---",
           "\n\n",
-          vt_kable_coverage_matrix(cov_matrix)),
+          vt_kable_coverage_matrix(cov_matrix, format = "latex")),
           con = cov_matrix_tex_file)
 
     suppressWarnings({
@@ -215,7 +216,6 @@ test_that("coverage matrix from dynam num", {
 
     # Skip checks of pdf on cran
     skip_on_cran()
-
 
     expect_true(file.exists(gsub(cov_matrix2_tex_file, pattern = ".Rmd", replacement = '.pdf')))
     rendered_cov_matrix_pdf <- trimws(do.call('c',strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",

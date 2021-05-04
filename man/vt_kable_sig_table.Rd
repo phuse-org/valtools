@@ -4,7 +4,7 @@
 \alias{vt_kable_sig_table}
 \title{Kable defaults for rendering validation report}
 \usage{
-vt_kable_sig_table(people, format = "latex")
+vt_kable_sig_table(people, format = vt_render_to())
 }
 \arguments{
 \item{people}{A dataframe with the columns role, Name and Title, Signature,

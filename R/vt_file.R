@@ -104,8 +104,6 @@ file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), d
 file_parse.rmd <- file_parse.md
 
 
-#' @importFrom knitr opts_knit
-#' @noRd
 
 file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.frame(), dynamic_referencing = FALSE){
 
@@ -113,7 +111,7 @@ file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.f
             paste0("results <- eval_test_code(path = ",bquote(file),")"),
             ifelse(dynamic_referencing,
                    paste(" results <- dynamic_reference_rendering(results,reference = ",as.character(substitute(reference)),")"),NA),
-            paste0("vt_kable_test_code_results(results, format = \"",opts_knit$get("rmarkdown.pandoc.to"),"\")"),
+            paste0("vt_kable_test_code_results(results, format = \"",vt_render_to(),"\")"),
             "```")
 
   text <- text[!is.na(text)]
@@ -128,3 +126,25 @@ file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.f
   })
 }
 
+#' output to render kable to
+#'
+#' reads the knitr and rmarkdown options to determine which output type is being rendered
+#'
+#' @importFrom knitr opts_knit current_input
+#' @importFrom rmarkdown all_output_formats
+#' @export
+
+vt_render_to <- function(){
+  output <- opts_knit$get("rmarkdown.pandoc.to")
+  if(is.null(output)){
+    output <- tryCatch({
+      all_output_formats(knitr::current_input())[[1]]
+    }, error = function(e){
+      NULL
+    })
+  }
+  if(is.null(output)){
+    output <- "html"
+  }
+  return(output)
+}
