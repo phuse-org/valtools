@@ -92,19 +92,20 @@ test_that("integration test for CRAN", {
                ))
 
 
-    vt_use_report()
+    vt_use_report(dynamic_referencing = TRUE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
+
     withr::with_temp_libpaths({
       install.packages(getwd(), type = "source", repos = NULL, quiet = TRUE)
       rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
     })
+
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
-    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
-
+    expect_equal(report_code[26], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[138], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
 
   })
 })
@@ -121,10 +122,10 @@ test_that("validation report in package",{
 
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
-    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[26], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[141], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
 
   })
 })
@@ -150,7 +151,6 @@ test_that("validation report in package",{
 
   })
 })
-
 
 test_that("multiple authors",{
   skip_on_cran()
