@@ -204,3 +204,112 @@ test_that("multiple authors",{
 
   })
 })
+
+test_that("Validation outside a package - integration test for CRAN", {
+  withr::with_tempdir({
+
+    dir.create("rlang_validation")
+    setwd("rlang_validation")
+
+    # using the default .validation Validation Lead user
+    test_user <- whoami::username(fallback = "runner")
+    report_name <- "validation_report.Rmd"
+    captured_output <- capture.output(
+      vt_use_validation(package = "rlang",open = FALSE)
+    )
+
+
+    vt_add_user_to_config(username = "auser", name = "A user", title = "staff",
+                          role = "Project Lead")
+    vt_add_user_to_config(username = "buser", name = "B user", title = "staff",
+                          role = "Write Requirements")
+    vt_add_user_to_config(username = "cuser", name = "C user", title = "staff",
+                          role = "Write Test Cases, Tester")
+    vt_add_user_to_config(username = "duser", name = "D user", title = "staff",
+                          role = "Write Code")
+
+    vt_use_change_log(date = "2021-01-01", open = FALSE)
+
+    vt_use_req("req1.md", username = "B user", title = "1", open = FALSE)
+
+    writeLines(con = vt_path("requirements", "req1.md"),
+               c(
+                 "#' @title 1",
+                 "#' @editor B user",
+                 "#' @editDate 2021-04-27",
+                 "#' @riskAssessment",
+                 "#' REQUIREMENT: ASSESSMENT",
+                 "\n",
+                 "## Requirement 1",
+                 "\n",
+                 "+ Requirement text",
+                 "  - More text",
+                 "\n")
+    )
+
+    vt_use_req("req2.md", username = "B user", title = "2", open = FALSE)
+    writeLines(con = vt_path("requirements", "req2.md"),
+               c(
+                 "#' @title 2",
+                 "#' @editor B user",
+                 "#' @editDate 2021-04-27",
+                 "#' @riskAssessment",
+                 "#' REQUIREMENT: ASSESSMENT",
+                 "\n",
+                 "## Requirement 2",
+                 "\n",
+                 "+ Requirement text",
+                 "  - More text",
+                 "\n")
+    )
+
+    vt_use_test_case("test_case1.md", username = "C User", title = "##tc:tc1", open = FALSE)
+    writeLines(con = vt_path("test_cases", "test_case1.md"),
+               c(
+                 "#' @title ##tc:tc1",
+                 "#' @editor C User",
+                 "#' @editDate 2021-03-26",
+                 "#' @coverage",
+                 "#' ##tc1.1: ##req1.1, ##req1.2",
+                 "#' ##tc1.2: ##req1.3",
+                 "#' ##tc1.3: ##req1.4",
+                 "",
+                 "##  Test Case ##tc:tc1",
+                 "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+                 "",
+                 "+ Start documenting test case here!"))
+
+    vt_use_test_code("test_code1.R", username = "another user", open = FALSE)
+    writeLines(con = vt_path("test_code", "test_code1.R"),
+               c(
+                 "# Test setup",
+                 "\n",
+                 "#' @editor another user",
+                 "#' @editDate 2021-04-28",
+                 "test_that(\"1.1\", {",
+                 "  testthat::expect_true(TRUE)",
+                 "})"
+               ))
+
+
+    vt_use_report()
+    report_code <- readLines(report_name)
+
+    ## remove section to get function authors from package - not applicable
+    writeLines(report_code[-c(94:108)], report_name)
+
+    browser()
+
+    output_report <- rmarkdown::render(report_name, quiet = TRUE)
+
+    expect_true(file.exists(report_name))
+    expect_true(file.exists(gsub("[.]Rmd$",".pdf",report_name)))
+    # lines in rmd template that are updated via vt_use_report calls
+    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[3], paste0("author: ", test_user))
+    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[25], "  library(rlang)")
+
+  })
+})
+
