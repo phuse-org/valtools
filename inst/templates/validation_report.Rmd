@@ -44,17 +44,30 @@ options(
 
 ```
 
+```{r shared-obj}
+all_sig <- vt_scrape_sig_table() 
+```
+
 \newpage
 
 # Certifications
 
 ## Signatures
 
+**AUTHOR** My signature designates authorship of this document.
+
+```{r validation-lead-sig-block}
+all_sig[tolower(all_sig$role) == "validation lead",] %>%
+  set_rownames(seq_len(nrow(.))) %>%
+  vt_kable_sig_table()
+```
+
 **APPROVAL** I have reviewed this document and approve its content.
 
 ```{r sig-block}
 
-vt_scrape_sig_table()  %>% 
+all_sig[tolower(all_sig$role) != "validation lead",] %>%
+  set_rownames(seq_len(nrow(.))) %>% 
   vt_kable_sig_table()
 
 ```
