@@ -24,7 +24,7 @@ vt_use_report <- function(pkg_name = NULL,
 
       val_leads_info[['role']] <- ifelse(
         grepl(pattern = "validation lead", x = tolower(val_leads_info[['role']])),
-        old_role,
+        val_leads_info[['role']],
         paste0(c("Validation Lead", val_leads_info[['role']]), collapse = ", "))
 
       vt_add_user_to_config(
