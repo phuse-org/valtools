@@ -8,7 +8,7 @@
 \usage{
 vt_scrape_change_log()
 
-vt_kable_change_log(change_log_info, format = vt_render_to())
+vt_kable_change_log(change_log_info, format = "latex")
 
 vt_use_change_log(date = NULL, version = NULL, open = interactive())
 }
