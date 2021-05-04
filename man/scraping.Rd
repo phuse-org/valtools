@@ -38,13 +38,13 @@ vt_scrape_function_editors(
   ref = vt_path()
 )
 
-vt_kable_requirement_editors(x, format = vt_render_to())
+vt_kable_requirement_editors(x, format = NULL)
 
-vt_kable_function_editors(x, format = vt_render_to())
+vt_kable_function_editors(x, format = NULL)
 
-vt_kable_test_case_editors(x, format = vt_render_to())
+vt_kable_test_case_editors(x, format = NULL)
 
-vt_kable_test_code_editors(x, format = vt_render_to())
+vt_kable_test_code_editors(x, format = NULL)
 }
 \arguments{
 \item{tags}{which tags to keep. defaults to editor and editDate}

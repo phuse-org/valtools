@@ -4,7 +4,7 @@
 \alias{vt_kable_coverage_matrix}
 \title{Kable handler for output of \code{\link{vt_scrape_coverage_matrix}}}
 \usage{
-vt_kable_coverage_matrix(x, format = vt_render_to())
+vt_kable_coverage_matrix(x, format = "latex")
 }
 \arguments{
 \item{x}{data.frame as output from \code{\link{vt_scrape_coverage_matrix}}}
