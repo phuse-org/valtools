@@ -104,8 +104,8 @@ test_that("integration test for CRAN", {
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[26], paste0("  library(", basename(getwd()), ")"))
-    expect_equal(report_code[138], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
+    expect_equal(report_code[27], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[142], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
 
   })
 })
@@ -124,8 +124,8 @@ test_that("validation report in package",{
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[26], paste0("  library(", basename(getwd()), ")"))
-    expect_equal(report_code[141], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
+    expect_equal(report_code[27], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[142], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
 
   })
 })
