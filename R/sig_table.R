@@ -49,7 +49,7 @@ convert_vtname_table <- function(usernames){
 #'
 #' @importFrom knitr kable
 #' @importFrom kableExtra kable_styling column_spec
-vt_kable_sig_table <- function(people, format = vt_render_to()) {
+vt_kable_sig_table <- function(people, format = "latex") {
 
   # check that the tables have correct variables
   if (!all(c("role", "name_and_title", "signature", "date") %in% tolower(names(people)))) {
@@ -57,9 +57,10 @@ vt_kable_sig_table <- function(people, format = vt_render_to()) {
                 "Contains: ", paste0(tolower(names(people)), collapse = ", ")))
   }
 
-  colnames(people) <- c("Role", "Name and Title", "Signature", "Date")
-
-  t <- kable(people, format = format)
+  t <- kable(people,
+             format = format,
+             col.names = c("Role", "Name and Title", "Signature", "Date"),
+             booktabs = FALSE)
   t <- column_spec(t, 1, width = "9em", border_left = TRUE)
   t <- column_spec(t, 3, width = "15em")
   t <- column_spec(t, 4, width = "8em", border_right = TRUE)

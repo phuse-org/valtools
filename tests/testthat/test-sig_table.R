@@ -40,7 +40,7 @@ test_that("render returns the expected RMD text", {
     vt_add_user_to_config(username = "eh", name = "Ellis H", role = "dev", title = "Developer")
 
     people <- vt_scrape_sig_table()
-    sig_kable <- vt_kable_sig_table(people, format = "latex")
+    sig_kable <- vt_kable_sig_table(people)
     # using internal function that will be called when validation report is built
     valtools:::render_template(
       template = "sig_table.Rmd",
