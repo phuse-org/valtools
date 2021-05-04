@@ -28,8 +28,18 @@
 #' @export
 vt_scrape_val_env <- function(pkg = "."){
   # cannot use roxygen2::: due to cran checks (::: calls generate note)
-  desc <- desc(file.path(package_file(path = pkg), "DESCRIPTION"))
-  all_deps <- desc$get_deps()
+
+  if(is_package(pkg = pkg)){
+    pkg_deps <- desc(file.path(package_file(path = pkg), "DESCRIPTION"))$get_deps()
+  }else{
+    if(is_installed_package(pkg <- get_config_package())){
+      pkg_deps <- desc(package = pkg)$get_deps()
+    }else{
+      pkg_deps <- data.frame(type = character(), package = character())
+    }
+  }
+
+  all_deps <- pkg_description
   depends <- all_deps[all_deps$type == "Depends","package"]
   imports <- all_deps[all_deps$type == "Imports","package"]
   suggests <- all_deps[all_deps$type == "Suggests","package"]
@@ -75,7 +85,7 @@ vt_scrape_val_env <- function(pkg = "."){
                                                     abort(paste0("there is no package called '",.x,"'"),
                                                          class = "vt.missing_package")
                                                   }
-                                                    })),
+                          z                        })),
                                 stringsAsFactors = FALSE))
   }
   val_env$type <- factor(val_env$type, levels = c("system", "package_req", "extended_req", "session"))
