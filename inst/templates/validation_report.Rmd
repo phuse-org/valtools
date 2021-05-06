@@ -94,57 +94,10 @@ vt_scrape_val_env() %>%
   vt_kable_val_env()
 ```
 
-## Authors
-
-### Requirements 
-
-```{r req-authors}
-vt_scrape_requirement_editors() %>% 
-  vt_kable_requirement_editors()
 
 ```
 
-### Functions
 
-```{r func-authors}
-
-## report all functions, exported or not, with editor information
-vt_scrape_function_editors(tags = c("editor", "editDate")) %>%
- vt_kable_function_editors()
-
-# include only exported function details
-# all_func_details <- vt_scrape_function_editors()
-# all_func_details[!is.na(all_function_details$export), c("functions", "editor", "editDate")] %>% 
-#   vt_kable_functions()
-#   
-```
-
-### Test Case Authors
-
-```{r test-case-authors}
-
-vt_scrape_test_case_editors() %>%
- vt_kable_test_case_editors()
-
-```
-
-### Test Code Authors
-
-```{r test-code-authors}
-
-vt_scrape_test_code_editors() %>%
- vt_kable_test_code_editors()
-
-```
-
-## Traceability
-
-```{r traceability}
-
-vt_scrape_coverage_matrix() %>% 
- vt_kable_coverage_matrix()
-
-```
 
 \newpage
 
