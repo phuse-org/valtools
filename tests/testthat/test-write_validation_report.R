@@ -105,8 +105,8 @@ test_that("integration test for CRAN", {
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[10], "  %\\VignetteIndexEntry{ Validation Report }")
+    expect_equal(report_code[26], paste0("  library(", basename(getwd()), ")"))
 
 
   })
