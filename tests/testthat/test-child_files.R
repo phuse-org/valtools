@@ -96,8 +96,12 @@ test_that("compatibility between vt_get_child_files and vt_files", {
     child_files <- vt_get_child_files(loc = "yml")
     setwd(file.path("vignettes", "validation"))
 
-    rmd_asis <- vt_file(child_files)
-    testthat::expect_true(exists("rmd_asis"))
+    knitr::opts_knit$set("output.dir"= ".")
+    rmd_asis <- capture.output({vt_file(child_files)})
+    testthat::expect_equal(rmd_asis[9],
+                           "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING")
+
+    suppressWarnings(testthat::expect_error(vt_file(basename(child_files))))
 
   })
 })
