@@ -265,8 +265,13 @@ WHen editing the report, some key functions to know for extending the report inc
 
   - `vt_path()` allows user to base path from the validation directory. Similar idea to the {here} package, but for validation.
   - `vt_file()` allows the user to point to specific files and render them as child documents within the report.
+  - `vt_scrape_*` family of functions allows users to scrape various pieces of information from the validation infrastructure and returns a data.frame.
+  - `vt_kable_*` family functions provides an opinionated formatting to the `vt_scrape_*` functions to help quickly construct 
+      the report.
+  - `vt_get_child_files()` returns the list of files that are indicated in the validation.yml to be included in the 
+  validation report. This allows for batch creation of the dynamic content in the report.
   
-Keep in mind, the report is an Rmarkdown, so there is no limit to editing and customization.
+Keep in mind, the report is an Rmarkdown, so there is no limit to editing and customization, and templates.
 
 ## Running a validation report
 
