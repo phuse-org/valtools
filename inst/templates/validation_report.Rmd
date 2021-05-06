@@ -90,30 +90,48 @@ vt_scrape_val_env() %>%
   vt_kable_val_env()
 ```
 
-## Function Authors
-### Function Code
+## Authors
 
-```{r func-authors}
+### Requirements 
 
 
-# include all function details
-# vt_scrape_functions(tags = c("editor", "editDate")) %>% 
-#   vt_kable_functions()
-
-# include only exported function details
-# all_func_details <- vt_scrape_functions()
-# all_func_details[!is.na(all_function_details$export), c("functions", "editor", "editDate")] %>% 
-#   vt_kable_functions()
-#   
+```{r req-authors}
+vt_scrape_requirement_editors() %>% 
+  vt_kable_requirement_editors()
 ```
 
+### Functions
 
+```{r func-authors}
+vt_scrape_function_editors(tags = c("editor", "editDate")) %>%
+ vt_kable_function_editors()
+
+```
+
+### Test Case Authors
+
+```{r test-case-authors}
+vt_scrape_test_case_editors() %>%
+ vt_kable_test_case_editors()
+```
+
+### Test Code Authors
+
+```{r test-code-authors}
+vt_scrape_test_code_editors() %>%
+ vt_kable_test_code_editors()
+```
 ```{r child-files}
 child_files <- vt_get_child_files()
 vt_file(child_files, dynamic_referencing = TRUE)
 
 ```
 
-# more coming
+## Traceability
+
+```{r traceability}
+vt_scrape_coverage_matrix() %>% 
+ vt_kable_coverage_matrix()
+```
 
 
