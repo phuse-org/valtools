@@ -19,6 +19,7 @@ vt_use_report <- function(pkg_name = NULL,
 
   if(length(val_leads) == 0){
     val_leads <-  tryCatch({
+
       val_leads_username <- username(fallback = "")
       val_leads_info <- vt_get_user_info(username = val_leads_username)
 
@@ -33,8 +34,11 @@ vt_use_report <- function(pkg_name = NULL,
         title = val_leads_info[['title']] ,
         role = val_leads_info[['role']]
       )
-      return(get_val_leads())
+
+      get_val_leads()
+
       }, error = function(e){
+
         val_leads <- username(fallback = "")
         vt_add_user_to_config(username = val_leads, name = val_leads, title = "",
                               role = "Validation Lead")
@@ -45,7 +49,7 @@ vt_use_report <- function(pkg_name = NULL,
                            "Assigning to role of `Validation Lead`"),
           class = "vt.validation_config_missing_user_inform"
         )
-        return(val_leads)
+        return(get_val_leads())
       })
   }
 
@@ -61,7 +65,7 @@ vt_use_report <- function(pkg_name = NULL,
                                                  type = "name")), collapse = ', ')))
 
   if(open){
-    edit_file(report_filename)
+    edit_file(report_filename) # nocov
   }
   invisible(TRUE)
 }
