@@ -7,6 +7,7 @@
 vt_use_report(
   pkg_name = NULL,
   template = "validation",
+  dynamic_referencing = FALSE,
   open = is_interactive()
 )
 }
@@ -15,6 +16,8 @@ vt_use_report(
 
 \item{template}{what validation report template from {valtools} to use,
 one of "validation" (default) or "requirements" (forthcoming)}
+
+\item{dynamic_referencing}{Should dynamic referencing be enabled by default. Boolean defaults to FALSE.}
 
 \item{open}{boolean to open the validation report for further editing}
 }

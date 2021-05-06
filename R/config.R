@@ -103,8 +103,6 @@ vt_use_config <- function(pkg = ".",
     )
   }
 
-
-
   ## add ".here" ref if not a package
   set_dir_ref(pkg = pkg)
 
@@ -254,13 +252,13 @@ read_validation_config <- function(){
 ask_package <- function(pkg = NULL){
 
   if(is.null(pkg)){
-    pkg <- readLines("Which package do you intend to validate?")
+    pkg <- readline("Which package do you intend to validate?")
   }
 
   if(!is_installed_package(pkg) & interactive()){
     correct <- ""
     while(!(tolower(correct) %in% c("y","n"))){
-      correct <- readLines("This package is not an installed package. Is that correct? [Y/n]")
+      correct <- readline("This package is not an installed package. Is that correct? [Y/n]")
     }
     if(tolower(correct) == "n"){
       abort("Provided package name is not a valid package name",
@@ -269,7 +267,7 @@ ask_package <- function(pkg = NULL){
     if(tolower(correct) == "y"){
       install_pkg <- ""
       while(!(tolower(correct) %in% c("y","n"))){
-        install_pkg <- readLines("Install package? [Y/n]")
+        install_pkg <- readline("Install package? [Y/n]")
       }
       if(tolower(install_pkg) == "y"){
         install.packages(pkg)

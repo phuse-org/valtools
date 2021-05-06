@@ -95,7 +95,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
 #' @importFrom knitr kable
 #' @importFrom kableExtra kable_styling collapse_rows add_header_above
 #' @export
-vt_kable_coverage_matrix <- function(x, format = "latex"){
+vt_kable_coverage_matrix <- function(x, format = vt_render_to()){
   switch(attr(x, "table_type"),
          "long" = kable_cov_matrix_long(x, format = format),
          "wide" = kable_cov_matrix_wide(x, format = format))
@@ -103,7 +103,7 @@ vt_kable_coverage_matrix <- function(x, format = "latex"){
 }
 
 
-kable_cov_matrix_long <- function(x, format = "latex"){
+kable_cov_matrix_long <- function(x, format = vt_render_to()){
   out_tab <- kable(x,
         format = format,
         longtable =  TRUE,
@@ -115,7 +115,7 @@ kable_cov_matrix_long <- function(x, format = "latex"){
 
 
 
-kable_cov_matrix_wide<- function(x, format = "latex"){
+kable_cov_matrix_wide<- function(x, format = vt_render_to()){
   this_tc_title <- attr(x, "tc_title")
   # enforce consistent ordering with object
   this_tc_title <- this_tc_title[this_tc_title$tc_id == names(x)[!names(x) %in% c("req_title", "req_id")],]
