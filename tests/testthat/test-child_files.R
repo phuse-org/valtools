@@ -83,3 +83,21 @@ test_that("incomplete set", {
 
   })
 })
+
+
+test_that("compatibility between vt_get_child_files and vt_files", {
+  withr::with_tempdir({
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    vt_use_test_case("testcase1", username = "a user", open = FALSE)
+    vt_use_test_case("testcase2", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE)
+    vt_use_req("req2", username = "a user", open = FALSE)
+
+    child_files <- vt_get_child_files(loc = "yml")
+    setwd(file.path("vignettes", "validation"))
+
+    rmd_asis <- vt_file(child_files)
+    testthat::expect_true(exists("rmd_asis"))
+
+  })
+})
