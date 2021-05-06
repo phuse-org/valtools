@@ -2,12 +2,14 @@
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
 #' one of "validation" (default) or "requirements" (forthcoming)
+#' @param dynamic_referencing Should dynamic referencing be enabled by default. Boolean defaults to FALSE.
 #' @param open boolean to open the validation report for further editing
 #' @importFrom tools file_ext
 #' @importFrom rlang with_interactive is_interactive
 #' @export
 vt_use_report <- function(pkg_name = NULL,
                           template = "validation",
+                          dynamic_referencing = FALSE,
                           open = is_interactive()){
   if(is.null(pkg_name)){
     pkg_name <- get_config_package()
@@ -17,23 +19,26 @@ vt_use_report <- function(pkg_name = NULL,
 
   if(length(val_leads) == 0){
     val_leads <-  tryCatch({
-      val_leads_username <- with_interactive(value = FALSE, vt_username())
-      val_leads <- vt_get_user_info(username = val_leads_username,
-                                        type = "name")[["name"]]
 
-      config_details <- read_validation_config()
-      old_role <- config_details$usernames[[val_leads]]$role
-      config_details$usernames[[val_leads]]$role <-
-        ifelse(grepl(pattern = "validation lead", x = tolower(old_role)),
-               old_role,
-               paste0(c("Validation Lead", old_role ), collapse = ", "))
-      write_validation_config(path = dir,
-                              working_dir = config_details$working_dir,
-                              output_dir = config_details$output_dir,
-                              report_naming_format = config_details$report_naming_format,
-                              username_list = config_details$usernames)
-      return(val_leads)
+      val_leads_username <- username(fallback = "")
+      val_leads_info <- vt_get_user_info(username = val_leads_username)
+
+      val_leads_info[['role']] <- ifelse(
+        grepl(pattern = "validation lead", x = tolower(val_leads_info[['role']])),
+        val_leads_info[['role']],
+        paste0(c("Validation Lead", val_leads_info[['role']]), collapse = ", "))
+
+      vt_add_user_to_config(
+        username = val_leads_username,
+        name = val_leads_info[['name']] ,
+        title = val_leads_info[['title']] ,
+        role = val_leads_info[['role']]
+      )
+
+      get_val_leads()
+
       }, error = function(e){
+
         val_leads <- username(fallback = "")
         vt_add_user_to_config(username = val_leads, name = val_leads, title = "",
                               role = "Validation Lead")
@@ -44,7 +49,7 @@ vt_use_report <- function(pkg_name = NULL,
                            "Assigning to role of `Validation Lead`"),
           class = "vt.validation_config_missing_user_inform"
         )
-        return(val_leads)
+        return(get_val_leads())
       })
   }
 
@@ -54,13 +59,13 @@ vt_use_report <- function(pkg_name = NULL,
   render_template( template = template_files[[template]],
                 output = report_filename,
                 data = list(pkg_name = pkg_name,
-                         title = "Validation Report",
+                            enable_dynamic_referencing = dynamic_referencing,
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
                                                  type = "name")), collapse = ', ')))
 
   if(open){
-    edit_file(report_filename)
+    edit_file(report_filename) # nocov
   }
   invisible(TRUE)
 }
