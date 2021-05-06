@@ -133,7 +133,7 @@ vt_scrape_function_editors  <- function(tags = c("editor", "editDate", "export")
 #' @importFrom knitr kable
 #' @rdname scraping
 #'
-vt_kable_requirement_editors  <- function(x, format = NULL){
+vt_kable_requirement_editors  <- function(x,format = vt_render_to()){
   x$requirements = paste0("Requirement ", x$requirements)
 
   all_colnames <- c(requirements = "Requirement ID",
@@ -153,7 +153,7 @@ vt_kable_requirement_editors  <- function(x, format = NULL){
 #' @importFrom kableExtra column_spec
 #' @rdname scraping
 #'
-vt_kable_function_editors  <- function(x, format = NULL){
+vt_kable_function_editors  <- function(x,format = vt_render_to()){
   all_colnames <- c(functions = "Function Name",
                     editor = "Editor",
                     editDate = "Edit Date",
@@ -177,7 +177,7 @@ vt_kable_function_editors  <- function(x, format = NULL){
 #' @importFrom knitr kable
 #' @rdname scraping
 #'
-vt_kable_test_case_editors  <- function(x, format = NULL){
+vt_kable_test_case_editors  <- function(x,format = vt_render_to()){
   x$test_case = paste0("Test Case", x$test_case)
 
   all_colnames <- c(test_case = "Test Case ID",
@@ -197,7 +197,7 @@ vt_kable_test_case_editors  <- function(x, format = NULL){
 #' @importFrom knitr kable
 #' @rdname scraping
 #'
-vt_kable_test_code_editors <- function(x, format = NULL){
+vt_kable_test_code_editors <- function(x,format = vt_render_to()){
   x$test_code = paste0("Test Code", x$test_code)
 
   all_colnames <- c(test_code = "Test Code ID",
