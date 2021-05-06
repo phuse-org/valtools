@@ -7,7 +7,7 @@
 \usage{
 vt_run_test_code_file(file, test_env = new.env(), ..., ref = vt_path())
 
-vt_kable_test_code_results(results, format = NULL)
+vt_kable_test_code_results(results, format = vt_render_to())
 }
 \arguments{
 \item{file}{full path to test code file.}

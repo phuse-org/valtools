@@ -64,6 +64,11 @@ jobs:
           saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
         shell: Rscript {0}
 
+      - name: install Poppler for macOS
+        if: runner.os == 'macOS'
+        run: brew install poppler pkgconfig
+        shell: bash
+
       - name: Restore R package cache
         uses: actions/cache@v2
         with:

@@ -6,9 +6,12 @@
 #' @importFrom tools file_ext
 #' @importFrom rlang with_interactive is_interactive
 #' @export
-vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
+vt_use_report <- function(pkg_name = NULL,
                           template = "validation",
                           open = is_interactive()){
+  if(is.null(pkg_name)){
+    pkg_name <- get_config_package()
+  }
 
   val_leads <- get_val_leads()
 
@@ -45,14 +48,12 @@ vt_use_report <- function(pkg_name = desc::desc_get_field("Package"),
       })
   }
 
-  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
-
   template_files <- c(validation = "validation_report.Rmd")
   report_filename <- file.path(get_config_working_dir(), template_files[[template]])
 
   render_template( template = template_files[[template]],
                 output = report_filename,
-                data = list(pkg_name = basename(root),
+                data = list(pkg_name = pkg_name,
                          title = "Validation Report",
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
