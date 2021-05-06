@@ -95,8 +95,6 @@ vt_scrape_val_env() %>%
 ```
 
 
-```
-
 
 
 \newpage

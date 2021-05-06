@@ -105,7 +105,7 @@ test_that("integration test for CRAN", {
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
     expect_equal(report_code[27], paste0("  library(", basename(getwd()), ")"))
-    expect_equal(report_code[155], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
+    expect_equal(report_code[106], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
 
   })
 })
@@ -125,7 +125,7 @@ test_that("validation report in package",{
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
     expect_equal(report_code[27], paste0("  library(", basename(getwd()), ")"))
-    expect_equal(report_code[155], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
+    expect_equal(report_code[106], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
 
   })
 })
