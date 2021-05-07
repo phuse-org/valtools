@@ -276,7 +276,7 @@ test_that("Validation outside a package - integration test for CRAN", {
     test_user <- whoami::username(fallback = "runner")
     report_name <- "validation_report.Rmd"
     captured_output <- capture.output(
-      vt_use_validation(package = "rlang",open = FALSE)
+      vt_use_validation(package = "rlang", report_rmd_name = report_name, open = FALSE)
     )
 
 
