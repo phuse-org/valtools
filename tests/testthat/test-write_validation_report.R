@@ -138,15 +138,15 @@ test_that("validation report in package",{
     test_user <- whoami::username(fallback = "")
     report_name <- "validation_report.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE, report_rmd_name = report_name))
-    vt_use_report()
+    vt_use_report(open = FALSE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
 
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
-    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[2], paste0("title: Validation Report for ", basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[10], "  %\\VignetteIndexEntry{Validation Report}")
+    expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
 
   })
 })
@@ -163,7 +163,7 @@ test_that("validation report in package",{
                           name = "An author",
                           title = "Programmer",
                           role = "Validation Lead")
-    vt_use_report()
+    vt_use_report(open = FALSE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
 
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
@@ -182,7 +182,7 @@ test_that("validation report in package",{
                           name = "An author",
                           title = "Programmer",
                           role = "Validation Lead")
-    vt_use_report()
+    vt_use_report(open = FALSE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
 
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
