@@ -65,6 +65,7 @@ vt_use_report <- function(pkg_name = NULL,
                                                  vt_get_user_info,
                                                  type = "name")), collapse = ', ')))
 
+
   if(open){
     edit_file(report_filename) # nocov
   }
@@ -73,6 +74,7 @@ vt_use_report <- function(pkg_name = NULL,
 
 #' @noRd
 #' @keywords internal
+
 get_val_leads <- function(){
 
   usernames <- read_validation_config()$usernames
