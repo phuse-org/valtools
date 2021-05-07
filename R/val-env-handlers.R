@@ -28,11 +28,26 @@
 #' @export
 vt_scrape_val_env <- function(pkg = "."){
   # cannot use roxygen2::: due to cran checks (::: calls generate note)
-  desc <- desc(file.path(package_file(path = pkg), "DESCRIPTION"))
-  all_deps <- desc$get_deps()
-  depends <- all_deps[all_deps$type == "Depends","package"]
-  imports <- all_deps[all_deps$type == "Imports","package"]
-  suggests <- all_deps[all_deps$type == "Suggests","package"]
+
+  if(is_package(pkg = pkg)){
+    desc <- desc(file.path(package_file(path = pkg), "DESCRIPTION"))
+    package <- desc$get_field("Package")
+    pkg_deps <- desc$get_deps()
+    is_internal <- TRUE
+  }else{
+    package <- get_config_package()
+    if(is_installed_package(package)){
+      pkg_deps <- desc(package = package)$get_deps()
+    }else{
+      pkg_deps <- data.frame(type = character(), package = character())
+    }
+    is_internal <- FALSE
+
+  }
+
+  depends <- pkg_deps[pkg_deps$type == "Depends","package"]
+  imports <- pkg_deps[pkg_deps$type == "Imports","package"]
+  suggests <- pkg_deps[pkg_deps$type == "Suggests","package"]
 
 
   val_env <- data.frame(
@@ -49,20 +64,34 @@ vt_scrape_val_env <- function(pkg = "."){
     val_env <- rbind(val_env, data.frame(resource = "R", type = "system", stringsAsFactors = FALSE))
   }
 
-  val_env$detail  <- sapply(val_env$resource, FUN = function(x){
-    return(if(x == "R"){
+  val_env$detail  <- apply(val_env, 1, FUN = function(x){
+    return(if(x[["resource"]] == "R"){
       gsub(R.version.string, pattern = "R\\sversion\\s(.*)\\s.*", replacement = "\\1")
     } else {
-      as.character(packageVersion(x))
+      if(x[["type"]] != "extended_req"){
+        as.character(packageVersion(x[["resource"]]))
+      }else{
+        if(is_installed_package(x[["resource"]])){
+          as.character(packageVersion(x[["resource"]]))
+        }else{
+          "Not Installed"
+        }
+      }
     })
   })
 
   val_env <- rbind(val_env, data.frame(resource = "OS", type = "system", detail = sessionInfo()[["running"]], stringsAsFactors = FALSE))
 
   session_pkg <- names(sessionInfo()[["otherPkgs"]])
-  session_pkg <- session_pkg[!session_pkg %in%
-                               c(desc$get_field("Package"),
-                                 val_env[val_env$type %in% c("package_req", "extended_req"), "resource"])]
+
+  pkg_diff <- val_env[val_env$type %in% c("package_req", "extended_req"), "resource"]
+
+  if(is_internal){
+    pkg_diff <- c(package,pkg_diff)
+  }
+
+  session_pkg <- session_pkg[!session_pkg %in% pkg_diff]
+
   if(length(session_pkg) > 0){
     val_env <- rbind(val_env,
                      data.frame(resource = session_pkg,
@@ -75,7 +104,7 @@ vt_scrape_val_env <- function(pkg = "."){
                                                     abort(paste0("there is no package called '",.x,"'"),
                                                          class = "vt.missing_package")
                                                   }
-                                                    })),
+                                                })),
                                 stringsAsFactors = FALSE))
   }
   val_env$type <- factor(val_env$type, levels = c("system", "package_req", "extended_req", "session"))
@@ -104,5 +133,22 @@ vt_kable_val_env <- function(val_env, format = vt_render_to()){
 #' @importFrom utils installed.packages
 #' @noRd
 is_installed_package <- function(pkg){
-  pkg %in% rownames(installed.packages())
+
+  any(do.call('c',lapply(.libPaths(), function(x){
+    tryCatch({
+      libpath <- find.package(pkg,lib.loc = x)
+      return(TRUE)
+    },error = function(e){
+        return(FALSE)
+    })})))
+}
+
+#' @importFrom devtools unload
+#' @noRd
+clean_env <- function(pkg = ""){
+  pkgs <- names(sessionInfo()[["otherPkgs"]])
+  unexpected <- setdiff(pkgs[grepl("^file",pkgs)],pkg)
+  for(p in unexpected){
+    unload(package = p)
+  }
 }
