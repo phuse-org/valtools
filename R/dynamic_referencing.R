@@ -228,10 +228,18 @@ dynamic_referencer <- vt_dynamic_referencer$new(
 #' @importFrom rlang inform
 dynamic_reference_rendering <- function(input, reference = NULL){
   file_text <- tryCatch({
-    file_text <- readLines(input)
-    inform(message = paste0("Reading input from file: ", input),
-           class = "vt.dynamic_ref_readlines")
-    file_text
+    if(is_char_scalar(input)){
+      if(file.exists(input)){
+        file_text <- readLines(input)
+        inform(message = paste0("Reading input from file: ", input),
+               class = "vt.dynamic_ref_readlines")
+        file_text
+      }else{
+        input
+      }
+    }else{
+      input
+    }
   },
   error = function(e){
     input
@@ -246,6 +254,10 @@ dynamic_reference_rendering <- function(input, reference = NULL){
 
 }
 
+
+is_char_scalar <- function(x){
+  is.character(x) && length(x) == 1
+}
 
 ## original method from:
 ## https://stackoverflow.com/questions/181596

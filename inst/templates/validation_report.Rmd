@@ -1,5 +1,5 @@
 ---
-title: {{title}}
+title: Validation Report for {{pkg_name}}
 author: {{author}}
 date: "`r Sys.Date()`"
 output:
@@ -7,13 +7,14 @@ output:
     toc: true
     fig_crop: false
 vignette: >
-  %\VignetteIndexEntry{ {{title}} }
+  %\VignetteIndexEntry{Validation Report}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 header-includes:
   - \usepackage{array}
   - \usepackage{float}
   - \usepackage{multirow}
+  - \usepackage{longtable}
 ---
 
 
@@ -37,15 +38,17 @@ opts_chunk$set(
   tidy = FALSE
 )
 
-options(knitr.kable.NA = '')
+options(
+  knitr.kable.NA = '',
+  knitr.duplicate.label = "allow"
+)
+
 ```
 
 ```{r shared-obj}
-## TODO: verify that this is appropriate for validate outside of package model
-##       needs test case
-config_file_path <- dirname(vt_find_config())
 all_sig <- vt_scrape_sig_table() 
 ```
+
 \newpage
 
 # Certifications
@@ -57,15 +60,17 @@ all_sig <- vt_scrape_sig_table()
 ```{r validation-lead-sig-block}
 all_sig[tolower(all_sig$role) == "validation lead",] %>%
   set_rownames(seq_len(nrow(.))) %>%
-  vt_kable_sig_table(format = "latex")
+  vt_kable_sig_table()
 ```
 
 **APPROVAL** I have reviewed this document and approve its content.
 
-```{r other-roles-sig-block}
+```{r sig-block}
+
 all_sig[tolower(all_sig$role) != "validation lead",] %>%
   set_rownames(seq_len(nrow(.))) %>% 
-  vt_kable_sig_table(format = "latex")
+  vt_kable_sig_table()
+
 ```
 
 The effective date of this document is the last date of signature.
@@ -78,17 +83,18 @@ The effective date of this document is the last date of signature.
 
 ### Change Log
 
-```{r news-tab}
+```{r change-log-table}
 vt_scrape_change_log() %>% 
   vt_kable_change_log()
 ```
 
 ### Validation Environment
 
-```{r env-tab}
+```{r env-table}
 vt_scrape_val_env() %>% 
   vt_kable_val_env()
 ```
+
 
 ## Authors
 
@@ -121,11 +127,6 @@ vt_scrape_test_case_editors() %>%
 vt_scrape_test_code_editors() %>%
  vt_kable_test_code_editors()
 ```
-```{r child-files}
-child_files <- vt_get_child_files()
-vt_file(child_files, dynamic_referencing = TRUE)
-
-```
 
 ## Traceability
 
@@ -135,3 +136,20 @@ vt_scrape_coverage_matrix() %>%
 ```
 
 
+# Risk Assessment
+
+```{r risk}
+vt_scrape_risk_assessment() %>% 
+  vt_kable_risk_assessment()
+```
+
+\newpage
+
+# Validation
+
+
+
+```{r child-files-evaluation}
+child_files <- vt_get_child_files()
+vt_file(vt_path(child_files),dynamic_referencing = {{enable_dynamic_referencing}})
+```
