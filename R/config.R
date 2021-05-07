@@ -6,6 +6,7 @@
 #'     Provides a single location for setting behaviors.
 #'
 #' @param pkg where to write config file
+#' @param package [character] name of package or set validation is being performed for.
 #' @param working_dir [character] which directory to be have working validation
 #'  contents that are used interactively
 #' @param output_dir [character] which folder should the contents for validation
@@ -33,6 +34,7 @@
 #' @examples
 #' withr::with_tempdir({
 #' vt_use_validation(
+#'               package = "test.package",
 #'               working_dir = ".",
 #'               output_dir  = ".",
 #'               report_naming_format = "Validation_Report_{package}_v{version}_{date}",
@@ -48,6 +50,7 @@
 #' @export
 #'
 vt_use_config <- function(pkg = ".",
+                          package,
                           working_dir,
                           output_dir,
                           report_naming_format = "Validation_Report_{package}_v{version}_{date}",
@@ -73,6 +76,18 @@ vt_use_config <- function(pkg = ".",
     }
   }
 
+  if(missing(package)){
+    if(is_package(pkg = pkg)){
+      package <- desc::desc_get_field(file = file.path(pkg,"DESCRIPTION"),"Package")
+    }else{
+      if(interactive()){
+        package <- ask_package()
+      }else{
+        package <- ""
+      }
+    }
+  }
+
   if(!dir.exists(file.path(pkg,working_dir,"validation"))){
     abort("No validation structure found. Run `valtools::vt_use_validation().`",
           class = "vt.missingStructure")
@@ -87,8 +102,6 @@ vt_use_config <- function(pkg = ".",
       class = "vt.validation_config_exists"
     )
   }
-
-
 
   ## add ".here" ref if not a package
   set_dir_ref(pkg = pkg)
@@ -115,6 +128,7 @@ vt_use_config <- function(pkg = ".",
 
   write_validation_config(
     path = file.path(pkg,working_dir,"validation"),
+    package = package,
     working_dir = working_dir,
     output_dir = output_dir,
     report_naming_format = report_naming_format,
@@ -187,6 +201,7 @@ is_vt_user <- function(x){
 #' @importFrom yaml write_yaml
 #' @importFrom rlang abort
 write_validation_config <- function(path = ".",
+                                    package = "",
                                     working_dir = "vignettes",
                                     output_dir = "inst",
                                     report_naming_format = "Validation_Report_{package}_v{version}_{date}",
@@ -194,6 +209,7 @@ write_validation_config <- function(path = ".",
                                     validation_files = list(),
                                     ...) {
   config_contents <- list(
+    package = package,
     working_dir = working_dir,
     output_dir = output_dir,
     report_naming_format = report_naming_format,
@@ -230,7 +246,42 @@ read_validation_config <- function(){
 
 }
 
+
+#' @importFrom rlang abort
+
+ask_package <- function(pkg = NULL){
+
+  if(is.null(pkg)){
+    pkg <- readline("Which package do you intend to validate?")
+  }
+
+  if(!is_installed_package(pkg) & interactive()){
+    correct <- ""
+    while(!(tolower(correct) %in% c("y","n"))){
+      correct <- readline("This package is not an installed package. Is that correct? [Y/n]")
+    }
+    if(tolower(correct) == "n"){
+      abort("Provided package name is not a valid package name",
+            class = "vt.config_invalid_package_name")
+    }
+    if(tolower(correct) == "y"){
+      install_pkg <- ""
+      while(!(tolower(correct) %in% c("y","n"))){
+        install_pkg <- readline("Install package? [Y/n]")
+      }
+      if(tolower(install_pkg) == "y"){
+        install.packages(pkg)
+      }
+    }
+  }
+  pkg
+}
+
 ### Accessor functions for internal use
+
+get_config_package <- function(){
+  read_validation_config()$package
+}
 
 get_config_working_dir <- function(){
   read_validation_config()$working_dir
@@ -248,3 +299,5 @@ get_config_output_dir <- function(){
 get_config_report_naming_format <- function(){
   read_validation_config()$report_naming_format
 }
+
+

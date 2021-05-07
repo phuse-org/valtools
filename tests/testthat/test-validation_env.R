@@ -30,7 +30,7 @@ test_that("temp", {
 
   testthat::expect_true(all(c("OS", "R")%in%
                          validation_env0[validation_env0$type != "session", "resource"]))
-  kable_output_env0 <- vt_kable_val_env(validation_env0)
+  kable_output_env0 <- vt_kable_val_env(validation_env0, format = "latex")
   expected_kable_output_env0 <- c(
     "\\begin{tabular}{|>{}l|>{}l||l}",
     "\\hline",
