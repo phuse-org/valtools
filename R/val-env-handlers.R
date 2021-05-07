@@ -33,6 +33,7 @@ vt_scrape_val_env <- function(pkg = "."){
     desc <- desc(file.path(package_file(path = pkg), "DESCRIPTION"))
     package <- desc$get_field("Package")
     pkg_deps <- desc$get_deps()
+    is_internal <- TRUE
   }else{
     package <- get_config_package()
     if(is_installed_package(package)){
@@ -40,6 +41,8 @@ vt_scrape_val_env <- function(pkg = "."){
     }else{
       pkg_deps <- data.frame(type = character(), package = character())
     }
+    is_internal <- FALSE
+
   }
 
   depends <- pkg_deps[pkg_deps$type == "Depends","package"]
@@ -80,9 +83,14 @@ vt_scrape_val_env <- function(pkg = "."){
   val_env <- rbind(val_env, data.frame(resource = "OS", type = "system", detail = sessionInfo()[["running"]], stringsAsFactors = FALSE))
 
   session_pkg <- names(sessionInfo()[["otherPkgs"]])
-  session_pkg <- session_pkg[!session_pkg %in%
-                               c(package,
-                                 val_env[val_env$type %in% c("package_req", "extended_req"), "resource"])]
+
+  pkg_diff <- val_env[val_env$type %in% c("package_req", "extended_req"), "resource"]
+
+  if(is_internal){
+    pkg_diff <- c(package,pkg_diff)
+  }
+
+  session_pkg <- session_pkg[!session_pkg %in% pkg_diff]
 
   if(length(session_pkg) > 0){
     val_env <- rbind(val_env,
