@@ -23,17 +23,17 @@ vt_get_child_files <- function(loc = c("folder", "yml"),
                                validation_order = c("requirements", "test_cases", "test_code")){
   validation_folder <- vt_path()
   all_validation_files <- unname(do.call("c", lapply(validation_order, FUN = function(x){
-    list.files(path = file.path(validation_folder, x),
-                            full.names = FALSE)
+    file.path(x,
+      list.files(path = file.path(validation_folder, x),
+                            full.names = FALSE))
     })))
 
 
   if(loc[1] == "folder"){
     return(all_validation_files)
   } else if(loc[1] == "yml"){
-    validation_config <- read_validation_config()
-    return(unname(sapply(validation_config$validation_files, FUN = function(x){
-      all_validation_files[grep(pattern = x,  all_validation_files)]
+    return(unname(sapply(get_config_validation_files(), FUN = function(x){
+      find_file(x, ref = validation_folder)
     })))
   }
 }

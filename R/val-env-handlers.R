@@ -90,12 +90,12 @@ vt_scrape_val_env <- function(pkg = "."){
 #' @export
 #' @importFrom knitr kable
 #' @importFrom kableExtra column_spec collapse_rows
-vt_kable_val_env <- function(val_env, format = "latex"){
+vt_kable_val_env <- function(val_env, format = vt_render_to()){
   t <- kable(val_env[,c("type", "resource", "detail")],
              col.names = c("Type", "Resource", "Version Detail"),
              format = format)
   t <- column_spec(t, 1, border_left = TRUE)
-  t <- column_spec(t, 2, border_right = TRUE)
+  t <- column_spec(t, 3, border_right = TRUE)
   t <- collapse_rows(t, 1)
 
   t

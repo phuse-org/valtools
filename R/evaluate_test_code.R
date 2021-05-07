@@ -20,7 +20,7 @@ vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_pat
 #' Turn test code results data.frame into kable output
 #'
 #' @param results results data.frame from `vt_run_test_code_file()`
-#' @param format passed to \code{knitr::kable}
+#' @param format  passed to \code{knitr::kable}
 #'
 #' @returns kableExtra object with formatting
 #'
@@ -31,7 +31,7 @@ vt_run_test_code_file <- function(file, test_env  = new.env(), ..., ref = vt_pat
 #' @export
 #'
 #' @rdname eval_test_code
-vt_kable_test_code_results <- function(results, format = NULL) {
+vt_kable_test_code_results <- function(results, format = vt_render_to()) {
   ## check column names
   if (!all(c("Test", "Results", "Pass_Fail") %in% colnames(results))) {
     abort("Results data must contain the fields `Test`, `Results`, and `Pass_Fail`")
@@ -54,12 +54,10 @@ vt_kable_test_code_results <- function(results, format = NULL) {
       ))
   }
 
-  t <- kable(
-    results[, c("Test", "Results", "Pass_Fail")],
-    format = format,
-    escape = FALSE,
-    col.names = c("Test", "Results", "Pass/Fail")
-  )
+  x <- results[, c("Test", "Results", "Pass_Fail")]
+  colnames(x) <- c("Test", "Results", "Pass/Fail")
+
+  t <- kable(x,format = format)
 
   if(nrow(results) > 0){
     t <- column_spec(t, 2:3, width = "10em")
