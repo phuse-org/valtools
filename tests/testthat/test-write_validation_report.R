@@ -96,11 +96,11 @@ test_that("integration test for CRAN", {
     vt_use_report(dynamic_referencing = TRUE, open = FALSE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
 
-    withr::with_temp_libpaths({
+    clean_env(get_config_package())
 
+    withr::with_temp_libpaths({
       install.packages(getwd(), type = "source", repos = NULL, quiet = TRUE)
       rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
-
     })
 
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
@@ -315,7 +315,10 @@ test_that("Validation outside a package - integration test for CRAN", {
     report_code <- readLines(report_name)
 
     ## remove section to get function authors from package - not applicable
-    # writeLines(report_code[-c(94:108)], report_name)
+    start_func_author_section <- which(report_code == "### Functions")
+    end_func_author_section <- which(report_code == "### Test Case Authors")-1
+    writeLines(report_code[-c(start_func_author_section:end_func_author_section)], report_name)
+    clean_env(get_config_package())
 
     output_report <- rmarkdown::render(report_name, quiet = TRUE)
 
@@ -325,7 +328,7 @@ test_that("Validation outside a package - integration test for CRAN", {
     expect_equal(report_code[2], "title: Validation Report for rlang")
     expect_equal(report_code[3], paste0("author: ", test_user))
     expect_equal(report_code[10], "  %\\VignetteIndexEntry{Validation Report}")
-    expect_equal(report_code[27], "  library(rlang)")
+    expect_equal(report_code[28], "  library(rlang)")
 
   })
 })

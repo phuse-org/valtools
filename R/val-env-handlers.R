@@ -83,6 +83,7 @@ vt_scrape_val_env <- function(pkg = "."){
   session_pkg <- session_pkg[!session_pkg %in%
                                c(package,
                                  val_env[val_env$type %in% c("package_req", "extended_req"), "resource"])]
+
   if(length(session_pkg) > 0){
     val_env <- rbind(val_env,
                      data.frame(resource = session_pkg,
@@ -124,5 +125,22 @@ vt_kable_val_env <- function(val_env, format = vt_render_to()){
 #' @importFrom utils installed.packages
 #' @noRd
 is_installed_package <- function(pkg){
-  pkg %in% rownames(installed.packages())
+
+  any(do.call('c',lapply(.libPaths(), function(x){
+    tryCatch({
+      libpath <- find.package(pkg,lib.loc = x)
+      return(TRUE)
+    },error = function(e){
+        return(FALSE)
+    })})))
+}
+
+#' @importFrom devtools unload
+#' @noRd
+clean_env <- function(pkg = ""){
+  pkgs <- names(sessionInfo()[["otherPkgs"]])
+  unexpected <- setdiff(pkgs[grepl("^file",pkgs)],pkg)
+  for(p in unexpected){
+    unload(package = p)
+  }
 }
