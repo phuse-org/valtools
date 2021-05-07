@@ -6,6 +6,7 @@
 #' @param open boolean to open the validation report for further editing
 #' @importFrom tools file_ext
 #' @importFrom rlang with_interactive is_interactive
+#' @importFrom whoami username
 #' @export
 vt_use_report <- function(pkg_name = NULL,
                           template = "validation",
