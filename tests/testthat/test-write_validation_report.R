@@ -353,7 +353,7 @@ test_that("Validation outside a package - integration test for CRAN", {
                ))
 
 
-    vt_use_report()
+    vt_use_report(open = FALSE, dynamic_referencing = TRUE)
     report_code <- readLines(report_name)
 
     ## remove section to get function authors from package - not applicable
@@ -374,5 +374,4 @@ test_that("Validation outside a package - integration test for CRAN", {
 
   })
 })
-
 
