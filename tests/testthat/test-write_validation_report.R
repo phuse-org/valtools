@@ -224,7 +224,6 @@ test_that("define author on report generation",{
   })
 })
 
-<<<<<<< HEAD
 test_that("Validation outside a package - integration test for CRAN", {
   withr::with_tempdir({
 
@@ -330,6 +329,5 @@ test_that("Validation outside a package - integration test for CRAN", {
 
   })
 })
-=======
->>>>>>> develop
+
 
