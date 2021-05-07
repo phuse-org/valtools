@@ -140,6 +140,7 @@ vt_use_change_log <- function(date = NULL, version = NULL, open = interactive())
           class = "vt.change_log_create_fail")
   })
 
+
   if(open){
     edit_file(vt_path("change_log.md"))
   }
@@ -188,6 +189,7 @@ read_change_log <- function(file){
   }
 
   db
+
 
 }
 

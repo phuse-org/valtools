@@ -69,6 +69,7 @@ test_that("integration test for CRAN", {
                  "  testthat::expect_true(TRUE)",
                  "})"
                ))
+
     file.create(file.path("R", "hello_world.R"))
     writeLines(con = file.path("R", "hello_world.R"),
                c("#' dummy function",
@@ -92,19 +93,22 @@ test_that("integration test for CRAN", {
                ))
 
 
-    vt_use_report()
+    vt_use_report(dynamic_referencing = TRUE, open = FALSE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
+
     withr::with_temp_libpaths({
+
       install.packages(getwd(), type = "source", repos = NULL, quiet = TRUE)
       rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
+
     })
+
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
-    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
-
+    expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[154], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
 
   })
 })
@@ -121,10 +125,10 @@ test_that("validation report in package",{
 
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
-    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[154], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
 
   })
 })
@@ -133,7 +137,6 @@ test_that("validation report in package",{
   skip_on_cran()
   withr::with_tempdir({
     # using the default .validation Validation Lead user
-
     report_name <- "validation_report.Rmd"
     captured_output <- capture.output({vt_create_package(open = FALSE)})
     vt_add_user_to_config(username = "aperson",
@@ -151,12 +154,10 @@ test_that("validation report in package",{
   })
 })
 
-
 test_that("multiple authors",{
   skip_on_cran()
   withr::with_tempdir({
     # using the default .validation Validation Lead user
-
     report_name <- "validation_report.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "aperson",
@@ -186,21 +187,41 @@ test_that("multiple authors",{
 
 
 
-
-test_that("multiple authors",{
+test_that("define author on report generation",{
   skip_on_cran()
   withr::with_tempdir({
-    # using the default Validation Lead user
-    test_user <- whoami::username(fallback = "")
+    # using the default .validation Validation Lead user
+
     report_name <- "validation_report.Rmd"
-    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    captured_output <- capture.output(vt_create_package(open = FALSE))
+    vt_add_user_to_config(username = "a_person",
+                          name = "Andy Person",
+                          title = "Programmer",
+                          role = "Specifier")
 
-    vt_use_req("requirement1.md", username = "author1", open = FALSE)
-    vt_use_test_case("testcase1.md", username = "author1", open = FALSE)
+    vt_add_user_to_config(username = "b_person",
+                          name = "Brandy Person",
+                          title = "Something",
+                          role = "Progammer")
 
-    vt_use_report()
+    vt_add_user_to_config(username = "c_person",
+                          name = "Ager Man",
+                          title = "Manager",
+                          role = "Manager")
+
+    withr::with_envvar(
+      new = list(LOGNAME = "a_person"),{
+        vt_use_report()
+    })
+
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
+
+    expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
+    # lines in rmd template that are updated via vt_use_report calls
+    expect_equal(report_code[3], paste0("author: Andy Person"))
 
 
   })
 })
+
+
