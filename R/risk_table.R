@@ -42,18 +42,19 @@ vt_scrape_risk_assessment <- function(reference = NULL, src = ".", ref = vt_path
 #' @param format passed to \code{kable}
 #' @return knitr_kable object
 #' @importFrom knitr kable
-#' @importFrom kableExtra collapse_rows column_spec
+#' @importFrom kableExtra collapse_rows column_spec kable_styling
 #' @export
 #'
 #' @rdname scrape
 #'
-vt_kable_risk_assessment <- function(x, format = NULL){
+vt_kable_risk_assessment <- function(x, format = vt_render_to()){
   t <- kable(x,
         format = format,
         longtable =  TRUE,
         col.names = c("Requirement Name", "Requirement ID", "Risk Assessment") )
   t <- column_spec(t, 1, border_right = TRUE)
   t <- collapse_rows(t, c(1))
+  t <- kable_styling(t, latex_options = "hold_position")
   t
 }
 

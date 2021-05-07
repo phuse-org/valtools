@@ -7,7 +7,7 @@
 \usage{
 vt_scrape_risk_assessment(reference = NULL, src = ".", ref = vt_path())
 
-vt_kable_risk_assessment(x, format = NULL)
+vt_kable_risk_assessment(x, format = vt_render_to())
 }
 \arguments{
 \item{reference}{dynamic reference holder if it already exists}
