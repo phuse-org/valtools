@@ -21,6 +21,7 @@ test_that("Test creation of the config file", {
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'",
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
@@ -71,6 +72,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'",
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames: []",
         "validation_files: []"
@@ -93,6 +95,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames: []",
         "validation_files: []"
@@ -115,6 +118,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
@@ -141,6 +145,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
@@ -185,6 +190,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
@@ -214,6 +220,7 @@ test_that("Test creation of the config file without passed values in a non-inter
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'" ,
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames:",
         "  test:",
@@ -268,6 +275,7 @@ test_that("Test overwriting of the config file", {
       c("package: test.package",
         "working_dir: '.'",
         "output_dir: '.'",
+        "report_rmd_name: validation.Rmd",
         "report_naming_format: Validation_Report_{package}_v{version}_{date}",
         "usernames: []",
         "validation_files: []"
@@ -284,37 +292,6 @@ test_that("Test overwriting of the config file", {
 
 })
 
-test_that("Test when in a package validation.yml is added to .Rbuildignore of the config file", {
-
-  withr::with_tempdir({
-
-    capture_output <- capture.output({usethis::create_package(path = ".", open = FALSE,
-                                                              rstudio = TRUE,)})
-
-
-    vt_use_validation(
-      package = "test.package",
-                             username_list = list(vt_user(
-                               name = "test",
-                               title = "test",
-                               role = "tester",
-                               username = "test"
-                             )),
-                             validation_files = list("req1.Rmd",
-                                                     "test_case1.Rmd",
-                                                     "test_code1.R"))
-
-
-
-    r_build_ignore<- readLines(".Rbuildignore")
-
-    expect_true(
-      "vignettes/validation/validation.yml" %in% r_build_ignore
-    )
-
-  })
-
-})
 
 test_that("Test removal of individual from config file", {
 
@@ -436,6 +413,7 @@ test_that("adding and removing validation files from list", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -453,6 +431,7 @@ test_that("adding and removing validation files from list", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -471,6 +450,7 @@ test_that("adding and removing validation files from list", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -496,6 +476,7 @@ test_that("adding and removing validation files from list", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -518,6 +499,7 @@ test_that("adding and removing validation files from list", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames: {}",
                    "validation_files:",
@@ -531,6 +513,7 @@ test_that("adding and removing validation files from list", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test2:",
@@ -566,6 +549,7 @@ test_that("inserting validation file at diff location", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -585,6 +569,7 @@ test_that("inserting validation file at diff location", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -603,6 +588,7 @@ test_that("inserting validation file at diff location", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
@@ -626,6 +612,7 @@ test_that("inserting validation file at diff location", {
                  c("package: test.package",
                    "working_dir: '.'",
                    "output_dir: '.'" ,
+                   "report_rmd_name: validation.Rmd",
                    "report_naming_format: Validation_Report_{package}_v{version}_{date}",
                    "usernames:",
                    "  test:",
