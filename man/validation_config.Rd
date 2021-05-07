@@ -25,6 +25,7 @@ vt_use_config(
   package,
   working_dir,
   output_dir,
+  report_rmd_name = "validation.Rmd",
   report_naming_format = "Validation_Report_{package}_v{version}_{date}",
   username_list = list(),
   validation_files = list(),
@@ -60,6 +61,8 @@ contents that are used interactively}
 
 \item{output_dir}{\link{character} which folder should the contents for validation
 output to.}
+
+\item{report_rmd_name}{\link{character} name of rmarkdown document that is to be used for validation.}
 
 \item{report_naming_format}{\link{character} a \link[glue]{glue} friendly string
 of the naming structure of the output validation report. use \code{{package}}

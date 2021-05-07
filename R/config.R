@@ -11,7 +11,8 @@
 #'  contents that are used interactively
 #' @param output_dir [character] which folder should the contents for validation
 #'  output to.
-#'@param report_naming_format [character] a \link[glue]{glue} friendly string
+#' @param report_rmd_name [character] name of rmarkdown document that is to be used for validation.
+#' @param report_naming_format [character] a \link[glue]{glue} friendly string
 #'  of the naming structure of the output validation report. use `{package}`
 #'  for package name, `{version}` to record package version, and `{date}` to
 #'  capture the date the report was run.
@@ -53,6 +54,7 @@ vt_use_config <- function(pkg = ".",
                           package,
                           working_dir,
                           output_dir,
+                          report_rmd_name = "validation.Rmd",
                           report_naming_format = "Validation_Report_{package}_v{version}_{date}",
                           username_list = list(),
                           validation_files = list(),
@@ -106,11 +108,6 @@ vt_use_config <- function(pkg = ".",
   ## add ".here" ref if not a package
   set_dir_ref(pkg = pkg)
 
-  ## add "validation.yml" to .Rbuildignore if is a package
-  if(is_package(pkg = pkg)){
-    use_build_ignore2(ignores = file.path(working_dir,"validation","validation.yml"),dir = pkg)
-  }
-
   if(length(username_list) > 0 ){
     user_entries <- sapply(username_list, is_vt_user)
     non_users <- sum(!user_entries)
@@ -131,6 +128,7 @@ vt_use_config <- function(pkg = ".",
     package = package,
     working_dir = working_dir,
     output_dir = output_dir,
+    report_rmd_name = report_rmd_name,
     report_naming_format = report_naming_format,
     username_list = username_list,
     validation_files = validation_files,
@@ -204,6 +202,7 @@ write_validation_config <- function(path = ".",
                                     package = "",
                                     working_dir = "vignettes",
                                     output_dir = "inst",
+                                    report_rmd_name = "validation.Rmd",
                                     report_naming_format = "Validation_Report_{package}_v{version}_{date}",
                                     username_list = list(),
                                     validation_files = list(),
@@ -212,6 +211,7 @@ write_validation_config <- function(path = ".",
     package = package,
     working_dir = working_dir,
     output_dir = output_dir,
+    report_rmd_name = report_rmd_name,
     report_naming_format = report_naming_format,
     usernames = username_list,
     validation_files = validation_files
@@ -300,4 +300,7 @@ get_config_report_naming_format <- function(){
   read_validation_config()$report_naming_format
 }
 
+get_config_report_rmd_name <- function(){
+  read_validation_config()$report_rmd_name
+}
 

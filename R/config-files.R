@@ -102,6 +102,7 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
     package = validation_config$package,
     working_dir = validation_config$working_dir,
     output_dir = validation_config$output_dir,
+    report_rmd_name = validation_config$report_rmd_name,
     report_naming_format = validation_config$report_naming_format,
     username_list = validation_config$usernames,
     validation_files = validation_file_list_new
@@ -164,6 +165,7 @@ vt_drop_file_from_config <- function(filename) {
     package = validation_config$package,
     working_dir = validation_config$working_dir,
     output_dir = validation_config$output_dir,
+    report_rmd_name = validation_config$report_rmd_name,
     report_naming_format = validation_config$report_naming_format,
     username_list = validation_config$usernames,
     validation_files = validation_file_list[!validation_file_list %in% unlist(filename)]
