@@ -314,19 +314,17 @@ test_that("Validation outside a package - integration test for CRAN", {
     report_code <- readLines(report_name)
 
     ## remove section to get function authors from package - not applicable
-    writeLines(report_code[-c(94:108)], report_name)
-
-    browser()
+    # writeLines(report_code[-c(94:108)], report_name)
 
     output_report <- rmarkdown::render(report_name, quiet = TRUE)
 
     expect_true(file.exists(report_name))
     expect_true(file.exists(gsub("[.]Rmd$",".pdf",report_name)))
     # lines in rmd template that are updated via vt_use_report calls
-    expect_equal(report_code[2], "title: Validation Report")
+    expect_equal(report_code[2], "title: Validation Report for rlang")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[9], "  %\\VignetteIndexEntry{ Validation Report }")
-    expect_equal(report_code[25], "  library(rlang)")
+    expect_equal(report_code[10], "  %\\VignetteIndexEntry{Validation Report}")
+    expect_equal(report_code[27], "  library(rlang)")
 
   })
 })
