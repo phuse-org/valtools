@@ -1,6 +1,9 @@
 ---
 title: "Starting New Validation Package using {valtools}"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{Starting New Validation Package using {valtools}}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,17 +23,19 @@ knitr::opts_chunk$set(
 library(valtools)
 ```
 
-## Intro
-
 This vignette steps through the process of creating an R package that is intended to be 
 validated, by extending `usethis` and `devtools` functionality to provide a 
 seamless validation process. 
 
-## Starting a Package
-
 - Create a new R package skeleton
 - Add requirements
+- Package development
+- Change log
 - Add test cases
+- Add test code
+
+### Starting a Package
+
 
 ```{r}
 
@@ -135,14 +140,17 @@ devtools::document()
 
 ## Change log
 
-Document updates and changes in validation documentation using the Change Log file. This is valuable for
-documenting when changes occurred (version) to the validation and summarizing information for leadership!
+Updates and changes in validation documentation are documented using the Change Log file.
 
 ```{r}
 
 valtools::vt_use_change_log()
 
 ```
+
+Change lots are useful for summarizing changes that have been made to the validation
+code or requirements and act as a way to pass information to leadership to help answer 
+high level questions.
 
 ## Testing
 
@@ -182,7 +190,7 @@ to the hello_world function and getting back a vector of: c("Hello, Johnny", "He
 Test code is done by a third party - someone that was not involved with writing the 
 actual code or the test case that needs to be converted into code. 
 
-You can add them into the documentation of the package via `vt_add_user_to_config()`.
+Add this person into the documentation of the package via `vt_add_user_to_config()`.
 
 ```{r}
 
@@ -195,7 +203,7 @@ valtools::vt_add_user_to_config(
 
 ```
 
-Now that this persons information is recorded, you can construct the test code
+Now that this persons information is recorded, construct the test code
 file that they will use to record the test code through the code below. 
 
 ```{r}
@@ -258,10 +266,14 @@ There are several sections included by default in the base template.
     - Records the validation environment
     - Presents the change log of the validation.
     - Subsections to show the last editor for each piece of the validation; requirements, functions, test cases and test code.
-    - Traceability table to show which requirements are being met by which test cases
+    - Traceability table to show which requirements are being
+    - Risk Assessment: Combines all the risk assessments made into a single table
 - Validation: record each requirement, testcase and results of the test code
     
-WHen editing the report, some key functions to know for extending the report included by {valtools} are:
+{valtools} also supports a concept called "dynamic referencing", which will be explained in another vignette.
+
+
+When editing the report, some key functions to know for extending the report included by {valtools} are:
 
   - `vt_path()` allows user to base path from the validation directory. Similar idea to the {here} package, but for validation.
   - `vt_file()` allows the user to point to specific files and render them as child documents within the report.
