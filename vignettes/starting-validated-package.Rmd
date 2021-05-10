@@ -50,11 +50,11 @@ vt_create_package("example.package")
 
 ```
 
-In addition to the normal R package infrastructure, this function adds
-the necessary validation infrastructure required for {valtools} to
-support validation.
+The package is constructed using the `usethis::create_package()` function,
+this function acts as a wrapper and adds the necessary validation infrastructure
+required for {valtools}.
 
-Mainly, there is now a `vignettes/validation` folder, which is the
+Importantly, there is now a `vignettes/validation` folder, which is the
 working directory for the validation. This is where almost all the
 content for validation will be created.
 
