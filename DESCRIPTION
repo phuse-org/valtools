@@ -18,6 +18,11 @@ Authors@R:
            role = "aut",
            email = "mvendett@scharp.org",
            comment = c(ORCID = "0000-0001-9321-1410")),
+    person(given = "Peyman",
+           family = "Eshghi",
+           role = "aut",
+           email = "",
+           comment = c(ORCID = "")),
     person(given = "PHUSE",
            role = "cph")
     )
