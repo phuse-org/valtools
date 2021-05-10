@@ -3,7 +3,7 @@ title: "Starting New Validation Package using {valtools}"
 output: 
   rmarkdown::html_vignette:
     toc: true
-    toc_depth: 2
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{Starting New Validation Package using {valtools}}
   %\VignetteEngine{knitr::rmarkdown}
@@ -27,12 +27,7 @@ This vignette steps through the process of creating an R package that is intende
 validated, by extending `usethis` and `devtools` functionality to provide a 
 seamless validation process. 
 
-- Create a new R package skeleton
-- Add requirements
-- Package development
-- Change log
-- Add test cases
-- Add test code
+
 
 ### Starting a Package
 
@@ -46,7 +41,7 @@ vt_create_package(file.path(tempdir(),"example.package"))
 
 See how in addition to the normal R package infrastructure, there is now a 
 `vignettes/validation` folder, which is the working directory for the 
-validation. Inside this, there is a `validation.yml` file. This file is the 
+validation? Inside this, there is a `validation.yml` file. The YML file is the 
 configuration file for validation. It drives a lot of the downstream steps that 
 occur during validation.
 
@@ -91,7 +86,7 @@ Copy the following content:
 
 ```
 
-## Package development
+## Package Development
 
 At this point, step back into the usual R package development process using 
 `usethis` and `devtools` to create the package.
@@ -138,7 +133,7 @@ devtools::document()
 #GPP: unit testing, update DESCRIPTION, ...
 ```
 
-## Change log
+## Change Log
 
 Updates and changes in validation documentation are documented using the Change Log file.
 
@@ -228,7 +223,7 @@ into the body of the test:
  )
 
 ```
-add a new test with the following beneath the test. Replace "TODAYS DATE" with todays date.
+add a new test with the following beneath the test. Replace "TODAYS DATE" with today's date.
 
 ```r
 
@@ -247,12 +242,14 @@ test_that("1.2",{
 
 ```
 
-## Generating the Validation Report
+## Authoring Validation Reports
 
-`vt_use_report()` is used to create the validation report rmarkdown. This is 
-populated in the working directory specified in `validation.yml`, which for
-packages defaults to the `vignettes`, and creates a template based on the 
-report Rmd name specified in `validation.yml`, which defaults to `validation.Rmd`.
+`vt_use_report()` initiates the validation report rmarkdown file using a template
+provided via {valtools}. The file is 
+added to the working directory specified in `validation.yml`. Within 
+packages this defaults to the `vignettes` folder, and names the report rmarkdown file using the 
+value for report RMD name specified in `validation.yml`. 
+This rmarkdown file will have a default name `validation.Rmd` if unspecified.
 
 
 ```{r}
@@ -272,7 +269,6 @@ There are several sections included by default in the base template.
     
 {valtools} also supports a concept called "dynamic referencing", which will be explained in another vignette.
 
-
 When editing the report, some key functions to know for extending the report included by {valtools} are:
 
   - `vt_path()` allows user to base path from the validation directory. Similar idea to the {here} package, but for validation.
@@ -285,33 +281,33 @@ When editing the report, some key functions to know for extending the report inc
   
 Keep in mind, the report is an Rmarkdown, so there is no limit to editing and customization, and templates.
 
-## Running a validation report
+## Running a Validation Report
 
-### Validation Mode: Running on Source
+### Validation Mode: Running on source 
 
 ```{r}
 valtools::vt_validate_source()
 ```
 
-### Validation Mode: Generating validated bundle for distribution
+### Validation Mode: Generating validated bundle for distribution 
 
 ```{r}
 valtools::vt_validate_build()
 ```
 
-### Validation Mode: Validating and installing package
+### Validation Mode: Validating and installing package 
 
 ```{r}
 valtools::vt_validate_install()
 ```
 
-### Validation Mode: re-validating an installed package
+### Validation Mode: Re-validating an installed package 
 
 ```{r}
 valtools::vt_validate_installed_package("example.package")
 ```
 
-compare this result against the original validation vignette:
+compare this result against the original validation vignette: 
 
 ```{r}
 vignette("validation","example.package")
