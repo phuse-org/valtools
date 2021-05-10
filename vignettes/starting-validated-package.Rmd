@@ -89,7 +89,7 @@ valtools::vt_create_package(file.path(tempdir(),"example.package"))
 
 ```
 
-To check out the folder structure of the new package, run the following
+To examine the folder structure of the new package, run the following
 function:
 
 ```{r}
