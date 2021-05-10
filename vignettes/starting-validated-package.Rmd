@@ -31,7 +31,7 @@ intended to be validated, by extending `usethis` and `devtools`
 functionality to provide a seamless validation process.
 
 In general, the process consists of the following steps, and the
-vignette as specific examples for each.
+vignette has specific examples for each.
 
 -   Create A New R Package
 -   Add Requirements
