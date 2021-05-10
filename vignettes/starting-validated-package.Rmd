@@ -357,7 +357,7 @@ Authoring Validation Reports
 --------------------------------
 
 Ultimately, the purpose of validation is to generate documentation that
-the package meets the goals. {valtools} supports this generation of
+the package meets the goals. {valtools} supports this 
 documentation by creating a final report that can run and gather all the
 information that was generated in the prior steps to create the final
 report.
