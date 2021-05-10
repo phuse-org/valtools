@@ -75,14 +75,15 @@ vt_scrape_change_log <- function(){
 #'  vt_kable_change_log(log_data)
 #'
 #' })
-vt_kable_change_log <- function(change_log_info, format = "latex"){
+vt_kable_change_log <- function(change_log_info,format = vt_render_to()){
   all_news <- change_log_info[order(change_log_info$version, decreasing = TRUE),
                         c("version", "effective_date", "description")]
   rownames(all_news) <- 1:nrow(all_news)
+  colnames(all_news) <- c("Version", "Effective Date", "Activity Description")
+
 
   t <- kable(all_news,
-             format = format,
-             col.names = c("Version", "Effective Date", "Activity Description"))
+             format = format )
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, 3, border_right = TRUE, width = "30em")
   t <- collapse_rows(t, 1:2)
@@ -139,6 +140,7 @@ vt_use_change_log <- function(date = NULL, version = NULL, open = interactive())
           class = "vt.change_log_create_fail")
   })
 
+
   if(open){
     edit_file(vt_path("change_log.md"))
   }
@@ -187,6 +189,7 @@ read_change_log <- function(file){
   }
 
   db
+
 
 }
 

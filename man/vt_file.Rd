@@ -4,16 +4,12 @@
 \alias{vt_file}
 \title{print files for report generation}
 \usage{
-vt_file(file, ..., type = tools::file_ext(file), dynamic_referencing = FALSE)
+vt_file(file, ..., dynamic_referencing = FALSE)
 }
 \arguments{
 \item{file}{file to evaluate}
 
 \item{...}{These dots are for future extensions and must be empty.}
-
-\item{type}{method of file_parse to use if other that file extension.
-If not a supported file, it will just print the contents of the file.
-Currently supported types: md, Rmd}
 
 \item{dynamic_referencing}{Whether to employ dynamic referencing or not.
 defaults to FALSE.}

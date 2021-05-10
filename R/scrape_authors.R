@@ -51,7 +51,7 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
 
   roxyblock_list <- do.call('c',lapply(
     dir_ref_files, function(ref_file, type){
-      vt_scrape_roxygen(
+      scrape_roxygen(
         file = ref_file,
         type = ifelse(type == "test_code", "r_test_code", tools::file_ext(ref_file))
       )
@@ -85,57 +85,4 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
     warn(paste0("No blocks with tags ", paste0("`",tags,"`",collapse = ", ")))
     return(list())
   }
-}
-
-#' Scrape author info from R functions
-#' @param tags which tags to keep. defaults to editor, editDate, and export.
-#' @param src path to package source. defaults to the current directory.
-#' passed to \code{\link{vt_scrape_tags_from}}
-#' @param ref reference path to where validation documentation lives. defaults to
-#' vt_path() passed to \code{\link{vt_scrape_tags_from}}
-#' @note Requires access to raw R/ or function documentation parsed via {valtools} into validation/ folder.
-#' Cannot pull information from installed R/ location.
-#' @export
-#' @examples
-#' \dontrun{
-#' # all functions
-#' vt_scrape_functions(tags = c("editor", "editDate"))
-#'
-#' # only public functions
-#' vt_scrape_functions()  %>%
-#'   dplyr::filter(!is.na(export)) %>%
-#'   dplyr::select(-export)
-#' }
-vt_scrape_functions <- function(tags = c("editor", "editDate", "export"), src = ".", ref = vt_path()){
-  do.call("rbind", vt_scrape_tags_from(
-    type = "functions",
-    tags = tags,
-    src = src,
-    ref = ref
-  ))
-}
-
-#' Kable code from function author table
-#' @param author_details data.frame as exported from \code{vt_scrape_functions}
-#' @param format passed to \code{knitr::kable}
-#' @return knitr_kable object
-#' @export
-#' @importFrom knitr kable
-#' @importFrom kableExtra column_spec
-vt_kable_functions <- function(author_details, format = "latex"){
-  all_colnames <- c(functions = "Function Name",
-                    editor = "Editor",
-                    editDate = "Edit Date",
-                    export = "Exported?")
-  this_colnames <- all_colnames[names(author_details)]
-
-  if("export" %in% names(this_colnames)){
-    author_details$export <- ifelse(is.na(author_details$export), FALSE, TRUE )
-  }
-
-  t <- kable(author_details[, names(this_colnames)], format = format, booktabs = FALSE,
-             col.names = unname(this_colnames))
-  t <- column_spec(t, 1, border_left = TRUE)
-  t <- column_spec(t, ncol(author_details), border_right = TRUE)
-  t
 }
