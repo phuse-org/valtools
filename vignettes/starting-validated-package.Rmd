@@ -93,7 +93,8 @@ Add Requirements
 Requirements document the goals of the package - what it does to solve
 whatever problem or task - and should be documented before any code is
 written. Requirements are recorded within the
-`vignettes/validation/requirements` folder by default.
+`vignettes/validation/requirements` folder by default. The collection of requirements
+may be called specifications.
 
 To make adding validation content easy, {valtools} extended the
 `usethis` approach to package contents creation through a family of
