@@ -30,17 +30,6 @@ This vignette steps through the process of creating an R package that is
 intended to be validated, by extending `usethis` and `devtools`
 functionality to provide a seamless validation process.
 
-In general, the process consists of the following steps, and the
-vignette has specific examples for each.
-
--   Create A New R Package
--   Add Requirements
--   Package Development
--   Change log
--   Testing
--   Authoring Validation Reports
--   Validation
-
 There is a combination of explaining how to use {valtools} and tutorial
 steps for the reader to follow along in creating a simple R package that
 could undergo validation.
@@ -356,26 +345,26 @@ test_that("1.2",{
 Authoring Validation Reports
 --------------------------------
 
-Ultimately, the purpose of validation is to generate documentation that
-the package meets the goals. {valtools} supports this 
-documentation by creating a final report that can run and gather all the
-information that was generated in the prior steps to create the final
-report.
+{valtools} provides dynamic access via a Rmarkdown file to details necessary for 
+generating a validation report at push of button. This validation report documents
+that the package meets stated goals and can be re-evaluated as necessary to 
+generate the report in PDF or HTML format. 
 
-The report is written in Rmarkdown so that it is flexible and dynamic.
-{valtools} provides a function to create a template that can be worked
-off of to generate the report: `vt_use_report()`.
+The function `vt_use_report()` creates a validation report rmarkdown file 
+pre-populated with code to scrape all the pieces of information
+that were generated in the prior steps to create the final report when being knit.
 
-`vt_use_report()` initiates the validation report rmarkdown file using a template
-provided via {valtools} in the working directory identified
-in the validation config file. Within packages this defaults to the `vignettes` folder.
+`vt_use_report()` saves the validation report rmarkdown file 
+in the working directory identified in the validation config file. 
+Within packages this defaults to the `vignettes` folder.
 This rmarkdown file will have a default name `validation.Rmd` if unspecified.
 
 ```{r}
 valtools::vt_use_report(template = "validation")
 ```
 
-There are several sections included by default in the base template.
+There are several sections included by default in the provided validation report 
+rmarkdown:
 
 -   Signatures: Capture signatures of everyone involved in the
     validation.
