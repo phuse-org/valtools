@@ -390,7 +390,7 @@ There are several sections included by default in the base template.
     -   Risk Assessment: Combines all the risk assessments made into a
         single table
 
--   Validation: record each requirement, testcase and results of the
+-   Validation: record each requirement, test case, and results of the
     test code
 
 {valtools} also supports a concept called "dynamic referencing", which
@@ -439,7 +439,7 @@ validation at this moment:
 
 #### Tutorial
 
-Run each method of validation and observe the diffeences
+Run each method of validation and observe the differences
 
 ##### Validation Mode: Running on Source
 
