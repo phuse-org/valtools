@@ -1,10 +1,16 @@
 ---
 title: "Starting New Validation Package using {valtools}"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{Starting New Validation Package using {valtools}}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -20,50 +26,91 @@ knitr::opts_chunk$set(
 library(valtools)
 ```
 
-## Intro
+This vignette steps through the process of creating an R package that is
+intended to be validated, by extending `usethis` and `devtools`
+functionality to provide a seamless validation process.
 
-This vignette steps through the process of creating an R package that is intended to be 
-validated, by extending `usethis` and `devtools` functionality to provide a 
-seamless validation process. 
+There is a combination of explaining how to use {valtools} and tutorial
+steps for the reader to follow along in creating a simple R package that
+could undergo validation.
 
-## Starting a Package
 
-- Create a new R package skeleton
-- Add requirements
-- Add test cases
+Creating A New R Package
+------------------------
+
+Starting a new R package using {valtools} is a one line command, where
+the only information required is the path to the location the new
+package structure is to be built, with the last folder name in the path
+being the new name of the package.
 
 ```{r}
 
 # create a new package skeleton
-vt_create_package(file.path(tempdir(),"example.package"))
+vt_create_package("example.package")
 
 ```
 
-See how in addition to the normal R package infrastructure, there is now a 
-`vignettes/validation` folder, which is the working directory for the 
-validation. Inside this, there is a `validation.yml` file. This file is the 
-configuration file for validation. It drives a lot of the downstream steps that 
-occur during validation.
+The package is constructed using the `usethis::create_package()` function,
+this function acts as a wrapper and adds the necessary validation infrastructure
+required for {valtools}.
+
+Importantly, there is now a `vignettes/validation` folder, which is the
+working directory for the validation. This is where almost all the
+content for validation will be created.
+
+Inside this folder, there is the `validation.yml` file, which will be
+referred as the validation config file going forward. This YML file
+informs {valtools} how to interact with the various pieces of validation
+that will be created, and information that needs to be shared across
+multiple sessions/users. The user does not need to interact with this
+file directly, the functions inside {valtools} will update this file as
+necessary.
+
+#### Tutorial
+
+Run the chunk of code below to create a package in a temporary directory
+to follow along with the tutorial. The new package will be created in a
+new session. Run all subsequent code in that new session.
+
+```{r}
+
+valtools::vt_create_package(file.path(tempdir(),"example.package"))
+
+```
+
+To examine the folder structure of the new package, run the following
+function:
 
 ```{r}
 
 fs::dir_tree(recurse = TRUE)
 
-cat(readLines("vignettes/validation/validation.yml"),sep = "\n")
-
 ```
 
+Add Requirements
+----------------
 
-## Requirements
+Requirements document the goals of the package - what it does to solve
+whatever problem or task - and should be documented before any code is
+written. Requirements are recorded within the
+`vignettes/validation/requirements` folder by default. The collection of requirements
+may be called specifications.
 
-To add the content required for validation, we extended the `usethis` process to
-create a family of "vt_use_*" functions.
+To make adding validation content easy, {valtools} extended the
+`usethis` approach to package contents creation through a family of
+"vt\_use\_\*" functions.
 
-`vt_use_req()` creates a new requirement. It accepts the name of the requirement, 
-and optionally a username. If not passed, {valtools} will automatically get the username
-of the person creating the requirement. If the user has not created any contents 
-before, it will ask the user some questions (Name, Title, and Role) and record
-them in `validation.yml` for documentation in the validation report.
+`vt_use_req()` creates a new requirement in the
+`vignettes/validation/requirements` folder, with the main argument being
+the name of the requirement, and an optional argument `username` to
+record the name of the person writing the requirement.
+
+If the `username` argument is not passed, {valtools} will automatically
+get the computer username of the user creating the requirement and
+attempt to put in their full name. If the user has not created any
+validation contents before, it will ask the user some questions (Name,
+Title, and Role) and record them in the validation config file for
+documentation in the validation report.
 
 ```{r}
 
@@ -71,29 +118,44 @@ valtools::vt_use_req("Requirement_001")
 
 ```
 
-In the newly opened requirements file, on line 5, Replace `REQUIREMENTS` with `1.1`, and `ASSESSMENT` with `1, Low Risk, Small Impact` to indicate requirement 1.1 has a risk assessment that determined it has a low risk and small impact when it is wrong.
+#### Tutorial
+
+Run the command above and in the newly opened requirements file, on line
+5, Replace `REQUIREMENTS` with `1.1`, and `ASSESSMENT` with
+`1, Low Risk, Small Impact` to indicate requirement 1.1 has a risk
+assessment that determined it has a low risk and small impact when it is
+wrong.
 
 Add a new line underneath the line above (at line 6) line that contains:
 `#' 1.2: 5, Low risk, Medium Impact`
 
 Copy the following content:
 
-```
-## Say Hello
+    ## Say Hello
 
-+ 1.1 Say Hello to users
-+ 1.2 Say Hello to multiple users at once
+    + 1.1 Say Hello to users
+    + 1.2 Say Hello to multiple users at once
 
-```
+Package Development
+-------------------
 
-## Package development
+Now that requirements are set, the normal package development process
+can be followed. {valtools} expects the developers to be using `usethis`
+and `devtools` to create the rest of the package contents, but it is not
+required.
 
-At this point, step back into the usual R package development process using 
-`usethis` and `devtools` to create the package.
+A critical piece to validation during development is tracking which
+programmers wrote which functions. {valtools} supports this by
+augmenting the {roxygen2} framework of function documentation with two
+custom roxygen tags: `@editor` and `@editDate`.
 
-One unique step is to use the custom `@editor` and `@editDate` roxygen tags to 
-mark who wrote a function and who edited it last.
+`@editor` is for tracking the last editor of the function, and
+`@editDate` is for recording whenever a function is modified.
 
+#### Tutorial
+
+Run the command below to create an R file in the package and copy the
+following code into the file.
 
 ```{r function}
 
@@ -101,9 +163,7 @@ usethis::use_r("hello_world")
 
 ```
 
-Copy the following code
-
-```r
+``` {.r}
 #' Hello World
 #' @param name name to say hello to
 #' @returns character string saying hello
@@ -122,7 +182,6 @@ hello_world <- function(name){
 hello_world_internal <- function(name){
   paste("hello,",name)
 }
-
 ```
 
 ```{r}
@@ -133,10 +192,23 @@ devtools::document()
 #GPP: unit testing, update DESCRIPTION, ...
 ```
 
-## Change log
+Change Log
+----------
 
-Document updates and changes in validation documentation using the Change Log file. This is valuable for
-documenting when changes occurred (version) to the validation and summarizing information for leadership!
+Similar to a news file, {valtools} suggests the use of a change log that
+is directly tied to validation. The purpose of this is to separate
+package update and information that is useful for developers from
+information that is important to capture in validation.
+
+To create this change log file, {valtools} has the function
+`vt_use_change_log()`. It will create the change log file inside the
+working directory and open it up for editing.
+
+The header information tracks the version of validation (usually tied to
+the package version when developing a package), and the date of the
+release of validation. This is a markdown file, so normal markdown can
+be used to document the changes. However, critically here, only bullets
+marked with [validation] will be recorded in the validation report.
 
 ```{r}
 
@@ -144,12 +216,29 @@ valtools::vt_use_change_log()
 
 ```
 
-## Testing
+#### Tutorial
+
+Run the command above to create a change log.
+
+Testing
+-------
+
+Testing is done to ensure that the package meets the requirements that
+were set out for the project. Testing is done in two major steps: the
+firsts consists of writing out a series of cases that would prove that
+the requirements have been met, the second is the application of these
+cases.
 
 ### Test Cases
 
-`vt_use_test_case()` creates a new test case file, and `vt_use_test_code()` 
-creates a new test code file. They have the same arguments as `vt_use_req()`.
+The addition and writing of test cases is handled by the
+`vt_use_test_case()` function. Similarly to `vt_use_req()`, a username
+can be passed, or it will look to determine which user is calling the
+function and input their information.
+
+This function creates the test case file in the
+`vignettes/validation/test_cases` folder of the package and opens it for
+editing.
 
 ```{r}
 
@@ -157,32 +246,51 @@ valtools::vt_use_test_case("Test_case_001")
 
 ```
 
+#### Tutorial
 
-Replace `TESTCASE` with `1.1`, and `REQUIREMENT` with `1.1` to indicate test case 1.1 shows that requirement 1.1 is being met.
-
+Run the code above and in the newly opened test case file, replace
+`TESTCASE` with `1.1`, and `REQUIREMENT` with `1.1` to indicate test
+case 1.1 shows that requirement 1.1 is being met.
 
 Add a new line underneath the line above (at line 6) line that contains:
 `#' 1.2: 1.1, 1.2`
 
-This is to indicate test case 1.2 shows requirements 1.1 and 1.2 are being met.
+This is to indicate test case 1.2 shows requirements 1.1 and 1.2 are
+being met.
 
-Copy the following test case into file where test cases are to be documented:
+Copy the following test case into file where test cases are to be
+documented:
 
-```
-## Test Case 1: hello_world
+    ## Test Case 1: hello_world
 
-+ 1.1 test that the software can say "hello, Johnny" by passing a user "Johnny" 
-to the hello_world function
-+ 1.2 test that the software can say hello to multiple people by passing a vector of users - "Johnny", "Beth", "Andy","Elisabeth"
-to the hello_world function and getting back a vector of: c("Hello, Johnny", "Hello, Beth", "Hello, Andy","Hello, Elisabeth")
-```
+    + 1.1 test that the software can say "hello, Johnny" by passing a user "Johnny" 
+    to the hello_world function
+    + 1.2 test that the software can say hello to multiple people by passing a vector of users - "Johnny", "Beth", "Andy","Elisabeth"
+    to the hello_world function and getting back a vector of: c("Hello, Johnny", "Hello, Beth", "Hello, Andy","Hello, Elisabeth")
 
 ### Test Code
 
-Test code is done by a third party - someone that was not involved with writing the 
-actual code or the test case that needs to be converted into code. 
+Test code is the implementation of the test cases as code. The goal is
+that the code is completely reproducible and able to be run without
+human interaction. Additionally, test code is written by a third party -
+someone that was not involved with writing the actual code or the test
+case. This helps ensure the integrity of the testing as well as
+providing valuable review of the documentation of the test cases and
+package code.
 
-You can add them into the documentation of the package via `vt_add_user_to_config()`.
+Similarly to `vt_use_req()` for requirements and `vt_use_test_case` for
+test cases, {valtools} provide a function for creating test code files
+and recording which user created the file.
+
+```{r}
+
+valtools::vt_use_test_code("Test_code_001")
+
+```
+
+#### Tutorial
+
+Add "Val A Dashun" to the validation config file:
 
 ```{r}
 
@@ -195,8 +303,8 @@ valtools::vt_add_user_to_config(
 
 ```
 
-Now that this persons information is recorded, you can construct the test code
-file that they will use to record the test code through the code below. 
+Now that this persons information is recorded, construct the test code
+file that they will use to record the test code through the code below.
 
 ```{r}
 
@@ -204,13 +312,10 @@ valtools::vt_use_test_code("Test_code_001", username = "Val A Dashun")
 
 ```
 
-Alternatively, this person could run `vt_use_test_code()`, and it will behave just like 
-`vt_use_req()` and add the users information automatically.
+In the newly opened test code file. Update `TESTNUMBER` to `1.1` in the
+new test code file and copy the code below into the body of the test:
 
-Update `TESTNUMBER` to `1.1` in the new test code file and copy the code below
-into the body of the test:
-
-```r
+``` {.r}
 
  hello_result <- hello_world("Johnny")
  
@@ -218,11 +323,12 @@ into the body of the test:
   hello_result,
   "Hello, Johnny"
  )
-
 ```
-add a new test with the following beneath the test. Replace "TODAYS DATE" with todays date.
 
-```r
+add a new test with the following beneath the test. Replace "TODAYS
+DATE" with today's date.
+
+``` {.r}
 
 #' @editor Val A Dashun
 #' @editDate TODAYS DATE
@@ -235,71 +341,121 @@ test_that("1.2",{
   c("Hello, Johnny", "Hello, Beth", "Hello, Andy","Hello, Elisabeth")
  )
 })
-
-
 ```
 
-## Generating the Validation Report
+Authoring Validation Reports
+--------------------------------
 
-`vt_use_report()` is used to create the validation report rmarkdown. This is 
-populated in the working directory specified in `validation.yml`, which for
-packages defaults to the `vignettes`, and creates a template based on the 
-report Rmd name specified in `validation.yml`, which defaults to `validation.Rmd`.
+{valtools} provides dynamic access via a Rmarkdown file to details necessary for 
+generating a validation report at push of button. This validation report documents
+that the package meets stated goals and can be re-evaluated as necessary to 
+generate the report in PDF or HTML format. 
 
+The function `vt_use_report()` creates a validation report rmarkdown file 
+pre-populated with code to scrape all the pieces of information
+that were generated in the prior steps to create the final report when being knit.
+
+`vt_use_report()` saves the validation report rmarkdown file 
+in the working directory identified in the validation config file. 
+Within packages this defaults to the `vignettes` folder.
+This rmarkdown file will have a default name `validation.Rmd` if unspecified.
 
 ```{r}
 valtools::vt_use_report(template = "validation")
 ```
 
-There are several sections included by default in the base template. 
+There are several sections included by default in the provided validation report 
+rmarkdown:
 
-- Signatures: Capture signatures of everyone involved in the validation.
-- Release Details: 
-    - Records the validation environment
-    - Presents the change log of the validation.
-    - Subsections to show the last editor for each piece of the validation; requirements, functions, test cases and test code.
-    - Traceability table to show which requirements are being met by which test cases
-- Validation: record each requirement, testcase and results of the test code
-    
-WHen editing the report, some key functions to know for extending the report included by {valtools} are:
+-   Signatures: Capture signatures of everyone involved in the
+    validation.
 
-  - `vt_path()` allows user to base path from the validation directory. Similar idea to the {here} package, but for validation.
-  - `vt_file()` allows the user to point to specific files and render them as child documents within the report.
-  - `vt_scrape_*` family of functions allows users to scrape various pieces of information from the validation infrastructure and returns a data.frame.
-  - `vt_kable_*` family functions provides an opinionated formatting to the `vt_scrape_*` functions to help quickly construct 
-      the report.
-  - `vt_get_child_files()` returns the list of files that are indicated in the validation.yml to be included in the 
-  validation report. This allows for batch creation of the dynamic content in the report.
-  
-Keep in mind, the report is an Rmarkdown, so there is no limit to editing and customization, and templates.
+-   Release Details:
 
-## Running a validation report
+    -   Records the validation environment
+    -   Presents the change log of the validation.
+    -   Subsections to show the last editor for each piece of the
+        validation; requirements, functions, test cases and test code.
+    -   Traceability table to show which requirements are being
+    -   Risk Assessment: Combines all the risk assessments made into a
+        single table
 
-### Validation Mode: Running on Source
+-   Validation: record each requirement, test case, and results of the
+    test code
+
+{valtools} also supports a concept called "dynamic referencing", which
+will be explained in another vignette.
+
+When editing the report, some key functions to know for extending the
+report included by {valtools} are:
+
+-   `vt_path()` allows user to base path from the validation directory.
+    Similar idea to the {here} package, but for validation.
+-   `vt_file()` allows the user to point to specific files and render
+    them as child documents within the report.
+-   `vt_scrape_*` family of functions allows users to scrape various
+    pieces of information from the validation infrastructure and returns
+    a data.frame.
+-   `vt_kable_*` family functions provides an opinionated formatting to
+    the `vt_scrape_*` functions to help quickly construct the report.
+-   `vt_get_child_files()` returns the list of files that are indicated
+    in the validation.yml to be included in the validation report. This
+    allows for batch creation of the dynamic content in the report.
+
+Keep in mind, the report is an Rmarkdown, so there is no limit to
+editing and customization, and templates.
+
+#### Tutorial
+
+Run the code above to generate the report, and inspect the overall
+structure of the report. See what happens when contents are moved
+around.
+
+Running a Validation Report
+---------------------------
+
+Now that there is a validation report as an Rmarkdown, validation is only a
+compiling of the report away. However, different organizations might
+follow different approaches to when the validation documentation might be
+necessary. {valtools} can support several different methods of
+validation at this moment:
+
+| Validation Type | Description | {valtools} Function |
+|:----------------|:------------|:-------------------:|
+| Validation on Source | Validation of the source code, where individuals might install from a controlled source. | `valtools::vt_validate_source()` |
+| Validation on Build | Validation of the source code and then compiles it into a usable tar so that the source code cannot change after validation, so users can install from a controlled source without having to build/compile as well. | `valtools::vt_validate_build()` |
+| Validation on Install | Validation of the source code, and then the validation report is also re-built on install to the machine it will ultimately be running on. | `valtools::vt_validate_install()` |
+| Validation _After_ Install | This assumes the package was built and installed using the prior methods, but in this method, the validation report can be re-run at any point to re-validated based on updates to the environment. | `valtools::vt_validate_installed_package()` |
+
+#### Tutorial
+
+Run each method of validation and observe the differences
+
+##### Validation Mode: Running on Source
 
 ```{r}
 valtools::vt_validate_source()
 ```
 
-### Validation Mode: Generating validated bundle for distribution
+##### Validation Mode: Generating validated bundle for distribution
 
 ```{r}
 valtools::vt_validate_build()
 ```
 
-### Validation Mode: Validating and installing package
+##### Validation Mode: Validating and installing package
 
 ```{r}
 valtools::vt_validate_install()
 ```
 
-### Validation Mode: re-validating an installed package
+##### Validation Mode: Re-validating an installed package
 
 ```{r}
 valtools::vt_validate_installed_package("example.package")
 ```
 
-compare this result against the original validation vignette:
+Compare this result against the original validation vignette:
 
 ```{r}
 vignette("validation","example.package")
