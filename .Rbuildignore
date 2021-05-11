@@ -3,3 +3,11 @@
 ^docs$
 ^valtools\.Rproj$
 ^\.github$
+^\.Rproj\.user$
+CONDUCT.md
+CONTRIBUTING.md
+^vignettes/validation/*
+^\.validation$
+^validation\.yml$
+
+vignettes/validation/validation.yml
