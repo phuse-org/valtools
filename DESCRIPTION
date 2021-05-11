@@ -21,8 +21,8 @@ Authors@R:
     person(given = "Peyman",
            family = "Eshghi",
            role = "aut",
-           email = "",
-           comment = c(ORCID = "")),
+           email = "peymaan.es@gmail.com",
+           comment = c(ORCID = "0000-0003-1613-2705")),
     person(given = "PHUSE",
            role = "cph")
     )
