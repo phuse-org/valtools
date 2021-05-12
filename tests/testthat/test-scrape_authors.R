@@ -586,3 +586,62 @@ test_that("scrape roxygen tags from all sections authors", {
   })
 })
 
+test_that("handle collate ordering via roxygen2", {
+
+  withr::with_tempdir({
+
+    ## test setup
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    usethis::proj_set(force = TRUE)
+    usethis::use_r("hello_world.R", open = FALSE)
+
+    writeLines(c(
+      "#' @title placeholder",
+      "#' @name placeholder",
+      "#' @include some-other-file.R",
+      "NULL",
+      "",
+      "#' A function to greet someone",
+      "#' @param name someone's name",
+      "#' @editor An author",
+      "#' @editDate 2021-01-01",
+      "#' @return text greeting",
+      "#' @export",
+      " hello_world <- function(name){",
+      "   paste(\"Hello \", name)",
+      "}"
+    ), file.path(usethis::proj_get(), "R", "hello_world.R"))
+    testthat::expect_equal(vt_scrape_function_editors(tags = c("editor", "editDate")),
+                 data.frame(functions = c("hello_world"),
+                            editor = c("An author"),
+                            editDate = c("2021-01-01"),
+                            stringsAsFactors = FALSE))
+  })
+
+  withr::with_tempdir({
+
+    ## test setup
+    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    usethis::proj_set(force = TRUE)
+    usethis::use_r("hello_world.R", open = FALSE)
+
+    writeLines(c(
+      "#' @include some-other-file.R",
+      "NULL",
+      "",
+      "#' A function to greet someone",
+      "#' @param name someone's name",
+      "#' @editor An author",
+      "#' @editDate 2021-01-01",
+      "#' @return text greeting",
+      "#' @export",
+      " hello_world <- function(name){",
+      "   paste(\"Hello \", name)",
+      "}"
+    ), file.path(usethis::proj_get(), "R", "hello_world.R"))
+
+    testthat::expect_error(
+      vt_scrape_function_editors(tags = c("editor", "editDate"))
+      )
+  })
+})
