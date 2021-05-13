@@ -190,7 +190,3 @@ get_config_validation_files <- function(){
 get_config_report_naming_format <- function(){
   read_validation_config()$report_naming_format
 }
-
-is_empty_env <- function(env){
-  length(ls(envir = env)) == 0
-}
