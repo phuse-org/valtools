@@ -490,3 +490,62 @@ test_that("existing reference obj", {
 
   })
 })
+
+test_that("coverage matrix missing entry", {
+  withr::with_tempdir({
+    capture_output <- capture.output({
+      vt_create_package(open = FALSE)
+    })
+    vt_use_test_case("testcase1", username = "a user", open = FALSE)
+    vt_use_test_case("testcase2", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE, add_before = "testcase1.md")
+    vt_use_req("req2", username = "a user", open = FALSE, add_before = "testcase2.md")
+
+
+    config_wd <- get_config_working_dir()
+    cat(
+      file = file.path(config_wd, "validation", "test_cases", "testcase1.md"),
+      sep = "\n",
+      c(
+        "#' @title Test Case 1",
+        "#' @editor User One",
+        "#' @editDate 2021-03-17",
+        "#' @coverage",
+        "#' 1.1: 1.1, 1.2",
+        "#' 1.2: 1.2, 1.3",
+        "#' 1.3: 1.1, 1.3, 1.4",
+        "",
+        "+ _Test Cases_",
+        "  + T1.1 Create a sample spec with a unique reference number. Matches requirements: 1.1 and 1.2",
+        "  + T1.2 Another test case. Matches requirements: 1.2 and 1.3",
+        "  + T1.3 More testing. Matches requirements: 1.1, 1.3, and 1.4",
+        ""))
+    cat(
+      file = file.path(config_wd, "validation", "test_cases", "testcase2.md"),
+      sep = "\n",
+      c(
+        "#' @title Test Case 2",
+        "#' @editor User One",
+        "#' @editDate 2021-03-17",
+        "",
+        "+ _Test Cases_",
+        "  + T2.1 Create a sample spec with a unique reference number. Matches requirements: 2.1 and 2.2",
+        "  + T2.2 Another test case. Matches requirements: 2.2 and 2.3",
+        "  + T2.3 More testing. Matches requirements: 2.1, 2.3, and 2.4",
+        ""))
+
+    cov_matrix <- vt_scrape_coverage_matrix()
+    expect_matrix <- data.frame(req_title = rep("Requirement 1", each = 7),
+                                req_id = paste(1, c(1, 1, 2, 2, 3, 3, 4), sep = "."),
+                                tc_title = rep("Test Case 1", each = 7),
+                                tc_id = paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
+                                stringsAsFactors = FALSE)
+    attr(expect_matrix, "table_type") <- "long"
+    expect_equal(cov_matrix,
+                 expect_matrix)
+
+
+
+  })
+})
+

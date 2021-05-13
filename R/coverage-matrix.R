@@ -64,7 +64,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
                stringsAsFactors = FALSE)
   }))
 
-  vals_title <- dynamic_reference_rendering(indiv_vals, reference = reference)
+  vals_title <- dynamic_reference_rendering(indiv_vals[!is.na(indiv_vals$coverage),], reference = reference)
   numbered_cov_vals <- split_vals(vals_title)
   vals_all <- split_req(numbered_cov_vals)
 
