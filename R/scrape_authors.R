@@ -41,7 +41,7 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
     if (Sys.getenv("vt_validation_state") != "installed") {
       file.path(package_file(path = src), "R")
     } else{
-      file.path(ref, "R")
+      file.path(ref, "R") # nocov
     }
   } else{
     file.path(ref, type)
