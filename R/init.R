@@ -89,13 +89,13 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
 
 #' Internal wrapper function to call vt_create_package().
 #' To be used by RStudio project wizard, preventing opening the project twice.
-#' 
+#'
 #' @param path Project directory, collected through project wizard
-#' 
+#'
 #' @noRd
 vt_create_package_wizard <- function(path, ...){
-  vt_create_package(pkg= path, open= FALSE, ...)
+  vt_create_package(pkg= path, open= FALSE, ...)   # nocov
 }
-                              
+
 
 

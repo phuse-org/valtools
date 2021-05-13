@@ -76,14 +76,8 @@ vt_add_file_to_config <- function(filename, before = NULL, after = NULL){
     abort("Must supply only one of `before` and `after`.")
   } else if (has_before) {
     where2 <- min(unname(eval_select(.before, validation_file_list)))
-    if(is.infinite(where2)){
-      where2 <- 0
-    }
   } else if (has_after) {
     where2 <- max(unname(eval_select(.after, validation_file_list))) + 1
-    if(is.infinite(where2)){
-      where2 <- length(validation_file_list) + 1
-    }
   } else {
     where2 <- length(validation_file_list) + 1
   }
@@ -189,8 +183,4 @@ get_config_validation_files <- function(){
 
 get_config_report_naming_format <- function(){
   read_validation_config()$report_naming_format
-}
-
-is_empty_env <- function(env){
-  length(ls(envir = env)) == 0
 }
