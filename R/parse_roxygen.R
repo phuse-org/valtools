@@ -293,7 +293,7 @@ cleanup_section_last_update <- function(blocks){
       section_tags <- block_get_tags(block = block, tags = "section")
 
       content <- do.call('c',lapply(section_tags, function(tags){
-        section_split <- strsplit(tags[["val"]],":\n",fixed = TRUE)[[1]]
+        section_split <- strsplit(tags[["val"]],"[:]\\s*\\n")[[1]]
         selection <- section_split[[2]]
         names(selection) <- section_split[[1]]
         selection
