@@ -10,20 +10,33 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
   ## helper functions
   split_vals <- function(vals){
     do.call("rbind", apply(vals, 1, FUN = function(x){
+
       this_row <- strsplit(x[["coverage"]], split = ":")[[1]]
+      if(length(this_row) == 1){
+        this_row <- rep(this_row, 2)
+
+      } else if(length(this_row) != 2){
+        rlang::abort(paste("Coverage details must follow format Test_Case:Requirement.",
+                           "See", x[["tc_title"]]),
+                     class = "vt.coverage_format")
+      }
       names(this_row) <- c("tc_id", "req_id")
       this_row["tc_id"] <- trimws(this_row["tc_id"])
 
       this_row["tc_title"] <- x["tc_title"]
+      this_row["comment"] <- x["comment"]
       as.data.frame(t(this_row), stringsAsFactors = FALSE)
     }))
   }
 
   split_req <- function(vals){
     do.call("rbind", apply(vals, 1, FUN = function(x){
+
+
       req_one_row <- data.frame(tc_title = x[["tc_title"]],
                                 tc_id = x[["tc_id"]],
                                 req_id = strsplit(trimws(x[["req_id"]]), split = ", ")[[1]],
+                                comment = x[["comment"]],
                                 stringsAsFactors = FALSE)
       req_one_row$req_title <- paste0("Requirement ", gsub(req_one_row$req_id,
                                                            pattern = "^(\\d+)\\.*.*",
@@ -35,11 +48,13 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
   # avoids dependency on tidyr::pivot_wider
   make_wider <- function(long_vals){
     list_x <- apply(long_vals, 1, FUN = function(x){
-      as.data.frame(list2(req_id = x[["req_id"]],
+
+      out <- as.data.frame(list2(req_id = x[["req_id"]],
                           req_title = x[["req_title"]],
                           !!x[["tc_id"]] := "x"),
                     check.names = FALSE,
                     stringsAsFactors = FALSE)
+      out
     })
 
     all_names <- unique(unlist(lapply(list_x, names)))
@@ -59,26 +74,40 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
                                                src = src, ref = vt_path()))[, c("title", "coverage")]
 
   indiv_vals <- do.call("rbind", apply(cov_raw_values, 1, FUN = function(x){
-    data.frame(tc_title = x[["title"]],
+
+    if(grepl(tolower(x[["coverage"]]), pattern = "deprecated")){
+      this_coverage <- strsplit(x[["coverage"]], split = "\n")[[1]][-1]
+      this_dep_comment = strsplit(x[["coverage"]], split = "\n")[[1]][1]
+      data.frame(tc_title = x[["title"]],
+                 coverage = this_coverage,
+                 comment = this_dep_comment,
+                 check.names = FALSE,
+                 stringsAsFactors = FALSE)
+    } else {
+      data.frame(tc_title = x[["title"]],
                coverage = strsplit(x[["coverage"]], split = "\n")[[1]], check.names = FALSE,
+               comment = "",
                stringsAsFactors = FALSE)
+    }
   }))
 
   vals_title <- dynamic_reference_rendering(indiv_vals[!is.na(indiv_vals$coverage),], reference = reference)
-  numbered_cov_vals <- split_vals(vals_title)
-  vals_all <- split_req(numbered_cov_vals)
 
+  numbered_cov_vals <- split_vals(vals_title)
+
+
+  vals_all <- split_req(numbered_cov_vals)
 
   if(type[1] == "long"){
     out_data <- vals_all[order(vals_all$req_id),]
     row.names(out_data) <- 1:nrow(out_data)
-    out_data <- out_data[, c("req_title", "req_id", "tc_title", "tc_id")]
+    out_data <- out_data[, c("req_title", "req_id", "tc_title", "tc_id", "comment")]
     attr(out_data, "table_type") <- "long"
   } else if(type[1] == "wide"){
 
     out_data <- make_wider(vals_all)
     attr(out_data, "table_type") <- "wide"
-    this_tc_title <- unique(vals_all[,c("tc_id", "tc_title")])
+    this_tc_title <- unique(vals_all[,c("tc_id", "tc_title", "comment")])
     this_tc_title <- this_tc_title[order(this_tc_title$tc_id),]
     row.names(this_tc_title) <- 1:nrow(this_tc_title)
     attr(out_data, "tc_title") <- this_tc_title
@@ -107,7 +136,7 @@ kable_cov_matrix_long <- function(x, format = vt_render_to()){
   out_tab <- kable(x,
         format = format,
         longtable =  TRUE,
-        col.names = c("Requirement Name", "Requirement ID", "Test Case Name", "Test Cases") )
+        col.names = c("Requirement Name", "Requirement ID", "Test Case Name", "Test Cases", "Comment") )
   out_tab <- kable_styling(out_tab, font_size = 6)
   out_tab <- collapse_rows(out_tab, c(1, 3))
   out_tab
@@ -117,8 +146,19 @@ kable_cov_matrix_long <- function(x, format = vt_render_to()){
 
 kable_cov_matrix_wide<- function(x, format = vt_render_to()){
   this_tc_title <- attr(x, "tc_title")
+
+  lapply(split(this_tc_title, this_tc_title$tc_id),
+         FUN = function(x){
+           if(nrow(x) > 1){
+             abort(paste0("Multiple test cases mapped to single test code identifier in wide coverage table - ",
+                          unique(x$tc_id), ". Filter for '",
+                          paste(x$tc_title, collapse = "' or '"),
+                          "' before running 'vt_kable_coverage_matrix()'."),
+                   class = "vt.coverage_matrix_kable")
+           }
+         })
   # enforce consistent ordering with object
-  this_tc_title <- this_tc_title[this_tc_title$tc_id == names(x)[!names(x) %in% c("req_title", "req_id")],]
+  this_tc_title <- this_tc_title[this_tc_title$tc_id %in% names(x)[!names(x) %in% c("req_title", "req_id", "tc_title")],]
 
   this_header_info <- data.frame(count = sapply(unique(this_tc_title$tc_title),
                                                  function(y){nrow(this_tc_title[this_tc_title$tc_title == y,])}),
