@@ -571,7 +571,8 @@ test_that("coverage matrix missing or deprecated entry", {
     cov2_tc_title <- attr(cov_matrix2, "tc_title")
     expect_cov2_tc_title <- data.frame(tc_id = c("1.1", "1.2", "1.3", "3.1", "3.2"),
                                        tc_title = c(rep("Test Case 1", 3), rep("Test Case 3", 2)),
-                                       deprecate = c(rep("", 3), rep("Deprecated in v1.2", 2)))
+                                       deprecate = c(rep("", 3), rep("Deprecated in v1.2", 2)),
+                                       sstringsAsFactors = FALSE)
     expect_equal(cov2_tc_title,
                  expect_cov2_tc_title)
 
