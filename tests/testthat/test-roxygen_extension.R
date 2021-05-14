@@ -8,6 +8,7 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   #' @editDate 1900-01-01
   #' @coverage
   #' test1: req1, req2, req3
+  #' @deprecate Deprecated in v1.2
   #' @export
   #' @aliases testing
   hello_world <- function(name = \"\"){
@@ -29,6 +30,11 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
     roxygen2::block_has_tags(roxygen_block, tags = c("coverage"))
   )
 
+  expect_true(
+    roxygen2::block_has_tags(roxygen_block, tags = c("deprecate"))
+  )
+
+
   expect_equal(
     roxygen2::block_get_tag_value(roxygen_block,"editor"),
     "Sample Person"
@@ -42,6 +48,11 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   expect_equal(
     roxygen2::block_get_tag_value(roxygen_block,"coverage"),
     "test1: req1, req2, req3"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag_value(roxygen_block, "deprecate"),
+    "Deprecated in v1.2"
   )
 
 })
