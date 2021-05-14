@@ -44,6 +44,15 @@ test_that("Copying roxygen comments works", {
       con = "R/deprecated.R"
     )
 
+    writeLines(
+      c("#' @title Deprecated_Function",
+        "#' @editor Test Person",
+        "#' @editDate 1900-01-01",
+        "#' @deprecate Deprecated in v1.2",
+        "NULL"),
+      con = "R/deprecated2.R"
+    )
+
     roxygen_copy(
       from = "R",
       to = "function_roxygen.R"
@@ -57,6 +66,12 @@ test_that("Copying roxygen comments works", {
         "#' @title Deprecated_Function",
         "#' @editor Test Person",
         "#' @editDate 1900-01-01",
+        "NULL",
+        "",
+        "#' @title Deprecated_Function",
+        "#' @editor Test Person",
+        "#' @editDate 1900-01-01",
+        "#' @deprecate Deprecated in v1.2",
         "NULL",
         ""
       )
