@@ -468,6 +468,56 @@ test_that("parsing deprecated md files as expected", {
     )
   })
 
+  withr::with_tempdir({
+
+    ## create sample md file
+    fil <- tempfile(fileext = ".md")
+    cat(c(
+      "#' @title sample title",
+      "#' @editor Sample Editor",
+      "#' @editDate 1900-01-01",
+      "#' @coverage",
+      "#' 1.All:1.All",
+      "#' @deprecate Deprecated in v1.2",
+      ""),
+      sep = "\n",
+      file = fil)
+
+    file_content <- roxy_text(
+      readLines(fil),
+      file = fil,
+      class = "md")
+
+    block_list <- parse_roxygen(file_content)
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editor")$val,
+      "Sample Editor"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+      "1900-01-01"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$val,
+      "1.All:1.All"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
+      structure(
+        list(data.frame(test_case = "1.All", requirements= "1.All", stringsAsFactors = FALSE)),
+        class = "vt_test_req_coverage")
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"deprecate")$val,
+      "Deprecated in v1.2"
+    )
+  })
+
 })
 
 test_that("parsing Rmd function files as expected", {
