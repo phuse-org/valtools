@@ -125,10 +125,16 @@ vt_kable_coverage_matrix <- function(x, format = vt_render_to()){
 
 
 kable_cov_matrix_long <- function(x, format = vt_render_to()){
+  this_col_names <- c("Requirement Name", "Requirement ID", "Test Case Name", "Test Cases")
+  if(all(x$deprecate == "")){
+    x <- x[,-which(names(x) == "deprecate")]
+  } else {
+    this_col_names <- c(this_col_names, "Comment")
+  }
   out_tab <- kable(x,
         format = format,
         longtable =  TRUE,
-        col.names = c("Requirement Name", "Requirement ID", "Test Case Name", "Test Cases", "Comment") )
+        col.names = this_col_names )
   out_tab <- kable_styling(out_tab, font_size = 6)
   out_tab <- collapse_rows(out_tab, c(1, 3))
   out_tab

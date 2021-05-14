@@ -110,7 +110,7 @@ test_that("coverage matrix from dynam num", {
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix, format = "html")),
       con = cov_matrix_rmd_file)
-
+browser()
     suppressWarnings({
     capture_output <- capture.output({
       rmarkdown::render(cov_matrix_rmd_file)
@@ -125,7 +125,6 @@ test_that("coverage matrix from dynam num", {
                             `Test Cases` = as.double(c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                       paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
                                       paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = "."))),
-                            Comment = NA,
                             check.names = FALSE,
                             stringsAsFactors = FALSE))
 
@@ -572,7 +571,7 @@ test_that("coverage matrix missing or deprecated entry", {
     expect_cov2_tc_title <- data.frame(tc_id = c("1.1", "1.2", "1.3", "3.1", "3.2"),
                                        tc_title = c(rep("Test Case 1", 3), rep("Test Case 3", 2)),
                                        deprecate = c(rep("", 3), rep("Deprecated in v1.2", 2)),
-                                       sstringsAsFactors = FALSE)
+                                       stringsAsFactors = FALSE)
     expect_equal(cov2_tc_title,
                  expect_cov2_tc_title)
 
