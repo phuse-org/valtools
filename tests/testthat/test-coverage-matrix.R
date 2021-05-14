@@ -71,7 +71,7 @@ test_that("coverage matrix from dynam num", {
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
                                           paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
-                                comment = "",
+                                deprecate = "",
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
@@ -148,7 +148,7 @@ test_that("coverage matrix from dynam num", {
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
                                                    tc_title = rep(paste("Test Case", 1:3), each = 3),
-                                                   comment = "",
+                                                   deprecate = "",
                                                    stringsAsFactors = FALSE)
 
     expect_equal(cov_matrix2,
@@ -310,7 +310,7 @@ test_that("coverage matrix no dynam num", {
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
                                           paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
-                                comment = "",
+                                deprecate = "",
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
@@ -335,7 +335,7 @@ test_that("coverage matrix no dynam num", {
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
                                                    tc_title = rep(paste("Test Case", 1:3), each = 3),
-                                                   comment = "",
+                                                   deprecate = "",
                                                    stringsAsFactors = FALSE)
 
     expect_equal(cov_matrix2,
@@ -461,7 +461,7 @@ test_that("existing reference obj", {
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
                                           paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
-                                comment = "",
+                                deprecate = "",
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
@@ -486,7 +486,7 @@ test_that("existing reference obj", {
     attr(expect_matrix2, "table_type") <- "wide"
     attr(expect_matrix2, "tc_title") <- data.frame(tc_id = as.vector(sapply(1:3, FUN = function(x){paste(x, 1:3, sep = ".")})),
                                                    tc_title = rep(paste("Test Case", 1:3), each = 3),
-                                                   comment = "",
+                                                   deprecate = "",
                                                    stringsAsFactors = FALSE)
     expect_equal(cov_matrix2,
                  expect_matrix2)
@@ -548,9 +548,9 @@ test_that("coverage matrix missing or deprecated entry", {
         "#' @editor User One",
         "#' @editDate 2021-03-17",
         "#' @coverage",
-        "#' Deprecated in v1.2",
         "#' 3.1: 3.1, 3.2",
-        "#' 3.2: 3.3, 3.4"))
+        "#' 3.2: 3.3, 3.4",
+        "#' @deprecate Deprecated in v1.2"))
 
     cov_matrix <- vt_scrape_coverage_matrix()
     expect_matrix <- data.frame(req_title = c(rep("Requirement 1", each = 7),
@@ -561,13 +561,19 @@ test_that("coverage matrix missing or deprecated entry", {
                                              rep("Test Case 3", each = 4)),
                                 tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
                                           paste(3, c(1, 1, 2, 2), sep = ".")),
-                                comment = c(rep("", 7), rep("Deprecated in v1.2", 4)),
+                                deprecate = c(rep("", 7), rep("Deprecated in v1.2", 4)),
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
     expect_equal(cov_matrix,
                  expect_matrix)
 
-
+    cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
+    cov2_tc_title <- attr(cov_matrix2, "tc_title")
+    expect_cov2_tc_title <- data.frame(tc_id = c("1.1", "1.2", "1.3", "3.1", "3.2"),
+                                       tc_title = c(rep("Test Case 1", 3), rep("Test Case 3", 2)),
+                                       deprecate = c(rep("", 3), rep("Deprecated in v1.2", 2)))
+    expect_equal(cov2_tc_title,
+                 expect_cov2_tc_title)
 
   })
 })

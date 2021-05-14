@@ -5,7 +5,8 @@
 #' @return a data.frame mapping requirement ids to test case ids.
 #' @importFrom rlang list2 := !!
 #' @export
-vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL, src = ".", ref = vt_path()){
+vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
+                                      reference = NULL, src = ".", ref = vt_path()){
 
   ## helper functions
   split_vals <- function(vals){
@@ -24,7 +25,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
       this_row["tc_id"] <- trimws(this_row["tc_id"])
 
       this_row["tc_title"] <- x["tc_title"]
-      this_row["comment"] <- x["comment"]
+      this_row["deprecate"] <- x["deprecate"]
       as.data.frame(t(this_row), stringsAsFactors = FALSE)
     }))
   }
@@ -36,7 +37,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
       req_one_row <- data.frame(tc_title = x[["tc_title"]],
                                 tc_id = x[["tc_id"]],
                                 req_id = strsplit(trimws(x[["req_id"]]), split = ", ")[[1]],
-                                comment = x[["comment"]],
+                                deprecate = x[["deprecate"]],
                                 stringsAsFactors = FALSE)
       req_one_row$req_title <- paste0("Requirement ", gsub(req_one_row$req_id,
                                                            pattern = "^(\\d+)\\.*.*",
@@ -70,28 +71,19 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
 
   ## end helper functions
 
-  cov_raw_values <- do.call("rbind", vt_scrape_tags_from(type = "test_cases", tags =  c("title", "coverage"),
-                                               src = src, ref = vt_path()))[, c("title", "coverage")]
-
+  cov_raw_values <- do.call("rbind", vt_scrape_tags_from(type = "test_cases", tags =  c("title", "coverage", "deprecate"),
+                                               src = src, ref = vt_path()))[, c("title", "coverage", "deprecate")]
   indiv_vals <- do.call("rbind", apply(cov_raw_values, 1, FUN = function(x){
 
-    if(grepl(tolower(x[["coverage"]]), pattern = "deprecated")){
-      this_coverage <- strsplit(x[["coverage"]], split = "\n")[[1]][-1]
-      this_dep_comment = strsplit(x[["coverage"]], split = "\n")[[1]][1]
-      data.frame(tc_title = x[["title"]],
-                 coverage = this_coverage,
-                 comment = this_dep_comment,
-                 check.names = FALSE,
-                 stringsAsFactors = FALSE)
-    } else {
-      data.frame(tc_title = x[["title"]],
-               coverage = strsplit(x[["coverage"]], split = "\n")[[1]], check.names = FALSE,
-               comment = "",
+    data.frame(tc_title = x[["title"]],
+               coverage = strsplit(trimws(x[["coverage"]]), split = "\n")[[1]], check.names = FALSE,
+               deprecate = x[["deprecate"]],
                stringsAsFactors = FALSE)
-    }
-  }))
 
-  vals_title <- dynamic_reference_rendering(indiv_vals[!is.na(indiv_vals$coverage),], reference = reference)
+  }))
+  indiv_vals$deprecate[is.na(indiv_vals$deprecate)] <- ""
+  vals_title <- dynamic_reference_rendering(indiv_vals[!is.na(indiv_vals$coverage),],
+                                            reference = reference)
 
   numbered_cov_vals <- split_vals(vals_title)
 
@@ -101,13 +93,13 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"), reference = NULL
   if(type[1] == "long"){
     out_data <- vals_all[order(vals_all$req_id),]
     row.names(out_data) <- 1:nrow(out_data)
-    out_data <- out_data[, c("req_title", "req_id", "tc_title", "tc_id", "comment")]
+    out_data <- out_data[, c("req_title", "req_id", "tc_title", "tc_id", "deprecate")]
     attr(out_data, "table_type") <- "long"
   } else if(type[1] == "wide"){
 
     out_data <- make_wider(vals_all)
     attr(out_data, "table_type") <- "wide"
-    this_tc_title <- unique(vals_all[,c("tc_id", "tc_title", "comment")])
+    this_tc_title <- unique(vals_all[,c("tc_id", "tc_title", "deprecate")])
     this_tc_title <- this_tc_title[order(this_tc_title$tc_id),]
     row.names(this_tc_title) <- 1:nrow(this_tc_title)
     attr(out_data, "tc_title") <- this_tc_title
