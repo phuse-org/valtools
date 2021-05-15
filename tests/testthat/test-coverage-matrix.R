@@ -110,7 +110,6 @@ test_that("coverage matrix from dynam num", {
         "\n\n",
         vt_kable_coverage_matrix(cov_matrix, format = "html")),
       con = cov_matrix_rmd_file)
-browser()
     suppressWarnings({
     capture_output <- capture.output({
       rmarkdown::render(cov_matrix_rmd_file)
@@ -577,4 +576,3 @@ test_that("coverage matrix missing or deprecated entry", {
 
   })
 })
-
