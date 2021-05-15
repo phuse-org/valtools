@@ -95,7 +95,7 @@ vt_scrape_test_case_editors <- function(tags = c("editor", "editDate"), src = ".
 
 #' @export
 #' @rdname scraping
-vt_scrape_test_code_editors <- function(tags = c("editor", "editDate"), src = ".", ref = vt_path(),
+vt_scrape_test_code_editors <- function(tags = c("editor", "editDate", "deprecate"), src = ".", ref = vt_path(),
                                  dynamic_ref = NULL){
   out <- do.call("rbind", vt_scrape_tags_from(
     type = "test_code",
@@ -103,6 +103,9 @@ vt_scrape_test_code_editors <- function(tags = c("editor", "editDate"), src = ".
     src = src,
     ref = ref
   ))
+
+  # workaround for issue 153
+  out[is.na(out)] <- ""
 
   if(!is.null(dynamic_ref)){
     dynamic_ref$scrape_references(out)
@@ -198,11 +201,20 @@ vt_kable_test_case_editors  <- function(x,format = vt_render_to()){
 #' @rdname scraping
 #'
 vt_kable_test_code_editors <- function(x,format = vt_render_to()){
+
   x$test_code = paste0("Test Code", x$test_code)
 
   all_colnames <- c(test_code = "Test Code ID",
                     editor = "Editor",
                     editDate = "Edit Date")
+
+  if(all(x$deprecate == "")){
+    x <- x[,-which(names(x) == "deprecate")]
+  } else {
+    all_colnames <- c(all_colnames,
+                      deprecate = "Comments")
+  }
+  # if(all(x$))
   t <- kable(x[, names(all_colnames)],
              format = format, booktabs = FALSE,
              col.names = all_colnames)
