@@ -26,7 +26,7 @@ vt_scrape_test_case_editors(
 )
 
 vt_scrape_test_code_editors(
-  tags = c("editor", "editDate"),
+  tags = c("editor", "editDate", "deprecate"),
   src = ".",
   ref = vt_path(),
   dynamic_ref = NULL

@@ -214,7 +214,7 @@ vt_kable_test_code_editors <- function(x,format = vt_render_to()){
     all_colnames <- c(all_colnames,
                       deprecate = "Comments")
   }
-  # if(all(x$))
+
   t <- kable(x[, names(all_colnames)],
              format = format, booktabs = FALSE,
              col.names = all_colnames)
