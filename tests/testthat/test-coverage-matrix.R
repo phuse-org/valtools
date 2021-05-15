@@ -576,4 +576,3 @@ test_that("coverage matrix missing or deprecated entry", {
 
   })
 })
-
