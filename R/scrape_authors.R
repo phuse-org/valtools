@@ -85,11 +85,7 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
                 class = "vt.test_code_format")
         }
 
-        tryCatch({
-          do.call('data.frame', setNames(c(item, tag_values, FALSE), c(type, tags,"stringsAsFactors")))},
-          error = function(e){
-
-          })
+       do.call('data.frame', setNames(c(item, tag_values, FALSE), c(type, tags,"stringsAsFactors")))
       }, tags, type)
 
   }else{
