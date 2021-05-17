@@ -79,8 +79,8 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
         item <- block$object$topic
         if(is.null(item)){
 
-          abort(message = paste0("File ",
-                                  block$object$file, ", block number ",
+          abort(message = paste0("File: ",
+                                  basename(block$object$file), ", block number ",
                                   block$object$block_id,
                                   " must include @title if deprecated."),
                 class = "vt.test_code_format")
