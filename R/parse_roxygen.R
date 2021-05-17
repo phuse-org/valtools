@@ -163,31 +163,30 @@ parse_roxygen.r <- function(text){
 parse_roxygen.r_test_code <- function(text){
   roxyblocks <- roxygen2::parse_text(text,env = NULL)
   roxyblocks <- cleanup_section_last_update(roxyblocks)
-
-  roxyblocks <- lapply(roxyblocks,function(block, file){
+  roxyblocks <- lapply(seq_along(roxyblocks), function(i, file){
+    this_block <- roxyblocks[[i]]
     test <- tryCatch({
-      as.list(block$call)[[2]]
+      as.list(this_block$call)[[2]]
     }, error = function(e){
 
-      roxygen2::block_get_tag(block, "title")$val
+      roxygen2::block_get_tag(this_block, "title")$val
     })
 
-    if(is.null(block$call)){
-      block$call <- call("test_that", "empty test", {})
+    if(is.null(this_block$call)){
+      this_block$call <- call("test_that", "empty test", {})
     }
 
-    block$object <- structure(
+    this_block$object <- structure(
       list(alias = test,
            topic = test,
-           value =  block$call,
+           value =  this_block$call,
            methods = NULL,
-           file = file
-
-
+           file = file,
+           block_id = i
            ),
       class = c("test_code","function","object"))
 
-    block
+    this_block
 
   }, file = attr(text, "file"))
 
