@@ -632,6 +632,11 @@ test_that("deprecated test code cases", {
                           editDate = "2001-01-01",
                           deprecate = c("Deprecated in v1.2", ""),
                           stringsAsFactors = FALSE))
+
+  roxy_blocks <- scrape_roxygen(vt_path("test_code","testcode1.R"), type = "r_test_code")
+  expect_equal(as.character(roxy_blocks[[1]]$call),
+               c("test_that", "empty test", "NULL"))
+
   })
 })
 
