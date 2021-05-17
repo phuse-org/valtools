@@ -5,7 +5,7 @@ test_that("integration test for CRAN", {
     report_name <- "validation.Rmd"
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_add_user_to_config(username = "auser", name = "A user", title = "staff",
-                          role = "Project Lead")
+                          role = "Validation Lead")
     vt_add_user_to_config(username = "buser", name = "B user", title = "staff",
                           role = "Write Requirements")
     vt_add_user_to_config(username = "cuser", name = "C user", title = "staff",
@@ -106,7 +106,7 @@ test_that("integration test for CRAN", {
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
-    expect_equal(report_code[3], paste0("author: ", test_user))
+    expect_equal(report_code[3], paste0("author: ", "A user"))
     expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
     expect_equal(report_code[154], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
 
