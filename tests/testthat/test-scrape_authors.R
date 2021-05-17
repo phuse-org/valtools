@@ -609,7 +609,10 @@ test_that("deprecated test code cases", {
     "#' @deprecate Deprecated in v1.2",
     "NULL"),
     con = vt_path("test_code","testcode1.R"))
-  expect_error(vt_scrape_test_code_editors(tags = c("editor", "editDate", "deprecate")))
+  # browser()
+  error_filepath <- file.path(getwd(), "vignettes", "validation", "test_code", "testcode1.R")
+  expect_error(vt_scrape_test_code_editors(tags = c("editor", "editDate", "deprecate")),
+                paste("File:", error_filepath, "must include @title if deprecated."))
 
   writeLines(c(
     "#' @title Working title",
