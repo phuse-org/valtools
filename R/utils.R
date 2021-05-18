@@ -197,3 +197,15 @@ add_valtools_dep <- function(pkg = "."){
   add_package_to_desc("valtools",type = "Suggests",pksg = pkg)
 }
 
+#' @importFrom desc desc_get desc_set
+#' @importFrom rlang abort
+add_field_to_desc <- function(field, value, force = FALSE, pkg = "."){
+  if(is_package(pkg = pkg)){
+    curr <- desc::desc_get(field, file = pkg)[[1]]
+    if(is.na(curr) | force){
+      desc::desc_set(field, value, file = pkg)
+    }
+  }
+}
+
+

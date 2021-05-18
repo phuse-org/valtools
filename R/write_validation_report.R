@@ -57,6 +57,8 @@ vt_use_report <- function(pkg_name = NULL,
   template_files <- c(validation = "validation_report.Rmd")
   report_filename <- file.path(get_config_working_dir(), get_config_report_rmd_name())
 
+  if(!file.exists(report_filename)){
+
   render_template( template = template_files[[template]],
                 output = report_filename,
                 data = list(pkg_name = pkg_name,
@@ -64,11 +66,20 @@ vt_use_report <- function(pkg_name = NULL,
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
                                                  type = "name")), collapse = ', ')))
+  }
 
+  add_package_desc(
+    package = c("rmarkdown","testthat","knitr","kableExtra","magrittr","devtools"),
+    type = "suggests",
+    pkg = vt_path()
+  )
+
+  add_field_to_desc("VignetteBuilder", "knitr")
 
   if(open){
     edit_file(report_filename) # nocov
   }
+
   invisible(TRUE)
 }
 
