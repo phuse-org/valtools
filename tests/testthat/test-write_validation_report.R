@@ -397,7 +397,7 @@ test_that("Add dependencies to DESCRIPTION & add vignette builder automatically"
   })
 
   expect_equal(
-    desc::desc_get_deps(file = "."),
+    desc::desc_get_deps(file = "DESCRIPTION"),
     data.frame(
       type = "Suggests",
       package = c("valtools","rmarkdown","testthat","knitr","kableExtra","magrittr","devtools"),
