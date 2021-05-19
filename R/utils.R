@@ -170,8 +170,9 @@ add_package_to_desc <- function(package, type, pkg = "."){
       pak_ver <- "*"
       existing <- deps$package == pak
       if(any(existing)){
-        dep_type <- deps$type[existing_dep]
-        dep_ver <- deps$version[existing_dep]
+        dep_type <- deps$type[existing]
+        dep_ver <- deps$version[existing]
+
         ## if new type is "higher" than old, replace
         if(!factor(dep_type, levels = c("Depends", "Imports", "Suggests"),ordered = TRUE) < pak_type ){
           dep_type <- pak_type
@@ -179,13 +180,15 @@ add_package_to_desc <- function(package, type, pkg = "."){
         deps[existing,] <- data.frame(
           type = dep_type,
           package = pak,
-          version = dep_ver
+          version = dep_ver,
+          stringsAsFactors = FALSE
         )
       }else{
         deps[nrow(deps)+1,] <- data.frame(
           type = pak_type,
           package = pak,
-          version = pak_ver
+          version = pak_ver,
+          stringsAsFactors = FALSE
           )
       }
     }
