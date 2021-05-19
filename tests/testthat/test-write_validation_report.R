@@ -375,3 +375,42 @@ test_that("Validation outside a package - integration test for CRAN", {
   })
 })
 
+
+test_that("Add dependencies to DESCRIPTION & add vignette builder automatically",{
+
+  withr::with_tempdir({
+
+  captured_output <- capture.output({
+    vt_create_package(pkg = "example.package", open = FALSE)
+  })
+
+  setwd("example.package")
+
+  vt_add_user_to_config(username = "a_person",
+                        name = "Andy Person",
+                        title = "Programmer",
+                        role = "Specifier")
+
+  withr::with_envvar(
+    new = list(LOGNAME = "a_person"),{
+      vt_use_report()
+  })
+
+  expect_equal(
+    desc::desc_get_deps(file = "."),
+    data.frame(
+      type = "Suggests",
+      package = c("valtools","rmarkdown","testthat","knitr","kableExtra","magrittr","devtools"),
+      version = "*",
+      stringsAsFactors = FALSE
+    )
+  )
+
+  expect_equal(
+    desc::desc_get_field(key = "VignetteBuilder",file = "."),
+    "knitr"
+  )
+
+  })
+
+})

@@ -68,9 +68,9 @@ vt_use_report <- function(pkg_name = NULL,
                                                  type = "name")), collapse = ', ')))
   }
 
-  add_package_desc(
+  add_package_to_desc(
     package = c("rmarkdown","testthat","knitr","kableExtra","magrittr","devtools"),
-    type = "suggests",
+    type = "Suggests",
     pkg = vt_path()
   )
 
