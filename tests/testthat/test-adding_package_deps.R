@@ -21,8 +21,8 @@ test_that("Able to up-version package dependencies", {
         data.frame(
           package = c("rlang","valtools"),
           version = c("*","*"),
-          type.x = c("Suggests","Suggests"),
-          type.y = c("Depends","Suggests"),
+          type.x = c("Suggests","Imports"),
+          type.y = c("Depends","Imports"),
           stringsAsFactors = FALSE
         )
       )
@@ -52,8 +52,8 @@ test_that("Won't down-version require package dependencies", {
       data.frame(
         package = c("rlang","valtools"),
         version = c("*","*"),
-        type.x = c("Depends","Suggests"),
-        type.y = c("Depends","Suggests"),
+        type.x = c("Depends","Imports"),
+        type.y = c("Depends","Imports"),
         stringsAsFactors = FALSE
       )
     )

@@ -16,7 +16,7 @@ test_that("Able to create package with validated package basics", {
     expect_equal(
       desc::desc_get_deps(file = "DESCRIPTION"),
       data.frame(
-        type = "Suggests",
+        type = "Imports",
         package = "valtools",
         version = "*",
         stringsAsFactors = FALSE

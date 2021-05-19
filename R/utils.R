@@ -197,7 +197,7 @@ add_package_to_desc <- function(package, type, pkg = "."){
 }
 
 add_valtools_dep <- function(pkg = "."){
-  add_package_to_desc("valtools", type = "Suggests", pkg = pkg)
+  add_package_to_desc("valtools", type = "Imports", pkg = pkg)
 }
 
 #' @importFrom desc desc_get desc_set
