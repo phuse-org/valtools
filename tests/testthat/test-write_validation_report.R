@@ -99,7 +99,9 @@ test_that("integration test for CRAN", {
     clean_env(get_config_package())
 
     withr::with_temp_libpaths({
-      install.packages(".", type = "source", repos = NULL, quiet = TRUE)
+      quiet <- capture.output({
+        devtools::install(quick = TRUE,dependencies = FALSE, upgrade = "never",quiet = TRUE)
+      })
       rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
     })
 
