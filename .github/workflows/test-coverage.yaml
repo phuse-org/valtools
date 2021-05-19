@@ -26,6 +26,7 @@ jobs:
 
       - uses: r-lib/actions/setup-tinytex@v1
       - run: tlmgr --version
+      - run: tlmgr update --self
       - run: tlmgr install multirow
 
       - uses: r-lib/actions/setup-pandoc@master
