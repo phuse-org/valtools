@@ -36,6 +36,8 @@ vt_use_validation <- function( pkg = ".", working_dir, ...) {
 
     set_dir_ref(pkg = pkg)
 
+    add_valtools_dep(pkg = pkg)
+
     vt_use_config(pkg = pkg, working_dir = working_dir, ...)
 
 
