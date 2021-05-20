@@ -5,7 +5,7 @@ test_that("lua numbering for pdf", {
   withr::with_tempdir({
 
   ## create test files
-  test_input <- tempfile(fileext = ".md", tmpdir = getwd())
+  test_input <- basename(tempfile(fileext = ".md", tmpdir = getwd()))
 
   cat(
     file = test_input,
@@ -37,6 +37,7 @@ test_that("lua numbering for pdf", {
       'Later reference to (3) - ##tc:refB\n'
     ))
 
+
   suppressWarnings({
   captured_output <- capture.output({
     rmarkdown::render(input = test_input, clean = FALSE)
@@ -54,7 +55,8 @@ test_that("lua numbering for pdf", {
     expect_equal(c(1, 6, 2, 7, 4, 5, 3), as.numeric(gsub(test_output_rendered[9:15],
               pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
               replacement = "\\1")))
-})})
+})
+  })
 
 test_that("lua numbering for html", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
@@ -62,7 +64,7 @@ test_that("lua numbering for html", {
   skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
   ## create test files
-  test_input <- tempfile(fileext = ".md", tmpdir = getwd())
+  test_input <- basename(tempfile(fileext = ".md", tmpdir = getwd()))
 
   cat(
     file = test_input,
@@ -96,6 +98,7 @@ test_that("lua numbering for html", {
   capture_output <- capture.output({
     rmarkdown::render(input = test_input, clean = FALSE)
   })})
+
   test_output_rendered <- XML::htmlTreeParse(gsub(test_input, pattern = ".md", replacement = ".html"),
                                             useInternal = TRUE)
   text_rendered <- unlist(XML::xpathApply(test_output_rendered, "//p", XML::xmlValue,
@@ -113,4 +116,6 @@ test_that("lua numbering for html", {
   expect_equal(c(1, 1, 2, 2, 1, 3, 2),
                as.numeric(unlist(lapply(strsplit(list_rendered, ": "), FUN = function(x){x[2]}))))
 
-})})
+})
+
+  })
