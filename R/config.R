@@ -83,7 +83,7 @@ vt_use_config <- function(pkg = ".",
       package <- desc::desc_get_field(file = file.path(pkg,"DESCRIPTION"),"Package")
     }else{
       if(interactive()){
-        package <- ask_package()
+        package <- ask_package()  # nocov
       }else{
         package <- ""
       }
@@ -249,7 +249,7 @@ read_validation_config <- function(){
 
 #' @importFrom rlang abort
 
-ask_package <- function(pkg = NULL){
+ask_package <- function(pkg = NULL){ # nocov start
 
   if(is.null(pkg)){
     pkg <- readline("Which package do you intend to validate?")
@@ -275,7 +275,7 @@ ask_package <- function(pkg = NULL){
     }
   }
   pkg
-}
+}  # nocov end
 
 ### Accessor functions for internal use
 

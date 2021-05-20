@@ -15,7 +15,6 @@ roxy_tag_parse.roxy_tag_editDate <- function(x) {
 #' @export
 #' @importFrom roxygen2  roxy_tag_parse
 roxy_tag_parse.roxy_tag_coverage<- function(x) {
-
   x <- format_coverage_text(x)
 }
 
@@ -23,6 +22,12 @@ roxy_tag_parse.roxy_tag_coverage<- function(x) {
 #' @importFrom roxygen2  roxy_tag_parse
 roxy_tag_parse.roxy_tag_riskAssessment<- function(x) {
   x <- format_riskAssessment_text(x)
+}
+
+#' @export
+#' @importFrom roxygen2 tag_markdown roxy_tag_parse
+roxy_tag_parse.roxy_tag_deprecate <- function(x) {
+  tag_markdown(x)
 }
 
 #' @export
@@ -47,6 +52,12 @@ roxy_tag_rd.roxy_tag_coverage <- function(x, base_path, env) {
 #' @importFrom roxygen2 roxy_tag_rd rd_section
 roxy_tag_rd.roxy_tag_riskAssessment <- function(x, base_path, env) {
   rd_section("Risk Assessment", x$val)
+}
+
+#' @export
+#' @importFrom roxygen2 roxy_tag_rd rd_section
+roxy_tag_rd.roxy_tag_deprecate <- function(x, base_path, env) {
+  rd_section("deprecate", x$val)
 }
 
 
@@ -78,7 +89,17 @@ format.rd_section_riskAssessment <- function(x, ...) {
   )
 }
 
+
+#' @export
+format.rd_section_deprecate <- function(x, ...) {
+  paste0(
+    "\\section{Deprecated}{\n", x$value, "\n}\n"
+  )
+}
+
+
 format_coverage_text <- function(x){
+
   ## capture val
   x <- tag_markdown(x)
 

@@ -21,7 +21,7 @@
 #' @importFrom devtools package_file
 #' @importFrom roxygen2  block_get_tag_value
 #' @importFrom stats setNames
-#' @importFrom rlang warn
+#' @importFrom rlang warn abort
 vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", ref = vt_path()){
 
   types <- c("requirements","test_cases","test_code")
@@ -41,7 +41,7 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
     if (Sys.getenv("vt_validation_state") != "installed") {
       file.path(package_file(path = src), "R")
     } else{
-      file.path(ref, "R")
+      file.path(ref, "R") # nocov
     }
   } else{
     file.path(ref, type)
@@ -77,8 +77,16 @@ vt_scrape_tags_from <- function(type, tags = c("editor","editDate"), src = ".", 
           }, block)
 
         item <- block$object$topic
+        if(is.null(item)){
 
-        do.call('data.frame', setNames(c(item, tag_values, FALSE), c(type, tags,"stringsAsFactors")))
+          abort(message = paste0("File: ",
+                                  basename(block$object$file), ", block number ",
+                                  block$object$block_id,
+                                  " must include @title if deprecated."),
+                class = "vt.test_code_format")
+        }
+
+       do.call('data.frame', setNames(c(item, tag_values, FALSE), c(type, tags,"stringsAsFactors")))
       }, tags, type)
 
   }else{

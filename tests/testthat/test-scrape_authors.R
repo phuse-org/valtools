@@ -581,7 +581,60 @@ test_that("scrape roxygen tags from all sections authors", {
                  data.frame(test_code = "1.1",
                             editor = "C user",
                             editDate = as.character(Sys.Date()),
+                            deprecate = "",
                             stringsAsFactors = FALSE))
+
+  })
+})
+
+test_that("deprecated test code cases", {
+  withr::with_tempdir({
+  ## test setup
+  captured_output <- capture.output({vt_create_package(open = FALSE)})
+
+
+  vt_use_test_code(name = "testcode1", username = "C user", open = FALSE)
+  writeLines(c(
+    "#' @editor C user",
+    "#' @editDate 2001-01-1",
+    "#' @deprecate Deprecated in v1.2"),
+    con = vt_path("test_code","testcode1.R"))
+
+  expect_warning(vt_scrape_test_code_editors(tags = c("editor", "editDate", "deprecate")),
+                 "No blocks with tags `editor`, `editDate`")
+
+  writeLines(c(
+    "#' @editor C user",
+    "#' @editDate 2001-01-1",
+    "#' @deprecate Deprecated in v1.2",
+    "NULL"),
+    con = vt_path("test_code","testcode1.R"))
+  expect_error(vt_scrape_test_code_editors(tags = c("editor", "editDate", "deprecate")),
+                paste0("File: ", "testcode1.R", ", block number 1 must include @title if deprecated."))
+
+  writeLines(c(
+    "#' @title Working title",
+    "#' @editor C user",
+    "#' @editDate 2001-01-1",
+    "#' @deprecate Deprecated in v1.2",
+    "NULL",
+    "#' @editor C user",
+    "#' @editDate 2001-01-01",
+    "test_that(\"1.1\",{",
+    "expect_equal(1,1)",
+    "})"),
+    con = vt_path("test_code","testcode1.R"))
+
+  expect_equal(vt_scrape_test_code_editors(tags = c("editor", "editDate", "deprecate")),
+               data.frame(test_code = c("Working title", "1.1"),
+                          editor = "C user",
+                          editDate = "2001-01-01",
+                          deprecate = c("Deprecated in v1.2", ""),
+                          stringsAsFactors = FALSE))
+
+  roxy_blocks <- scrape_roxygen(vt_path("test_code","testcode1.R"), type = "r_test_code")
+  expect_equal(as.character(roxy_blocks[[1]]$call),
+               c("test_that", "empty test", "NULL"))
 
   })
 })
