@@ -52,7 +52,8 @@ vt_kable_risk_assessment <- function(x, format = vt_render_to()){
         format = format,
         longtable =  TRUE,
         col.names = c("Requirement Name", "Requirement ID", "Risk Assessment") )
-  t <- column_spec(t, 1, border_right = TRUE)
+  t <- column_spec(t, 1, border_left = TRUE)
+  t <- column_spec(t, ncol(x), border_right = TRUE)
   t <- collapse_rows(t, c(1))
   t <- kable_styling(t, latex_options = "hold_position")
   t
