@@ -7,7 +7,6 @@
 #' `vt_validate_installed_package` run rerun the validation report for packages
 #' that were built and then installed using the`vt_validate_build()`.
 #'
-#' @param pkg Top-level directory of the package to validate
 #' @param src location of the source code. Assumed to be the same location as "pkg"
 #' @param package installed package name
 #' @param ... Additional argument passed to `devtools::build()`
@@ -27,12 +26,14 @@
 #'
 #' @rdname validate
 #'
-vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
+vt_validate_source <- function(src = ".", open = interactive()){
+
+  root <- find_root(is_rstudio_project | is_r_package | is_vcs_root)
 
   tryCatch({
 
     with_temp_libpaths(
-      validation_report_path <- r( function(pkg, src, working_dir, validation_rmd, output_dir, output_file){
+      validation_report_path <- r( function(root, src, working_dir, validation_rmd, output_dir, output_file){
 
         # nocov start
 
@@ -47,8 +48,8 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 
         ## render validation report
         valtools::vt_render_validation_report(
-          report_path = file.path(pkg,working_dir, validation_rmd),
-          output_dir = file.path(pkg,output_dir),
+          report_path = file.path(root,working_dir, validation_rmd),
+          output_dir = file.path(root,output_dir),
           output_file = output_file,
           render_time = "build",
           package = ""
@@ -57,12 +58,12 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
         # nocov end
 
       },args = list(
-        pkg = pkg,
+        root = root,
         src = src,
         working_dir = get_config_working_dir(),
         validation_rmd = get_config_report_rmd_name(),
         output_dir = file.path(get_config_output_dir(),"validation"),
-        output_file = evaluate_filename(pkg = pkg)
+        output_file = evaluate_filename(pkg = root)
       )
       ))
 
@@ -90,11 +91,13 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 #'
 #' @rdname validate
 #'
-vt_validate_build <- function(pkg = ".", src = pkg, ...) {
+vt_validate_build <- function(src = ".", ...) {
 
-  vt_validate_source(pkg = pkg, src = src, open = FALSE)
+  root <- find_root(is_rstudio_project | is_r_package | is_vcs_root)
 
-  copy_validation_content(pkg = pkg, src = src)
+  vt_validate_source(src = src, open = FALSE)
+
+  copy_validation_content(pkg = root, src = src)
 
   ## build package
   build_path <- build(src, ...)
@@ -114,11 +117,11 @@ vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 #'
 #' @rdname validate
 #'
-vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE, install_tests = TRUE, reload = TRUE){
+vt_validate_install <- function(src = ".", ..., install_verbose = TRUE, install_tests = TRUE, reload = TRUE){
 
   pkg_src <- as.package(src)$package
 
-  bundle <- vt_validate_build(pkg = ".", src = src, ...)
+  bundle <- vt_validate_build(src = src, ...)
   on.exit({unlink(bundle)})
 
   INSTALL_opts <- character()
@@ -211,6 +214,10 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
 
 #' Execute Validation Report Independently
 #'
+#' @param version version of validation report to output. If missing, it tries to use the
+#'   change_log.md, if that is missing then looks at the package version if the validation package
+#'   is of an R package.
+#'
 #' @importFrom callr r
 #' @importFrom rlang abort inform
 #'
@@ -218,7 +225,9 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
 #'
 #' @rdname validate
 #'
-vt_validate_report <- function(path = ".", version , open = interactive()){
+vt_validate_report <- function(version, open = interactive()){
+
+  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
 
   if (missing(version)) {
     if (grepl("{version}", get_config_report_naming_format(), fixed = TRUE)) {
@@ -244,14 +253,14 @@ vt_validate_report <- function(path = ".", version , open = interactive()){
 
   tryCatch({
 
-      validation_report_path <- r( function(path, working_dir, validation_rmd, output_dir, output_file){
+      validation_report_path <- r( function(root, working_dir, validation_rmd, output_dir, output_file){
 
         # nocov start
 
         ## render validation report
         valtools::vt_render_validation_report(
-          report_path = file.path(path, working_dir, validation_rmd),
-          output_dir = file.path(path,output_dir),
+          report_path = file.path(root, working_dir, validation_rmd),
+          output_dir = file.path(root,output_dir),
           output_file = output_file,
           render_time = "build",
           package = ""
@@ -260,7 +269,7 @@ vt_validate_report <- function(path = ".", version , open = interactive()){
         # nocov end
 
       },args = list(
-        path = path,
+        root = root,
         working_dir = get_config_working_dir(),
         validation_rmd = get_config_report_rmd_name(),
         output_dir = file.path(get_config_output_dir(),"validation"),

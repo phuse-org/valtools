@@ -48,7 +48,7 @@ test_that("test running validation.Rmd from source", {
 
     ## validate source.
     quiet <- capture.output({
-    validation_report_output <- vt_validate_source(pkg = ".", open = FALSE)
+    validation_report_output <- vt_validate_source(open = FALSE)
     })
     expect_equal(
       normalizePath(validation_report_output,winslash = "/"),
@@ -128,7 +128,7 @@ test_that("test running validation.Rmd from source for failure", {
     ## validate source.
     quiet <- capture.output({
       expect_error(
-        vt_validate_source(pkg = ".", open = FALSE),
+        vt_validate_source(open = FALSE),
         "Error during validation of package. Error: ",
         fixed = TRUE
       )
@@ -199,7 +199,7 @@ test_that("test building a validated bundle from source", {
     ## validate source & create bundle.
     suppressMessages({
     quiet <- capture.output({
-    validated_bundle <- vt_validate_build(pkg = ".")
+    validated_bundle <- vt_validate_build()
     })})
 
     ## check bundle
@@ -336,7 +336,7 @@ test_that("test installing a validated bundle from source and rerunning report",
     ## validate source & create bundle.
     suppressMessages({
       quiet <- capture.output({
-    vt_validate_install(pkg = ".", install_verbose = FALSE)
+    vt_validate_install(install_verbose = FALSE)
     })})
 
     new_pkg <- rownames(installed.packages(lib.loc = .libPaths()[1]))
