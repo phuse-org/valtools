@@ -5,6 +5,7 @@
 \alias{vt_validate_build}
 \alias{vt_validate_install}
 \alias{vt_validate_installed_package}
+\alias{vt_validate_report}
 \title{Validate a package}
 \usage{
 vt_validate_source(pkg = ".", src = pkg, open = interactive())
@@ -25,6 +26,8 @@ vt_validate_installed_package(
   output_directory = ".",
   open = interactive()
 )
+
+vt_validate_report(path = ".", version, open = interactive())
 }
 \arguments{
 \item{pkg}{Top-level directory of the package to validate}

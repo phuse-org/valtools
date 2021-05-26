@@ -208,6 +208,84 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
 }
 
 
+
+#' Execute Validation Report Independently
+#'
+#' @importFrom callr r
+#' @importFrom rlang abort inform
+#'
+#' @export
+#'
+#' @rdname validate
+#'
+vt_validate_report <- function(path = ".", version , open = interactive()){
+
+  if (missing(version)) {
+    if (grepl("{version}", get_config_report_naming_format(), fixed = TRUE)) {
+      ## first try to use the version from the change log
+      if (file.exists(vt_path("change_log.md"))) {
+        version <- read_change_log(vt_path("change_log.md"))$Version[[1]]
+
+        ## if that does not exist, check if the "package" being validated is an
+        ## installed package and use that package version
+      } else if (is_installed_package(get_config_package())) {
+        version <- packageVersion(get_config_package())
+
+        ## if none are available, must be a passed argument
+      } else{
+        abort(
+          "Provide validation report version number or create a change log via `vt_use_change_log()`"
+        )
+      }
+    } else{
+      version <- NULL
+    }
+  }
+
+  tryCatch({
+
+      validation_report_path <- r( function(path, working_dir, validation_rmd, output_dir, output_file){
+
+        # nocov start
+
+        ## render validation report
+        valtools::vt_render_validation_report(
+          report_path = file.path(path, working_dir, validation_rmd),
+          output_dir = file.path(path,output_dir),
+          output_file = output_file,
+          render_time = "build",
+          package = ""
+        )
+
+        # nocov end
+
+      },args = list(
+        path = path,
+        working_dir = get_config_working_dir(),
+        validation_rmd = get_config_report_rmd_name(),
+        output_dir = file.path(get_config_output_dir(),"validation"),
+        output_file = evaluate_filename(
+          pkg = get_config_report_rmd_name(),
+          version = version
+          )
+      )
+    )
+
+    inform("Validation Report Generated", class = "vt.validation")
+  }, error = function(e) {
+    abort(paste0(c("Error during rendering of validation report. Error: ",
+                   e, sep = "\n")),
+          class = "vt.validation_external_fail")
+  })
+
+  if(open){
+    file.show(validation_report_path) # nocov
+  }
+
+  return(validation_report_path)
+}
+
+
 #' helper function to copy folder contents from one folder to another
 #' and maintain directory structure
 #'
