@@ -127,7 +127,7 @@ eval_test_code <- function(path, test_env = new.env()) {
 
                      }))
 
-                   if(nrow(test_case_results) > 1){
+                   if(nrow(test_case_results) > 0){
                      test_case_results$Test <-
                        paste0(test_case_results$Test,
                               ".",

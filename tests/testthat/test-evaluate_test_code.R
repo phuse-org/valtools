@@ -19,7 +19,7 @@ test_that("Evaluate test code works", {
     expect_equal(
       results,
       data.frame(
-        Test = "test_example",
+        Test = "test_example.1",
         Results = "As expected",
         Pass_Fail = "Pass",
         stringsAsFactors = FALSE
@@ -29,7 +29,7 @@ test_that("Evaluate test code works", {
     expect_equal(
       results2,
       data.frame(
-        Test = "test_example",
+        Test = "test_example.1",
         Results = "2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1",
         Pass_Fail = "Fail",
         stringsAsFactors = FALSE
@@ -140,7 +140,7 @@ test_that("Empty test_that returns skip", {
     expect_equal(
       results,
       data.frame(
-        Test = "test_example",
+        Test = "test_example.1",
         Results = "Reason: empty test",
         Pass_Fail = "Skip",
         stringsAsFactors = FALSE
@@ -182,6 +182,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "rlang",
       username_list = list(
         vt_user(
           username = "user1",
@@ -238,6 +239,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "rlang",
       username_list = list(
         vt_user(
           username = "user1",
