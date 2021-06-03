@@ -17,6 +17,7 @@ header-includes:
   - \usepackage{float}
   - \usepackage{multirow}
   - \usepackage{longtable}
+  - \usepackage{booktabs}
 ---
 
 
@@ -137,6 +138,7 @@ vt_scrape_coverage_matrix() %>%
  vt_kable_coverage_matrix()
 ```
 
+\clearpage
 
 # Risk Assessment
 
