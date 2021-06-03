@@ -75,7 +75,11 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
 #' @importFrom whoami username
 vt_username <- function(){
   user <- username(fallback = "")
-  get_config_user_name(username = user)
+  tryCatch({
+    get_config_user_name(username = user)
+  }, error = function(e){
+    return("")
+  })
 }
 
 
