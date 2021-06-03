@@ -44,9 +44,9 @@ test_that("When a username is not set, it will throw an error that the user does
       file.create(".here")
 
 
-      expect_error(
+      expect_equal(
         vt_username(),
-        "User `.+` does not exist in the config file[.]"
+        ""
         )
     }
   )})
