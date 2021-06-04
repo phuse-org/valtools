@@ -1,7 +1,7 @@
 #' Create validation report from template
 #' @param pkg_name name of package
 #' @param template what validation report template from {valtools} to use,
-#' one of "validation" (default) or "requirements" (forthcoming)
+#' one of "validation" (default) or "requirements"
 #' @param dynamic_referencing Should dynamic referencing be enabled by default. Boolean defaults to FALSE.
 #' @param open boolean to open the validation report for further editing
 #' @importFrom tools file_ext
@@ -54,8 +54,11 @@ vt_use_report <- function(pkg_name = NULL,
       })
   }
 
-  template_files <- c(validation = "validation_report.Rmd")
+  template_files <- c(validation = "validation_report.Rmd",
+                      requirements = "requirement_adoption.Rmd")
   report_filename <- file.path(get_config_working_dir(), get_config_report_rmd_name())
+
+  if(!file.exists(report_filename)){
 
   render_template( template = template_files[[template]],
                 output = report_filename,
@@ -64,11 +67,20 @@ vt_use_report <- function(pkg_name = NULL,
                          author = paste0((sapply(val_leads,
                                                  vt_get_user_info,
                                                  type = "name")), collapse = ', ')))
+  }
 
+  add_package_to_desc(
+    package = c("rmarkdown","testthat","knitr","kableExtra","magrittr","devtools"),
+    type = "Suggests",
+    pkg = vt_path()
+  )
+
+  add_field_to_desc("VignetteBuilder", "knitr")
 
   if(open){
     edit_file(report_filename) # nocov
   }
+
   invisible(TRUE)
 }
 

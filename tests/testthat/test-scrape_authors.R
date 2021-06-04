@@ -466,19 +466,20 @@ test_that("scrape roxygen tags requirement authors", {
 
     ## test setup
     captured_output <- capture.output({vt_create_package(open = FALSE)})
-    vt_use_req(name = "req1", username = "B user", title = "##req:req1")
+    vt_use_req(name = "req1", username = "B user", title = "Requirement ##req:req1",
+               open = FALSE)
     dynamic_ref <- vt_dynamic_referencer$new()
 
 
     rendered_req <- vt_scrape_requirement_editors(dynamic_ref = dynamic_ref)
     expect_equal(rendered_req,
-                 data.frame(requirements = "1",
+                 data.frame(requirements = "Requirement 1",
                             editor = "B user",
                             editDate = as.character(Sys.Date()),
                             stringsAsFactors = FALSE))
 
     expect_equal(vt_scrape_requirement_editors(),
-                 data.frame(requirements = "##req:req1",
+                 data.frame(requirements = "Requirement ##req:req1",
                             editor = "B user",
                             editDate = as.character(Sys.Date()),
                             stringsAsFactors = FALSE))

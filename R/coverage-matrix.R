@@ -136,6 +136,8 @@ kable_cov_matrix_long <- function(x, format = vt_render_to()){
         longtable =  TRUE,
         col.names = this_col_names )
   out_tab <- kable_styling(out_tab, font_size = 6)
+  out_tab <- column_spec(out_tab, 1, border_left = TRUE)
+  out_tab <- column_spec(out_tab, ncol(x), border_right = TRUE)
   out_tab <- collapse_rows(out_tab, c(1, 3))
   out_tab
 }

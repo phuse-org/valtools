@@ -39,8 +39,8 @@ render_template <- function(template, output = template, data = list()){
     )
 
   }, error = function(e) {
-    abort(paste0(c("Error during creation of template `",template,"`. Error: ",
-                   e, sep = "\n")),
+    abort(paste0(c(paste0("Error during creation of template `",template,"`. Error: "),
+                   e), sep = "\n"),
           class = "vt.template_render_fail")
   })
 

@@ -99,7 +99,9 @@ test_that("integration test for CRAN", {
     clean_env(get_config_package())
 
     withr::with_temp_libpaths({
-      install.packages(".", type = "source", repos = NULL, quiet = TRUE)
+      quiet <- capture.output({
+        devtools::install(quick = TRUE,dependencies = FALSE, upgrade = "never",quiet = TRUE)
+      })
       rmarkdown::render(file.path(getwd(), "vignettes", report_name), quiet = TRUE)
     })
 
@@ -107,8 +109,8 @@ test_that("integration test for CRAN", {
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", "A user"))
-    expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
-    expect_equal(report_code[154], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
+    expect_equal(report_code[31], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[158], "vt_file(vt_path(child_files),dynamic_referencing = TRUE)")
 
   })
 })
@@ -122,13 +124,12 @@ test_that("validation report in package",{
     captured_output <- capture.output(vt_create_package(open = FALSE))
     vt_use_report()
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
-
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], paste("title: Validation Report for",basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
-    expect_equal(report_code[154], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
+    expect_equal(report_code[31], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[158], "vt_file(vt_path(child_files),dynamic_referencing = FALSE)")
 
   })
 
@@ -139,13 +140,12 @@ test_that("validation report in package",{
     captured_output <- capture.output(vt_create_package(open = FALSE, report_rmd_name = report_name))
     vt_use_report(open = FALSE)
     report_code <- readLines(file.path(getwd(), "vignettes", report_name))
-
     expect_true(file.exists(file.path(getwd(),"vignettes", report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], paste0("title: Validation Report for ", basename(getwd())))
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[10], "  %\\VignetteIndexEntry{Validation Report}")
-    expect_equal(report_code[28], paste0("  library(", basename(getwd()), ")"))
+    expect_equal(report_code[12], "  %\\VignetteIndexEntry{Validation Report}")
+    expect_equal(report_code[31], paste0("  library(", basename(getwd()), ")"))
 
   })
 })
@@ -363,15 +363,53 @@ test_that("Validation outside a package - integration test for CRAN", {
     clean_env(get_config_package())
 
     output_report <- rmarkdown::render(report_name, quiet = TRUE)
-
     expect_true(file.exists(report_name))
     expect_true(file.exists(gsub("[.]Rmd$",".pdf",report_name)))
     # lines in rmd template that are updated via vt_use_report calls
     expect_equal(report_code[2], "title: Validation Report for rlang")
     expect_equal(report_code[3], paste0("author: ", test_user))
-    expect_equal(report_code[10], "  %\\VignetteIndexEntry{Validation Report}")
-    expect_equal(report_code[28], "  library(rlang)")
+    expect_equal(report_code[12], "  %\\VignetteIndexEntry{Validation Report}")
+    expect_equal(report_code[31], "  library(rlang)")
 
   })
 })
 
+
+test_that("Add dependencies to DESCRIPTION & add vignette builder automatically",{
+
+  withr::with_tempdir({
+
+  captured_output <- capture.output({
+    vt_create_package(pkg = "example.package", open = FALSE)
+  })
+
+  setwd("example.package")
+
+  vt_add_user_to_config(username = "a_person",
+                        name = "Andy Person",
+                        title = "Programmer",
+                        role = "Specifier")
+
+  withr::with_envvar(
+    new = list(LOGNAME = "a_person"),{
+      vt_use_report()
+  })
+
+  expect_equal(
+    desc::desc_get_deps(file = "DESCRIPTION"),
+    data.frame(
+      type = c("Imports","Suggests","Suggests","Suggests","Suggests","Suggests","Suggests"),
+      package = c("valtools","rmarkdown","testthat","knitr","kableExtra","magrittr","devtools"),
+      version = "*",
+      stringsAsFactors = FALSE
+    )
+  )
+
+  expect_equal(
+    desc::desc_get_field(key = "VignetteBuilder",file = "."),
+    "knitr"
+  )
+
+  })
+
+})
