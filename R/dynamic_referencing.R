@@ -51,6 +51,9 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
           scrape_references = function(text){
 
+            ## Drop roxygen comment headers from text for scraping references.
+            text <- unname(unlist(text[!grepl("^#'", text)]))
+
             reference_locations <-
               gregexpr(
                 paste0(
@@ -129,12 +132,23 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
 
             for(ref in names(references)){
               ref_value <- references[[ref]]
-              text = gsub(
-                pattern = paste0(private$reference_indicator,ref),
-                replacement = ref_value,
-                text,
-                fixed = TRUE,
-              )
+
+              if("data.frame" %in% class(text)){
+                text <- as.data.frame(lapply(text, gsub,
+                                             pattern = paste0(private$reference_indicator, ref),
+                                             replacement = ref_value,
+                                             fixed = TRUE),
+                                      stringsAsFactors = FALSE)
+              } else {
+                text <- gsub(
+                  pattern = paste0(private$reference_indicator,ref),
+                  replacement = ref_value,
+                  text,
+                  fixed = TRUE,
+                )
+              }
+
+
             }
 
             text
@@ -155,13 +169,18 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' @description
           #' create a new dynamic reference object
           #' @param reference_indicator character vector that indicates the start of the dynamic references. defaults to "##type:reference"
+          #' @param type "number" (arabic) or "letter" (latin uppercase) to use for counters
           #' @return a new `vt_dynamic_reference` object
-          initialize = function(reference_indicator = "##"){
+          initialize = function(reference_indicator = "##", type = c("number","letter")){
+
             private$references <- list()
+
             private$ref_iter_number <- list(
               req = 0,
               tc = 0
             )
+
+            private$type <- match.arg(type)
 
             private$reference_indicator <- reference_indicator
             private$reference_indicator_regex <- paste0("\\",strsplit(reference_indicator,"")[[1]], collapse = "")
@@ -169,6 +188,7 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           ),
 
         private = list(
+          type = NULL,
           references = list(),
           ref_iter_number = list(
             req = 0,
@@ -185,6 +205,9 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           add_reference = function(reference_id, type = c("req","tc")){
             type <- match.arg(type)
             reference_value = private$advance_reference(type)
+            if(private$type == "letter"){
+              reference_value <- numeric_to_letter_ref(reference_value)
+            }
             private$references[[reference_id]] <- reference_value
           }
         ))
@@ -199,12 +222,28 @@ dynamic_referencer <- vt_dynamic_referencer$new(
 #' @title Dynamic Reference Rendering
 #' @description enable dynamic referencing by reading file and converting any dynamic references
 #' into their values for rendering in the validation report.
-#' @param file path to the file to convert dynamic referencing to values
+#' @param input R object or path to the file to convert dynamic referencing to values
 #' @param reference which dynamic referencer to use. When NULL, uses internal dynamic referencer.
-#' @return text of file with dynamic referencing evaluated
-#' @export
-dynamic_reference_rendering <- function(file, reference = NULL){
-  file_text <- readLines(file)
+#' @return text with dynamic referencing evaluated
+#' @importFrom rlang inform
+dynamic_reference_rendering <- function(input, reference = NULL){
+  file_text <- tryCatch({
+    if(is_char_scalar(input)){
+      if(file.exists(input)){
+        file_text <- readLines(input)
+        inform(message = paste0("Reading input from file: ", input),
+               class = "vt.dynamic_ref_readlines")
+        file_text
+      }else{
+        input
+      }
+    }else{
+      input
+    }
+  },
+  error = function(e){
+    input
+  })
 
   if(is.null(reference)){
     reference <- dynamic_referencer
@@ -215,4 +254,24 @@ dynamic_reference_rendering <- function(file, reference = NULL){
 
 }
 
+
+is_char_scalar <- function(x){
+  is.character(x) && length(x) == 1
+}
+
+## original method from:
+## https://stackoverflow.com/questions/181596
+
+numeric_to_letter_ref <- function(x){
+  col_name <- c()
+
+  while(x > 0){
+    modulo <- (x) %% 26
+    col_name <- c(LETTERS[modulo], col_name)
+    x <- as.integer( (x - modulo) / 26)
+  }
+
+  paste(col_name,collapse = "")
+
+}
 

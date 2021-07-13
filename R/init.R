@@ -4,6 +4,7 @@
 #' `inst/validation`
 #'
 #' @param pkg Top level directory of a package
+#' @param working_dir validation working directory of the project. Defaults to
 #'
 #' @importFrom rlang inform
 #'
@@ -11,10 +12,18 @@
 #'
 #' @export
 #' @importFrom usethis use_git_ignore
-vt_use_validation <- function(pkg = ".") {
+vt_use_validation <- function( pkg = ".", working_dir, ...) {
+
+  if(missing(working_dir)){
+    if(is_package(pkg = pkg)){
+      working_dir <- "vignettes"
+    }else{
+      working_dir <- "."
+    }
+  }
 
   validation_directory <-
-    file.path(get_config_working_dir(pkg = pkg), "validation")
+    file.path(working_dir, "validation")
 
   tryCatch({
 
@@ -27,14 +36,21 @@ vt_use_validation <- function(pkg = ".") {
 
     set_dir_ref(pkg = pkg)
 
+    add_valtools_dep(pkg = pkg)
+
+    vt_use_config(pkg = pkg, working_dir = working_dir, ...)
+
+
   }, error = function(e) {
     abort(paste0("Failed to create validation structure. Error: ",
                  e, sep = "\n"),
           class = "vt.initFail")
   })
+
+
 }
 
-#' @param ... Additional argument passed to `vt_use_validation_config()`
+#' @param ... Additional argument passed to `vt_use_config()`
 #' @inheritParams usethis::create_package
 #'
 #' @importFrom usethis create_package
@@ -67,12 +83,20 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
 
   })
 
-  ## create basic config for validation
-  vt_use_validation_config(pkg = pkg, ...)
 
-  ## set up validation structure in package
-  vt_use_validation(pkg = pkg)
+  ## set up validation structure in package & create basic config for validation
+  vt_use_validation(pkg = pkg, ...)
 
+}
+
+#' Internal wrapper function to call vt_create_package().
+#' To be used by RStudio project wizard, preventing opening the project twice.
+#'
+#' @param path Project directory, collected through project wizard
+#'
+#' @noRd
+vt_create_package_wizard <- function(path, ...){
+  vt_create_package(pkg= path, open= FALSE, ...)   # nocov
 }
 
 

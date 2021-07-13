@@ -4,15 +4,15 @@
 \alias{dynamic_reference_rendering}
 \title{Dynamic Reference Rendering}
 \usage{
-dynamic_reference_rendering(file, reference = NULL)
+dynamic_reference_rendering(input, reference = NULL)
 }
 \arguments{
-\item{file}{path to the file to convert dynamic referencing to values}
+\item{input}{R object or path to the file to convert dynamic referencing to values}
 
 \item{reference}{which dynamic referencer to use. When NULL, uses internal dynamic referencer.}
 }
 \value{
-text of file with dynamic referencing evaluated
+text with dynamic referencing evaluated
 }
 \description{
 enable dynamic referencing by reading file and converting any dynamic references

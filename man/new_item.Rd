@@ -9,15 +9,18 @@
 vt_use_test_case(
   name,
   username = vt_username(),
+  title = NULL,
   open = interactive(),
-  pkg = "."
+  add_before = NULL,
+  add_after = NULL
 )
 
 vt_use_test_code(
   name,
   username = vt_username(),
   open = interactive(),
-  pkg = "."
+  add_before = NULL,
+  add_after = NULL
 )
 
 vt_use_req(
@@ -25,7 +28,8 @@ vt_use_req(
   username = vt_username(),
   title = NULL,
   open = interactive(),
-  pkg = "."
+  add_before = NULL,
+  add_after = NULL
 )
 }
 \arguments{
@@ -35,12 +39,14 @@ are located at \verb{./inst/validation/<ItemType>/\{name\}}.}
 
 \item{username}{The username to insert into the validation item as the author.}
 
-\item{open}{Should the newly made file be opened for editing.}
-
-\item{pkg}{Top-level of package}
-
 \item{title}{Title for the requirement defaults to be the base name passed
 sans file paths or extensions.}
+
+\item{open}{Should the newly made file be opened for editing.}
+
+\item{add_before, add_after}{If either parameters is supplied, the location to
+add the validation item to the validation configuration. If no parameter is
+passed the item is added at the end.}
 }
 \value{
 Path to the newly created validation item file, invisibly.
@@ -60,8 +66,12 @@ vt_add_user_to_config(
  )
 # Create req at the cases top level `inst/validation/cases/case1`
 vt_use_test_case("case1", open = FALSE)
+
 # Create req at `inst/validation/cases/regTests/Update2/case2`
-vt_use_test_case("regTests/Update2/case2", open = FALSE)
+vt_use_test_case("regTests/Update2/case2", open = FALSE, add_before = "case1.md")
+
+# Create a test case using tidy select
+vt_use_test_case("case1a", open = FALSE, add_after = tidyselect::starts_with("case1"))
 
 })
 }

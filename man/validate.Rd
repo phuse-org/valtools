@@ -5,18 +5,19 @@
 \alias{vt_validate_build}
 \alias{vt_validate_install}
 \alias{vt_validate_installed_package}
+\alias{vt_validate_report}
 \title{Validate a package}
 \usage{
-vt_validate_source(pkg = ".", src = pkg, open = interactive())
+vt_validate_source(src = ".", open = interactive())
 
-vt_validate_build(pkg = ".", src = pkg, ...)
+vt_validate_build(src = ".", ...)
 
 vt_validate_install(
-  pkg = ".",
-  src = pkg,
+  src = ".",
   ...,
   install_verbose = TRUE,
-  install_tests = TRUE
+  install_tests = TRUE,
+  reload = TRUE
 )
 
 vt_validate_installed_package(
@@ -24,10 +25,10 @@ vt_validate_installed_package(
   output_directory = ".",
   open = interactive()
 )
+
+vt_validate_report(version, open = interactive())
 }
 \arguments{
-\item{pkg}{Top-level directory of the package to validate}
-
 \item{src}{location of the source code. Assumed to be the same location as "pkg"}
 
 \item{open}{should the validation report be opened after it is built?}
@@ -38,9 +39,15 @@ vt_validate_installed_package(
 
 \item{install_tests}{should the installation include installation of package-specific tests (if any)?}
 
+\item{reload}{Should package be reloaded after install? defaults to TRUE}
+
 \item{package}{installed package name}
 
 \item{output_directory}{Location of directory to output validation report}
+
+\item{version}{version of validation report to output. If missing, it tries to use the
+change_log.md, if that is missing then looks at the package version if the validation package
+is of an R package.}
 }
 \value{
 path to either the validation report or the bundled package

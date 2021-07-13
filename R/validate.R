@@ -7,13 +7,13 @@
 #' `vt_validate_installed_package` run rerun the validation report for packages
 #' that were built and then installed using the`vt_validate_build()`.
 #'
-#' @param pkg Top-level directory of the package to validate
 #' @param src location of the source code. Assumed to be the same location as "pkg"
 #' @param package installed package name
 #' @param ... Additional argument passed to `devtools::build()`
 #' @param open should the validation report be opened after it is built?
 #' @param install_verbose should the installation be verbose?
 #' @param install_tests should the installation include installation of package-specific tests (if any)?
+#' @param reload Should package be reloaded after install? defaults to TRUE
 #'
 #'
 #' @return path to either the validation report or the bundled package
@@ -26,12 +26,14 @@
 #'
 #' @rdname validate
 #'
-vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
+vt_validate_source <- function(src = ".", open = interactive()){
+
+  root <- find_root(is_rstudio_project | is_r_package | is_vcs_root)
 
   tryCatch({
 
     with_temp_libpaths(
-      validation_report_path <- r( function(pkg, src, working_dir, output_dir, output_file){
+      validation_report_path <- r( function(root, src, working_dir, validation_rmd, output_dir, output_file){
 
         # nocov start
 
@@ -46,8 +48,8 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 
         ## render validation report
         valtools::vt_render_validation_report(
-          report_path = file.path(pkg,working_dir, "validation.Rmd"),
-          output_dir = file.path(pkg,output_dir),
+          report_path = file.path(root,working_dir, validation_rmd),
+          output_dir = file.path(root,output_dir),
           output_file = output_file,
           render_time = "build",
           package = ""
@@ -56,11 +58,12 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
         # nocov end
 
       },args = list(
-        pkg = pkg,
+        root = root,
         src = src,
-        working_dir = get_config_working_dir(pkg),
-        output_dir = file.path(get_config_output_dir(pkg = "."),"validation"),
-        output_file = evaluate_filename(pkg = pkg)
+        working_dir = get_config_working_dir(),
+        validation_rmd = get_config_report_rmd_name(),
+        output_dir = file.path(get_config_output_dir(),"validation"),
+        output_file = evaluate_filename(pkg = root)
       )
       ))
 
@@ -88,51 +91,17 @@ vt_validate_source <- function(pkg = ".", src = pkg, open = interactive()){
 #'
 #' @rdname validate
 #'
-vt_validate_build <- function(pkg = ".", src = pkg, ...) {
+vt_validate_build <- function(src = ".", ...) {
 
-  vt_validate_source(pkg = ".", src = src, open = FALSE)
+  root <- find_root(is_rstudio_project | is_r_package | is_vcs_root)
 
-  validation_directory <- file.path(get_config_working_dir(pkg = "."), "validation")
-  validation_output_directory <- file.path(get_config_output_dir(pkg = "."),"validation")
+  vt_validate_source(src = src, open = FALSE)
 
+  copy_validation_content(pkg = root, src = src)
 
-  tryCatch({
-
-    if(!dir.exists(file.path(pkg, validation_output_directory))){
-      dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
-    }
-
-    ## copy validation contents to validation output dir
-    directory_copy(
-      from = file.path(pkg, validation_directory),
-      to = file.path(pkg, validation_output_directory),
-      recursive = TRUE,
-      overwrite = TRUE)
-
-    ## copy validation Rmd
-    file.copy(
-      from = file.path(pkg, "vignettes", "validation.Rmd"),
-      to = file.path(pkg, validation_output_directory),
-      overwrite = TRUE
-    )
-
-
-    ## TODO: copy code documentation to validation output dir
-    # roxygen_copy(
-    #   from = file.path(pkg, "R"),
-    #   to = file.path(pkg, validation_output_directory),
-    #   recursive = TRUE,
-    #   overwrite = TRUE)
-
-    ## build package
-    build_path <- build(pkg, ...)
-    inform("Validated package built", class = "vt.build")
-
-  },
-  error = function(e) {
-    abort(paste0(c("Error in validated build", e), sep = .Platform$file.sep),
-          class = "vt.buildFail")
-  })
+  ## build package
+  build_path <- build(src, ...)
+  inform("Validated package built", class = "vt.build")
 
   return(build_path)
 
@@ -148,13 +117,21 @@ vt_validate_build <- function(pkg = ".", src = pkg, ...) {
 #'
 #' @rdname validate
 #'
-vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRUE, install_tests = TRUE){
-  bundle <- vt_validate_build(pkg = ".", src = src, ...)
+vt_validate_install <- function(src = ".", ..., install_verbose = TRUE, install_tests = TRUE, reload = TRUE){
+
+  pkg_src <- as.package(src)$package
+
+  bundle <- vt_validate_build(src = src, ...)
   on.exit({unlink(bundle)})
 
   INSTALL_opts <- character()
   if(install_tests){
     INSTALL_opts <- c("--install-tests")
+  }
+
+  was_loaded <- pkg_src %in% loadedNamespaces()
+  if ( was_loaded ) {
+    try(unloadNamespace(pkg_src), silent = TRUE)
   }
 
   install.packages(
@@ -167,6 +144,12 @@ vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRU
   )
 
   inform("validated package installed")
+
+  if(reload & was_loaded){
+    require(pkg_src, quietly = TRUE, character.only = TRUE)
+    inform("validated package loaded to namespace")
+  }
+
   return(TRUE)
 }
 
@@ -175,6 +158,7 @@ vt_validate_install <- function(pkg = ".", src = pkg, ..., install_verbose = TRU
 #' @param output_directory Location of directory to output validation report
 #'
 #' @importFrom callr r
+#' @importFrom yaml read_yaml
 #'
 #' @export
 #'
@@ -191,11 +175,13 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
 
   tryCatch({
 
-    validation_report_path <- r( function(package, validation_directory, output_directory){
+    validation_report_rmd_name <- read_yaml(system.file("validation/validation.yml", package = package))$report_rmd_name
+
+    validation_report_path <- r( function(package, validation_directory, validation_report_rmd_name, output_directory){
       # nocov start
         ## render validation report
         valtools::vt_render_validation_report(
-          report_path = file.path(validation_directory, "validation.Rmd"),
+          report_path = file.path(validation_directory, validation_report_rmd_name),
           output_dir = output_directory,
           render_time = "installed",
           package = package
@@ -204,6 +190,7 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
       },args = list(
         package = package,
         validation_directory = validation_directory,
+        validation_report_rmd_name = validation_report_rmd_name,
         output_directory = output_directory
       ))
 
@@ -221,6 +208,90 @@ vt_validate_installed_package <- function(package, output_directory = ".", open 
 
   invisible(validation_report_path)
 
+}
+
+
+
+#' Execute Validation Report Independently
+#'
+#' @param version version of validation report to output. If missing, it tries to use the
+#'   change_log.md, if that is missing then looks at the package version if the validation package
+#'   is of an R package.
+#'
+#' @importFrom callr r
+#' @importFrom rlang abort inform
+#'
+#' @export
+#'
+#' @rdname validate
+#'
+vt_validate_report <- function(version, open = interactive()){
+
+  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+
+  if (missing(version)) {
+    if (grepl("{version}", get_config_report_naming_format(), fixed = TRUE)) {
+      ## first try to use the version from the change log
+      if (file.exists(vt_path("change_log.md"))) {
+        version <- read_change_log(vt_path("change_log.md"))$Version[[1]]
+
+        ## if that does not exist, check if the "package" being validated is an
+        ## installed package and use that package version
+      } else if (is_installed_package(get_config_package())) {
+        version <- packageVersion(get_config_package())
+
+        ## if none are available, must be a passed argument
+      } else{
+        abort(
+          "Provide validation report version number or create a change log via `vt_use_change_log()`"
+        )
+      }
+    } else{
+      version <- NULL
+    }
+  }
+
+  tryCatch({
+
+      validation_report_path <- r( function(root, working_dir, validation_rmd, output_dir, output_file){
+
+        # nocov start
+
+        ## render validation report
+        valtools::vt_render_validation_report(
+          report_path = file.path(root, working_dir, validation_rmd),
+          output_dir = file.path(root,output_dir),
+          output_file = output_file,
+          render_time = "build",
+          package = ""
+        )
+
+        # nocov end
+
+      },args = list(
+        root = root,
+        working_dir = get_config_working_dir(),
+        validation_rmd = get_config_report_rmd_name(),
+        output_dir = file.path(get_config_output_dir(),"validation"),
+        output_file = evaluate_filename(
+          pkg = get_config_report_rmd_name(),
+          version = version
+          )
+      )
+    )
+
+    inform("Validation Report Generated", class = "vt.validation")
+  }, error = function(e) {
+    abort(paste0(c("Error during rendering of validation report. Error: ",
+                   e, sep = "\n")),
+          class = "vt.validation_external_fail")
+  })
+
+  if(open){
+    file.show(validation_report_path) # nocov
+  }
+
+  return(validation_report_path)
 }
 
 
@@ -258,4 +329,46 @@ directory_copy <- function(from, to, overwrite = FALSE, recursive = TRUE){
     to = file.path(to,list_files_from),
     overwrite = overwrite
   ))
+}
+
+copy_validation_content <- function(pkg = ".", src = pkg){
+
+  validation_directory <- file.path(get_config_working_dir(), "validation")
+  validation_output_directory <- file.path(get_config_output_dir(),"validation")
+
+  if(validation_directory != validation_output_directory){
+    tryCatch({
+
+      if(!dir.exists(file.path(pkg, validation_output_directory))){
+        dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
+      }
+
+      ## copy validation contents to validation output dir
+      directory_copy(
+        from = file.path(pkg, validation_directory),
+        to = file.path(pkg, validation_output_directory),
+        recursive = TRUE,
+        overwrite = TRUE)
+
+      ## copy validation Rmd
+      file.copy(
+        from = file.path(pkg, "vignettes", get_config_report_rmd_name()),
+        to = file.path(pkg, validation_output_directory),
+        overwrite = TRUE
+      )
+
+      # copy and strip down code documentation to validation output dir
+      roxygen_copy(
+        from = file.path(pkg, "R"),
+        to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
+        overwrite = TRUE)
+
+    },
+    error = function(e) {
+      abort(paste0(c("Error in moving validated content", e), sep = .Platform$file.sep),
+            class = "vt.buildFail")
+    })
+  }
+
+  invisible(TRUE)
 }

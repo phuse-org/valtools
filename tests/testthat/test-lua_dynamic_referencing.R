@@ -1,11 +1,11 @@
 test_that("lua numbering for pdf", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
   ## does not depend on valtools functions for dynamic labeling
-  skip_if_not_installed("valtools")
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
 
   ## create test files
-  test_input <- tempfile(fileext = ".md", tmpdir = getwd())
+  test_input <- basename(tempfile(fileext = ".md", tmpdir = getwd()))
 
   cat(
     file = test_input,
@@ -14,6 +14,7 @@ test_that("lua numbering for pdf", {
       'title: "Lua filter counter"',
       'output:',
       '  pdf_document:',
+      '    fig_crop: false',
       '    pandoc_args:',
       '    - --lua-filter',
       paste0('    - ', system.file(package = "valtools", "lua/counter.lua")),
@@ -37,8 +38,10 @@ test_that("lua numbering for pdf", {
     ))
 
 
+  suppressWarnings({
+  captured_output <- capture.output({
     rmarkdown::render(input = test_input, clean = FALSE)
-
+  })})
     test_output_rendered <-
       strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
                pdftools::pdf_text(gsub(test_input, pattern = ".md", replacement = ".pdf"))))[[1]]
@@ -52,15 +55,16 @@ test_that("lua numbering for pdf", {
     expect_equal(c(1, 6, 2, 7, 4, 5, 3), as.numeric(gsub(test_output_rendered[9:15],
               pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
               replacement = "\\1")))
-})})
+})
+  })
 
 test_that("lua numbering for html", {
   ## this test demonstrates how to use lua filter incl in inst/lua for dynamic labeling
   ## does not depend on valtools functions for dynamic labeling
-  skip_if_not_installed("valtools")
+  skip_if(!"valtools" %in% rownames(installed.packages()))
   withr::with_tempdir({
   ## create test files
-  test_input <- tempfile(fileext = ".md", tmpdir = getwd())
+  test_input <- basename(tempfile(fileext = ".md", tmpdir = getwd()))
 
   cat(
     file = test_input,
@@ -90,8 +94,11 @@ test_that("lua numbering for html", {
       'Later reference to (5) - ##req:refC\n',
       'Later reference to (3) - ##tc:refB\n'
     ))
+  suppressWarnings({
+  capture_output <- capture.output({
+    rmarkdown::render(input = test_input, clean = FALSE)
+  })})
 
-  rmarkdown::render(input = test_input, clean = FALSE)
   test_output_rendered <- XML::htmlTreeParse(gsub(test_input, pattern = ".md", replacement = ".html"),
                                             useInternal = TRUE)
   text_rendered <- unlist(XML::xpathApply(test_output_rendered, "//p", XML::xmlValue,
@@ -109,4 +116,6 @@ test_that("lua numbering for html", {
   expect_equal(c(1, 1, 2, 2, 1, 3, 2),
                as.numeric(unlist(lapply(strsplit(list_rendered, ": "), FUN = function(x){x[2]}))))
 
-})})
+})
+
+  })

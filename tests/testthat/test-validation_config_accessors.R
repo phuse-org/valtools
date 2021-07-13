@@ -2,16 +2,21 @@ test_that("Accessing config dirs works", {
 
     withr::with_tempdir({
 
-      vt_use_validation_config(pkg = ".")
+      vt_use_validation(pkg = ".", package = "test.package")
 
       expect_equal(
         get_config_working_dir(),
-        "vignettes"
+        "."
       )
 
       expect_equal(
         get_config_output_dir(),
-        "inst"
+        "."
+      )
+
+      expect_equal(
+        get_config_report_rmd_name(),
+        "validation.Rmd"
       )
 
       expect_equal(
@@ -23,10 +28,11 @@ test_that("Accessing config dirs works", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(
-      pkg = ".",
+    vt_use_validation(
+      package = "test.package",
       working_dir = "new/dir",
       output_dir = "test",
+      report_rmd_name = "test_validation.Rmd",
       report_naming_format = "{package}_v{version}_Validation_report"
     )
 
@@ -40,6 +46,11 @@ test_that("Accessing config dirs works", {
       "test"
     )
 
+    expect_equal(
+      get_config_report_rmd_name(),
+      "test_validation.Rmd"
+    )
+
   })
 
 })
@@ -48,8 +59,9 @@ test_that("Accessing config user info works", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",
-                             username_list = list(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(
                                vt_user(
                                  name = "test-name",
                                  title = "test-title",
@@ -88,8 +100,9 @@ test_that("Accessing config user info works even with multiple users", {
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",
-                             username_list = list(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(
                                vt_user(
                                  name = "test-name",
                                  title = "test-title",
@@ -141,7 +154,8 @@ test_that("Accessing config user info that does not exist throws informative err
 
   withr::with_tempdir({
 
-    vt_use_validation_config(pkg = ".",
+    vt_use_validation(
+      package = "test.package",
                              username_list = list(
                                vt_user(
                                  name = "test-name",
@@ -169,6 +183,36 @@ test_that("Accessing config user info that does not exist throws informative err
       fixed = TRUE
     )
 
+  })
+
+})
+
+
+
+test_that("Test getting package name from config file", {
+
+  withr::with_tempdir({
+
+    vt_use_validation(package = "test.package")
+
+    expect_equal(
+      get_config_package(),
+      "test.package"
+    )
+  })
+
+  withr::with_tempdir({
+
+    quiet <- capture.output({
+      vt_create_package(pkg = "my.package", open = FALSE)
+    })
+
+    setwd("my.package")
+
+    expect_equal(
+      get_config_package(),
+      "my.package"
+    )
   })
 
 })

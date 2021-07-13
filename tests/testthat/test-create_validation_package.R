@@ -13,6 +13,16 @@ test_that("Able to create package with validated package basics", {
       dir.exists("vignettes/validation")
     )
 
+    expect_equal(
+      desc::desc_get_deps(file = "DESCRIPTION"),
+      data.frame(
+        type = "Imports",
+        package = "valtools",
+        version = "*",
+        stringsAsFactors = FALSE
+      )
+    )
+
   })
 })
 

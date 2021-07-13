@@ -5,9 +5,11 @@ context("validation environment table")
 #       which causes package_file to fail.
 
 test_that("works on valtools (no Depends)", {
-  skip_if(grepl(dirname(here::here()), pattern = "\\.Rcheck"))
 
-  testthat::expect_false(all(grepl(readLines(here::here("DESCRIPTION")), pattern = "Depends")))
+
+  skip_if(grepl(dirname(rprojroot::is_testthat$find_file()), pattern = "\\.Rcheck"))
+
+  testthat::expect_false(all(grepl(readLines(rprojroot::is_r_package$find_file("DESCRIPTION")), pattern = "Depends")))
 
   validation_env <- vt_scrape_val_env()
   testthat::expect_true(!all(is.na(validation_env)))
@@ -20,13 +22,32 @@ test_that("temp", {
 
   withr::with_tempdir({
 
-  capture_output <- capture.output({usethis::create_package(path = ".", open = FALSE,
+  captured_output <- capture.output({usethis::create_package(path = ".", open = FALSE,
                                             rstudio = TRUE)})
 
   # bare
   validation_env0 <- vt_scrape_val_env()
-  testthat::expect_equal(c("OS", "R"),
-                         validation_env0[validation_env0$type != "session", "resource"])
+
+  testthat::expect_true(all(c("OS", "R")%in%
+                         validation_env0[validation_env0$type != "session", "resource"]))
+  kable_output_env0 <- vt_kable_val_env(validation_env0, format = "latex")
+  expected_kable_output_env0 <- c(
+    "\\begin{tabular}{|>{}l|>{}l||l}",
+    "\\hline",
+    "Type & Resource & Version Detail\\\\",
+    "\\hline",
+    paste0("& OS & ", sessionInfo()[["running"]], "\\\\"),
+    "\\cline{2-3}",
+    paste0("\\multirow{-2}{*}{\\raggedright\\arraybackslash system} & R & ",
+      gsub(R.version.string, pattern = "R\\sversion\\s(.*)\\s.*", replacement = "\\1"), "\\\\"),
+    "\\cline{1-3}",
+    paste0("& desc & ", packageVersion("testthat"), "\\\\"),
+    "\\cline{2-3}",
+    paste0("& here & ", packageVersion("valtools"), "\\\\"),
+    "\\cline{2-3}",
+    "\\hline",
+    "\\end{tabular}"
+  )
 
   # Only Suggests
   fields <- usethis::use_description_defaults()
@@ -70,8 +91,10 @@ test_that("temp", {
   desc_contents4 <- desc::desc(text = glue::glue("{names(fields)}: {fields}"))
   writeLines(con = normalizePath(file.path(".", "DESCRIPTION")),
              text = desc_contents4$str(by_field = TRUE, normalize = FALSE, mode = "file"))
-  testthat::expect_error(vt_scrape_val_env(),
-                         "there is no package called 'myFakePackage'", perl = TRUE)
+  testthat::expect_error(vt_scrape_val_env()
+                         # ,"there is no package called 'myFakePackage'", perl = TRUE
+                         )
 
-})})
+  })
+})
 

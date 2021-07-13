@@ -36,54 +36,7 @@ vt_render_validation_report <- function(report_path, output_dir = dirname(report
 }
 
 
-#' Use to set dynamic file paths in a validation.
-#'
-#' vt_path() allows access of files relative to the working directory identified
-#' in the config file. It is also required to be used in the validation report
-#' for cases where validation of installed packages is intended as it will
-#' shift access to the correct location for the installed package for access.
 
-#'
-#'
-#' @param ... `[character]`\cr
-#'   Path components below the validation folder, can be empty.
-#'   Each argument should be a string containing one or more
-#'   path components separated by a forward slash `"/"`.
-#' @param pkg path to base directory of package
-#'
-#' @export
-#'
-#' @importFrom here here
-#'
-#' @examples
-#' withr::with_tempdir({callr::r(function(){
-#'
-#'  valtools::vt_use_validation_config()
-#'  valtools::vt_use_validation()
-#'
-#'  valtools::vt_path()
-#'  valtools::vt_path("some", "reqs", "req01.md")
-#'  valtools::vt_path("some/reqs/req01.md")
-#'
-#' })})
-#'
-vt_path <- function(..., pkg = "."){
-
-  state <- Sys.getenv("vt_validation_state")
-  package <- Sys.getenv("vt_validation_package")
-
-  if(state == "installed"){
-    ## if testing an installed package via `vt_validate_installed_package()`,
-    ## state == "installed",
-    package_dir <- system.file(package = package)
-    path <- file.path(package_dir,"validation") ## users have no choice if output_dir is set to "inst"
-  }else{
-    ## default and if building (state == "build") uses the same path
-    path <- here(get_config_working_dir(pkg = here(pkg)), "validation")
-  }
-
-  file.path(path, ...)
-}
 
 #' evaluate validation report output name
 #'
@@ -98,18 +51,24 @@ vt_path <- function(..., pkg = "."){
 #'
 evaluate_filename <- function(pkg = ".", package, version){
 
-  filename_format <- get_config_report_naming_format(pkg = pkg)
+  filename_format <- get_config_report_naming_format()
+
+
 
   if(is.null(filename_format)){
     filename_format <- "Validation_Report_{package}_v{version}_{date}"
   }
 
   if(missing(package)){
-    package <- desc_get_field("Package",file = pkg)
+    package <- make.names(get_config_package())
   }
 
-  if(missing(version)){
-    version <- desc_get_field("Version",file = pkg)
+  if(missing(version) && grepl("{version}", filename_format,fixed = TRUE)){
+    if(is_package(pkg = pkg)){
+      version <- desc_get_field("Version",file = pkg)
+    }else{
+      version <- packageVersion(package)
+    }
   }
 
   date <- format(Sys.Date(),"%Y%m%d")

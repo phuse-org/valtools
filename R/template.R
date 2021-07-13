@@ -28,7 +28,7 @@ render_template <- function(template, output = template, data = list()){
 
     output_text <- whisker.render(
       template = template_text,
-      data = data)
+      data = data, debug = TRUE)
 
     file_con <- file(output)
     on.exit(close(file_con))
@@ -39,8 +39,8 @@ render_template <- function(template, output = template, data = list()){
     )
 
   }, error = function(e) {
-    abort(paste0(c("Error during creation of template `",template,"`. Error: ",
-                   e, sep = "\n")),
+    abort(paste0(c(paste0("Error during creation of template `",template,"`. Error: "),
+                   e), sep = "\n"),
           class = "vt.template_render_fail")
   })
 
