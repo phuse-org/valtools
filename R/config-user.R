@@ -221,11 +221,7 @@ get_config_user <- function(username){
         vt_add_user_to_config(username = username)
         read_validation_config()$usernames[[username]]
       }else{
-        abort(
-          paste0("User `",username,"` does not exist in the config file.\n",
-                 "Add `",username,"` to the config file with `vt_add_user_to_config(\"",username,"\")`."),
-          class = "vt.validation_config_missing_user_error_interactive"
-        )
+        return("")
       }
 
     }else{   # nocov end
@@ -262,24 +258,29 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
 
   # nocov start
 
-  message(paste(collapse = "\n",c("",
+  message(paste(strwrap(paste(collapse = "\n",c("",
                                   "Please supply some information for recording users within the package.",
                                   "Note, that this information can be updated at any time though `vt_add_user_to_config()`"
-  )))
+  ))), collapse = "\n"))
 
   if(missing(name)){
     cat("\n")
-    name <- readline(paste0(" Please provide the name of the person associated with the username `",username,"` and press `Enter`: "))
+    message(paste(strwrap(paste0(" Please provide the name of the person associated with the username `",username,"` and press `Enter`. ")), collapse = "\n"))
+
+    name <- readline("Name: ")
   }
 
   if(missing(title)){
     cat("\n")
-    title <- readline(paste0(" Please provide the title of the person associated with the username `",username,"` and press `Enter`: "))
+    message(paste(strwrap(paste0(" Please provide the title of the person associated with the username `",username,"` and press `Enter`. ")), collapse = "\n"))
+    title <- readline("Title: ")
+
   }
 
   if(missing(role)){
     cat("\n")
-    role <- readline(paste0(" Please provide the role of the person for this validation associated with the username `",username,"` and press `Enter`: "))
+    message(paste(strwrap(paste0(" Please provide the role of the person for this validation associated with the username `",username,"` and press `Enter`: ")), collapse = "\n"))
+    role <- readline("Role: ")
   }
 
   cat("\n")
