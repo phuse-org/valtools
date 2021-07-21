@@ -107,7 +107,7 @@ The collection of requirements may be called specifications.
 
 Requirements are written as markdown (.md) documents with special roxygen headers. 
 Each requirement must have the following roxygen comments in the header: title,
-editor, editDate, and riskAssessment. The last the roxygen comments are custeom
+editor, editDate, and riskAssessment. The last the roxygen comments are custom
 {valtools} supported roxygen tags to support validation. `@editor` is for tracking
 the last editor of the function, `@editDate` is for recording whenever a function is
 modified, and `@riskAssessment` is for tracking risks for each requirement.
@@ -154,7 +154,8 @@ Change Log
 ----------
 
 Similar to a news file, {valtools} suggests the use of a change log that
-is directly tied to validation for recording changes. The purpose of this is to capture update and information that is useful for developers from
+is directly tied to validation for recording changes. The purpose of this is to
+capture update and information that is useful for developers from
 information that is important to capture in validation.
 
 To create this change log file, {valtools} has the function
@@ -179,7 +180,7 @@ Run the command above to create a change log.
 Testing
 -------
 
-Testing is done to ensure that the package meets the requirements that
+Testing is done to ensure that the target meets the requirements that
 were set out for the project. Testing is done in two major steps: the
 firsts consists of writing out a series of cases that would prove that
 the requirements have been met, the second is the application of these
@@ -217,10 +218,10 @@ being met.
 Copy the following test case into file where test cases are to be
 documented:
 
-    + 1.1 test that the software can identify the username pf the user by
+    + 1.1 Test that the software can identify the username pf the user by
     setting the environment variable `LOGNAME` to `jsmith` for the duration of
     the test and  confirming that the output of whoami::username is `jsmith`.
-    + 1.2 test that the software can identify the full name of the user by 
+    + 1.2 Test that the software can identify the full name of the user by 
     setting the environment variable `FULLNAME` to "John Smith" for the
     duration of the test and confirming  that the output of whoami::fullname()
     is "John Smith"
@@ -345,7 +346,7 @@ rmarkdown:
     -   Records the validation environment
     -   Presents the change log of the validation.
     -   Subsections to show the last editor for each piece of the
-        validation; requirements, functions, test cases and test code.
+        validation; requirements, test cases and test code.
     -   Traceability table to show which requirements are being
     -   Risk Assessment: Combines all the risk assessments made into a
         single table
@@ -385,48 +386,16 @@ Running a Validation Report
 ---------------------------
 
 Now that there is a validation report as an Rmarkdown, validation is only a
-compiling of the report away. However, different organizations might
-follow different approaches to when the validation documentation might be
-necessary. {valtools} can support several different methods of
-validation at this moment:
-
-| Validation Type | Description | {valtools} Function |
-|:----------------|:------------|:-------------------:|
-| Validation on Source | Validation of the source code, where individuals might install from a controlled source. | `valtools::vt_validate_source()` |
-| Validation on Build | Validation of the source code and then compiles it into a usable tar so that the source code cannot change after validation, so users can install from a controlled source without having to build/compile as well. | `valtools::vt_validate_build()` |
-| Validation on Install | Validation of the source code, and then the validation report is also re-built on install to the machine it will ultimately be running on. | `valtools::vt_validate_install()` |
-| Validation _After_ Install | This assumes the package was built and installed using the prior methods, but in this method, the validation report can be re-run at any point to re-validated based on updates to the environment. | `valtools::vt_validate_installed_package()` |
+compiling of the report away. To validate the target, we execute the report 
+non-interactively and save the results.
 
 #### Tutorial
 
-Run each method of validation and observe the differences
+Run the validation report
 
 ##### Validation Mode: Running on Source
 
 ```{r}
-valtools::vt_validate_source()
+valtools::vt_validate_report()
 ```
 
-##### Validation Mode: Generating validated bundle for distribution
-
-```{r}
-valtools::vt_validate_build()
-```
-
-##### Validation Mode: Validating and installing package
-
-```{r}
-valtools::vt_validate_install()
-```
-
-##### Validation Mode: Re-validating an installed package
-
-```{r}
-valtools::vt_validate_installed_package("example.package")
-```
-
-Compare this result against the original validation vignette:
-
-```{r}
-vignette("validation","example.package")
-```
