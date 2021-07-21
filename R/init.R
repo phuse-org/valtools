@@ -89,6 +89,55 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
 
 }
 
+#' @description Create the validation packet infrastructure. Intended to create
+#' validation infrastructure external to an R package.
+#'
+#' @param target target of validation. Character name of package or scope validation packet is being performed for.
+#' @param ... Additional argument passed to `vt_use_config()`
+#' @inheritParams usethis::create_project
+#'
+#' @importFrom usethis create_project
+#' @importFrom rlang inform abort
+#'
+#' @rdname val_init
+#'
+#' @export
+vt_create_packet <- function(path = ".", target, ..., rstudio = rstudioapi::isAvailable(), open = rlang::is_interactive()) {
+
+  tryCatch({
+
+    if(is_package(dir)){
+      abort(paste0(
+        "`vt_create_packet()` is not intended to add validation infrastructure",
+        " to an existing package. Use `vt_use_validation()` instead."
+        ))
+    }
+
+    if(!dir.exists(project_path)){
+      create_project(path = dir, rstudio = rstudio, open = FALSE)
+    }
+
+    ## set up validation structure in package & create basic config for validation
+    vt_use_validation(pkg = dir, working_dir = ".", package = target, ...)
+
+    inform("Created validation packet",
+           class = "vt.initPacket")
+
+  }, error = function(e) {
+    abort(paste0("Failed to create validation packet. Error: ",
+                 e, sep = "\n"),
+          class = "vt.initPacketFail")
+
+  })
+
+  if(open){
+    rstudioapi::openProject(dir,newSession = TRUE)
+  }
+
+  invisible()
+
+}
+
 #' Internal wrapper function to call vt_create_package().
 #' To be used by RStudio project wizard, preventing opening the project twice.
 #'
@@ -99,5 +148,14 @@ vt_create_package_wizard <- function(path, ...){
   vt_create_package(pkg= path, open= FALSE, ...)   # nocov
 }
 
+#' Internal wrapper function to call vt_create_packet().
+#' To be used by RStudio project wizard, preventing opening the project twice.
+#'
+#' @param path Project directory, collected through project wizard
+#'
+#' @noRd
+vt_create_packet_wizard <- function(path, ...){
+  vt_create_packet(pkg = path, open= FALSE, ...)   # nocov
+}
 
 
