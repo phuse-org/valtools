@@ -71,6 +71,14 @@ These functions are helper functions for use within the validation report Rmd.
 
 Read the [`Starting New Validation Package using {valtools}`](vignettes/starting-validated-package.Rmd) vignette for a high level overview of the functions that exist in {valtools} and their intended uses.
 
+## Cheat Sheet
+
+Cheat sheet on how to use the {valtools} R Package
+
+<img src="inst/cheatsheets/valtools-cheatsheet.pdf" 
+     alt="Cheatsheet on how to use the {valtools} R Package - functions & validation types" 
+     style="width:100%;height:auto"/>
+
 ## Code of conduct
 
 Please note that the {valtools} project is released with a [Contributor Code of Conduct](CONDUCT.md). By contributing to this project, you agree to abide by its terms.
