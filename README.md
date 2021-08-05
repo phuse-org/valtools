@@ -4,7 +4,7 @@
   [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-# valtools
+# valtools <img src='man/figures/logo.png' align="right" height="139" />
 
 valtools helps automate the validation of R packages used in clinical research and drug development:
 It provides useful templates and helper functions for tasks that arise during project set up and development
@@ -18,7 +18,7 @@ For background on the `R Package Validation Framework`, watch [this presentation
 
 ## Installation
 
-{valtools} is under active development!
+{valtools} is under active development. To get the latest version, install from github:
 
 ```
 devtools::install_github("phuse-org/valtools")
