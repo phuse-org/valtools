@@ -339,7 +339,7 @@ Within packages this defaults to the base folder.
 This rmarkdown file will have a default name `validation.Rmd` if unspecified.
 
 ```{r}
-valtools::vt_use_report(template = "validation")
+valtools::vt_use_report(template = "packet")
 ```
 
 There are several sections included by default in the provided validation report 
