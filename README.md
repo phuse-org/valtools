@@ -75,9 +75,11 @@ Read the [`Starting New Validation Package using {valtools}`](vignettes/starting
 
 Cheat sheet on how to use the {valtools} R Package
 
-<img src="inst/cheatsheets/valtools-cheatsheet.pdf" 
+<a href="inst/cheatsheets/valtools-cheatsheet.png">
+<img src="inst/cheatsheets/valtools-cheatsheet.png" 
      alt="Cheatsheet on how to use the {valtools} R Package - functions & validation types" 
-     style="width:100%;height:auto"/>
+     style="width:50%;height:auto"/>
+</a>
 
 ## Code of conduct
 
