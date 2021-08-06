@@ -18,7 +18,7 @@ test_that("Able to create packet with validated project basics", {
   })
 })
 
-test_that("throws error when trying to add to existing packageunable to create the package", {
+test_that("throws error when trying to add to existing package", {
   withr::with_tempdir({
 
     quiet <- capture.output({

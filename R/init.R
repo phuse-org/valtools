@@ -54,7 +54,7 @@ vt_use_validation <- function( pkg = ".", working_dir, ...) {
 #' @inheritParams usethis::create_package
 #'
 #' @importFrom usethis create_package
-#' @importFrom rlang inform abort
+#' @importFrom rlang inform abort is_interactive
 #'
 #' @rdname val_init
 #'
@@ -96,8 +96,8 @@ vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudio
 #' @param ... Additional argument passed to `vt_use_config()`
 #' @inheritParams usethis::create_project
 #'
-#' @importFrom usethis use_rstudio local_project
-#' @importFrom rlang inform abort
+#' @importFrom usethis use_rstudio local_project proj_activate
+#' @importFrom rlang inform abort is_interactive
 #'
 #' @rdname val_init
 #'
@@ -116,7 +116,11 @@ vt_create_packet <- function(path = ".", target, ..., rstudio = rstudioapi::isAv
     if(!dir.exists(path)){
       dir.create(path = path, recursive = TRUE, showWarnings = FALSE)
       usethis::with_project(path = path,force = TRUE,{
-        usethis::use_rstudio()
+        if(rstudio){
+          usethis::use_rstudio()
+        }else{
+          file.create(".here")
+        }
       })
     }
 
@@ -134,7 +138,7 @@ vt_create_packet <- function(path = ".", target, ..., rstudio = rstudioapi::isAv
   })
 
   if(open){
-    rstudioapi::openProject(path,newSession = TRUE)
+    usethis::proj_activate(path = path)
   }
 
   invisible()
