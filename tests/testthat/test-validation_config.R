@@ -292,6 +292,24 @@ test_that("Test overwriting of the config file", {
 
 })
 
+test_that("Test config creation without validation infrastructure throws error", {
+  withr::with_tempdir({
+
+    quiet <- capture.output(
+      usethis::create_package(path = ".")
+    )
+
+    expect_error(
+      vt_use_config(
+        package = "test.package",
+        pkg = "."),
+      "No validation structure found. Run `valtools::vt_use_validation().",
+      fixed = TRUE
+    )
+
+  })
+
+})
 
 test_that("Test removal of individual from config file", {
 
@@ -394,7 +412,6 @@ test_that("ask_user_name_title_role only requests when missing information",{
   )
 
 })
-
 
 test_that("adding and removing validation files from list", {
   withr::with_tempdir({
@@ -653,5 +670,27 @@ test_that("inserting validation file at diff location", {
 
 })
 
+test_that("when creating validation config yaml throws an error, error propagates up", {
+  withr::with_tempdir({
 
+
+    err <- suppressWarnings(capture_error({
+      write_validation_config (
+        package = "test.package",
+        path = "Invalid/file/path__"
+      )
+    })
+    )
+
+    expect_true(
+      grepl(
+        "Error during creation of validation.yml config file. Error:",
+        x = as.character(err),
+        fixed = TRUE
+        )
+    )
+
+  })
+
+})
 
