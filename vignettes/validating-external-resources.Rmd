@@ -30,7 +30,8 @@ This vignette steps through the process of validating external resources with
 {valtools}. "External resources" is defined for this vignette as any software 
 or environment that does not follow the validation process defined in the 
 [Starting New Validation Package using {valtools}](starting-validated-package.html) 
-vignette. 
+vignette. This means packages installed from other sources, collections of packages,
+external software, and environments.
 
 This process may be invoked when an R package was already developed and 
 only after the fact was validation decided to be of value, validating an 
@@ -54,12 +55,16 @@ information
 
 ```{r}
 
-# create a new package skeleton
-vt_create_packet(path = "example_validation_packet", target = "valtools")
+# create a new validation packet skeleton
+vt_create_packet(
+  path = "/my/path/to/example_validation_packet", 
+  target = "super.package"
+  )
 
 ```
 
-The validation packet folder is constructed using the `usethis::create_project()` function, and then all the necessary validation infrastructure required for
+The validation packet folder is constructed using the `usethis::create_project()`
+function, and then all the necessary validation infrastructure required for
 {valtools}.
 
 Importantly, there is now a `validation` folder, which is the
@@ -76,8 +81,10 @@ necessary.
 
 #### Tutorial
 
-Run the chunk of code below to create a validation packet in a temporary directory
-to follow along with the tutorial for the {whoami} package. The new packet project will be opened new session. Run all subsequent code in that new session.
+Run the chunk of code below to create a validation packet in a temporary 
+directory to follow along with the tutorial for the {whoami} package. The new 
+packet project will be opened in a new session. Run all subsequent code in 
+that new session.
 
 ```{r}
 
