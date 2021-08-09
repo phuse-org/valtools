@@ -67,7 +67,7 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
   vt_add_file_to_config(filename = name, after = {{add_after}}, before = {{add_before}})
 
   if(open){
-    edit_file(case_name)
+    edit_file(case_name) # nocov
   }
 
   invisible(case_name)
