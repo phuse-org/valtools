@@ -1,0 +1,89 @@
+---
+title: "Validation: Figure Tests"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{validation_figure_tests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(valtools)
+library(testthat)
+```
+
+Effective test cases cover a broad spectrum of use cases of the code intended to be validated. 
+More often than not, this is confirming that an input returns a specific or set of specific values.
+
+However, not all functions are used for their value-generation.
+In fact, there are a number of functions that are used for their side effects, such as plot generation. 
+This has long been the achilles heel of testing. 
+
+With {testthat} 3e (third edition), there came the advent to the R world the concept of snapshot testing. 
+That is, to create a reference file that is then compared against in future runs. 
+This is an incredibly powerful tool that creates the opportunity to add testing of not only known outputs in the form of numbers, but of files and figures as well.
+
+{valtools} is built around taking the brilliant work of {testthat} and using it to make validation easier. Here we will give a short demo on how to short-circuit these sorts tests to make our own figure validation paradigm.
+
+## Test Case
+
+The test case needs to provide enough contextual knowledge to effectively and consistently generate the same results. The same holds true for figure testing for validation, but with a twist. 
+
+The test case author needs to provide the specific set of instructions to generate the same plots, and how to record them. Additionally, the test case author provides the actual reference file that the test code writer will eventually compare against.
+
+This is in line with the idea that the test case has both clear instructions and a defined "success" criteria. In this case, the "success criteria" is matching the same output file. Below is an example of such a test case.
+
+```
+
+Figure Expectation 01
+---
+
+First create the temporary file path via `tempfile()` and assign to the object `tmp_png`.
+Set the RNG seed to 100.
+Run the function `png()`, with the argument `filename` set to be `tmp_png` to start capturing the plot generated.
+Create a histogram with the function `hist()` and set the arg `x` to be the result of 100 values randomly generated from the normal distribution.
+Stop capturing the plot by calling `dev.off()`.
+Compare this plot against the reference file provided by the the test case writer using the `compare_file_binary()` function from {testthat} by passint ghe pass to the reference file to the first argument (`my/path/reference_plot.png`) and `tmp_png` to the second argument and confirming the result is "TRUE"
+```
+
+In this situation, the test case author would generate a reference png that is saved in `my/path/reference_plot.png` for the test code writer to compare against. 
+The comparison is done via the `compare_file_binary()` function, which is the file comparison tool that facilitates the snapshot comparison for {testthat}'s snapshotting.
+
+## Test Code
+
+The test code writer now follows the instructions to write the test case and compares the file. Note how the last instructions are to confirm the output is true, so the final expectation is to use the `expect_true()` expectation from {testthat}. The test case writer may also visually compare the output, but that is not strictly necessary if the expectation passes.
+
+```r
+
+test_that("Figure Expectation 01",{
+
+  tmp_png <- tempfile()
+  set.seed(100)
+  
+  png(tmp_png)
+  hist(rnorm(100))
+  dev.off()
+
+  expect_true(
+   compare_file_binary(
+   "my/path/reference_plot.png",
+   tmp_plot
+  )
+  
+})
+
+
+```
+
+
+
+
+
+
