@@ -16,7 +16,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
 
       if(length(this_row) != 2){
         rlang::abort(paste0("Coverage details must follow format Test_Case:Requirement.",
-                           "See ", x[["tc_title"]], ", Coverage Entry: ",trimws(x[["coverage"]])),
+                           " See ", x[["tc_title"]], ", Coverage Entry: ",trimws(x[["coverage"]])),
                      class = "vt.coverage_format")
       }
       names(this_row) <- c("tc_id", "req_id")

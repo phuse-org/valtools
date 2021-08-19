@@ -656,3 +656,4 @@ test_that("coverage matrix malformed entry throws informative error - 2", {
     )
 
   })
+})
