@@ -55,7 +55,11 @@ vt_use_report <- function(pkg_name = NULL,
   }
 
   template_files <- c(validation = "validation_report.Rmd",
-                      requirements = "requirement_adoption.Rmd")
+                      requirements = "requirement_adoption.Rmd",
+                      packet = "validation_packet.Rmd")
+
+  template <- match.arg(template,choices = names(template_files))
+
   report_filename <- file.path(get_config_working_dir(), get_config_report_rmd_name())
 
   if(!file.exists(report_filename)){
