@@ -13,12 +13,10 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
     do.call("rbind", apply(vals, 1, FUN = function(x){
 
       this_row <- strsplit(x[["coverage"]], split = ":")[[1]]
-      if(length(this_row) == 1){
-        this_row <- rep(this_row, 2)
 
-      } else if(length(this_row) != 2){
-        rlang::abort(paste("Coverage details must follow format Test_Case:Requirement.",
-                           "See", x[["tc_title"]]),
+      if(length(this_row) != 2){
+        rlang::abort(paste0("Coverage details must follow format Test_Case:Requirement.",
+                           " See ", x[["tc_title"]], ", Coverage Entry: ",trimws(x[["coverage"]])),
                      class = "vt.coverage_format")
       }
       names(this_row) <- c("tc_id", "req_id")

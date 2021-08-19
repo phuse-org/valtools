@@ -1,5 +1,6 @@
 test_that("coverage matrix from dynam num", {
   withr::with_tempdir({
+
     capture_output <- capture.output({vt_create_package(open = FALSE)})
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
@@ -573,6 +574,86 @@ test_that("coverage matrix missing or deprecated entry", {
                                        stringsAsFactors = FALSE)
     expect_equal(cov2_tc_title,
                  expect_cov2_tc_title)
+
+  })
+})
+
+test_that("coverage matrix malformed entry throws informative error - 1", {
+  withr::with_tempdir({
+    capture_output <- capture.output({
+      vt_create_package(open = FALSE)
+    })
+    vt_use_test_case("testcase1", username = "a user", open = FALSE)
+    vt_use_test_case("testcase2", username = "a user", open = FALSE)
+    vt_use_test_case("testcase3", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE, add_before = "testcase1.md")
+    vt_use_req("req2", username = "a user", open = FALSE, add_before = "testcase2.md")
+    vt_use_req("req3", username = "a user", open = FALSE)
+
+
+    config_wd <- valtools:::get_config_working_dir()
+    cat(
+      file = file.path(config_wd, "validation", "test_cases", "testcase1.md"),
+      sep = "\n",
+      c(
+        "#' @title Test Case 1",
+        "#' @editor User One",
+        "#' @editDate 2021-03-17",
+        "#' @coverage",
+        "#' 1.1:1.1:1.2",
+        "#' 1.2: 1.2, 1.3",
+        "#' 1.3: 1.1, 1.3, 1.4",
+        "",
+        "+ _Test Cases_",
+        "  + T1.1 Create a sample spec with a unique reference number. Matches requirements: 1.1 and 1.2",
+        "  + T1.2 Another test case. Matches requirements: 1.2 and 1.3",
+        "  + T1.3 More testing. Matches requirements: 1.1, 1.3, and 1.4",
+        ""))
+
+    expect_error(
+      vt_scrape_coverage_matrix(),
+      "Coverage details must follow format Test_Case:Requirement. See Test Case 1, Coverage Entry: 1.1:1.1:1.2"
+    )
+
+  })
+})
+
+test_that("coverage matrix malformed entry throws informative error - 2", {
+  withr::with_tempdir({
+    capture_output <- capture.output({
+      vt_create_package(open = FALSE)
+    })
+    vt_use_test_case("testcase1", username = "a user", open = FALSE)
+    vt_use_test_case("testcase2", username = "a user", open = FALSE)
+    vt_use_test_case("testcase3", username = "a user", open = FALSE)
+    vt_use_req("req1", username = "a user", open = FALSE, add_before = "testcase1.md")
+    vt_use_req("req2", username = "a user", open = FALSE, add_before = "testcase2.md")
+    vt_use_req("req3", username = "a user", open = FALSE)
+
+
+    config_wd <- valtools:::get_config_working_dir()
+    cat(
+      file = file.path(config_wd, "validation", "test_cases", "testcase1.md"),
+      sep = "\n",
+      c(
+        "#' @title Test Case 1",
+        "#' @editor User One",
+        "#' @editDate 2021-03-17",
+        "#' @coverage",
+        "#' 1.1 1.1, 1.2",
+        "#' 1.2: 1.2, 1.3",
+        "#' 1.3: 1.1, 1.3, 1.4",
+        "",
+        "+ _Test Cases_",
+        "  + T1.1 Create a sample spec with a unique reference number. Matches requirements: 1.1 and 1.2",
+        "  + T1.2 Another test case. Matches requirements: 1.2 and 1.3",
+        "  + T1.3 More testing. Matches requirements: 1.1, 1.3, and 1.4",
+        ""))
+
+    expect_error(
+      vt_scrape_coverage_matrix(),
+      "Coverage details must follow format Test_Case:Requirement. See Test Case 1, Coverage Entry: 1.1 1.1, 1.2"
+    )
 
   })
 })
