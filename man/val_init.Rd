@@ -3,6 +3,7 @@
 \name{vt_use_validation}
 \alias{vt_use_validation}
 \alias{vt_create_package}
+\alias{vt_create_packet}
 \title{Create a validation structure}
 \usage{
 vt_use_validation(pkg = ".", working_dir, ...)
@@ -14,6 +15,14 @@ vt_create_package(
   rstudio = rstudioapi::isAvailable(),
   roxygen = TRUE,
   check_name = TRUE,
+  open = rlang::is_interactive()
+)
+
+vt_create_packet(
+  path = ".",
+  target,
+  ...,
+  rstudio = rstudioapi::isAvailable(),
   open = rlang::is_interactive()
 )
 }
@@ -46,8 +55,16 @@ error if not}
 \item If on RStudio server, the current RStudio project is activated.
 \item Otherwise, the working directory and active project is changed.
 }}
+
+\item{path}{A path. If it exists, it is used. If it does not exist, it is
+created, provided that the parent path exists.}
+
+\item{target}{target of validation. Character name of package or scope validation packet is being performed for.}
 }
 \description{
 Creates a structure for validation artifacts. Validation items are stored in
 \code{inst/validation}
+
+Create the validation packet infrastructure. Intended to create
+validation infrastructure external to an R package.
 }

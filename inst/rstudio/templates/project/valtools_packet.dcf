@@ -1,0 +1,6 @@
+Binding: vt_create_packet_wizard
+Title: R Validation Packet using valtools
+
+Parameter: target
+Widget: TextInput
+Label: Validation Target
