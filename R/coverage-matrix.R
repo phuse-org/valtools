@@ -34,7 +34,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
 
       req_one_row <- data.frame(tc_title = x[["tc_title"]],
                                 tc_id = x[["tc_id"]],
-                                req_id = strsplit(trimws(x[["req_id"]]), split = ", ")[[1]],
+                                req_id = trimws(strsplit(trimws(x[["req_id"]]), split = ", ")[[1]]),
                                 deprecate = x[["deprecate"]],
                                 stringsAsFactors = FALSE)
       req_one_row$req_title <- paste0("Requirement ", gsub(req_one_row$req_id,
