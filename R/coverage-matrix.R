@@ -29,7 +29,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
   }
 
   split_req <- function(vals){
-    do.call("rbind", apply(vals, 1, FUN = function(x){
+    out <- do.call("rbind", apply(vals, 1, FUN = function(x){
 
 
       req_one_row <- data.frame(tc_title = x[["tc_title"]],
@@ -37,11 +37,23 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
                                 req_id = trimws(strsplit(trimws(x[["req_id"]]), split = ", ")[[1]]),
                                 deprecate = x[["deprecate"]],
                                 stringsAsFactors = FALSE)
+      
+
+      
       req_one_row$req_title <- paste0("Requirement ", gsub(req_one_row$req_id,
                                                            pattern = "^(\\d+)\\.*.*",
                                                            replacement = "\\1"))
+    
       req_one_row
     }))
+
+    # req_title uses only first numeric position
+    out$req_title <- factor(out$req_title,
+                            levels = paste0("Requirement ", 
+                                            sort(as.numeric(unique(unlist(lapply(strsplit(out$req_title, split = " "), 
+                                                        function(x){x[2]})))))))
+    out[order(out$req_title),]
+    
   }
 
   # avoids dependency on tidyr::pivot_wider
@@ -62,6 +74,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
       x
     })
     out <- do.call("rbind", list_all_x)
+
     row.names(out) <- 1:nrow(out)
     out[, c("req_title", "req_id", sort(names(out)[-1:-2]))]
   }
@@ -89,7 +102,7 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
   vals_all <- split_req(numbered_cov_vals)
 
   if(type[1] == "long"){
-    out_data <- vals_all[order(vals_all$req_id),]
+    out_data <- vals_all[order(vals_all$req_title),]
     row.names(out_data) <- 1:nrow(out_data)
     out_data <- out_data[, c("req_title", "req_id", "tc_title", "tc_id", "deprecate")]
     attr(out_data, "table_type") <- "long"
