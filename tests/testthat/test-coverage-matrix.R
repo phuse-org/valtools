@@ -118,15 +118,15 @@ test_that("coverage matrix from dynam num", {
     this_test <- xml2::read_html(gsub(cov_matrix_rmd_file, pattern = ".Rmd", replacement = ".html"))
     rendered_cov_matrix_html <- as.data.frame(rvest::html_table(rvest::html_nodes(this_test, "table")[1], fill = TRUE)[[1]],
                                               stringsAsFactors = FALSE)
-    expect_true(dplyr::all_equal(rendered_cov_matrix_html,
+    expect_equal(rendered_cov_matrix_html,
                  data.frame(`Requirement Name` = rep(paste("Requirement", 1:3), each = 7),
-                            `Requirement ID` = as.double(paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = ".")),
+                            `Requirement ID` = as.double(paste(rep(1:3, each = 7), rep(c(1, 2, 2, 3, 1, 3, 4), 3), sep = ".")),
                             `Test Case Name` = rep(paste("Test Case", 1:3), each = 7),
-                            `Test Cases` = as.double(c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
-                                                       paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                                       paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = "."))),
+                            `Test Cases` = as.double(c(paste(1, c(1, 1, 2, 2, 3, 3, 3), sep = "."),
+                                                       paste(2, c(2, 2, 1, 1, 3, 3, 3), sep = "."),
+                                                       paste(3, c(1, 1, 2, 2, 3, 3, 3), sep = "."))),
                             check.names = FALSE,
-                            stringsAsFactors = FALSE)))
+                            stringsAsFactors = FALSE))
     
     cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
     expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
