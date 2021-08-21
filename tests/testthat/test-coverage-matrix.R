@@ -67,16 +67,16 @@ test_that("coverage matrix from dynam num", {
     cov_matrix <- vt_scrape_coverage_matrix()
     
     expect_matrix <- data.frame(req_title = factor(rep(paste("Requirement", 1:3), each = 7)),
-                                req_id = paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = "."),
+                                req_id = paste(rep(1:3, each = 7), rep(c(1,  2, 2,3, 1, 3, 4), 3), sep = "."),
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
-                                tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
-                                          paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                tc_id = c(paste(1, c(1, 1, 2, 2, 3, 3, 3), sep = "."),
+                                          paste(2, c(2, 2, 1, 1, 3, 3, 3), sep = "."),
+                                          paste(3, c(1, 1, 2, 2, 3, 3, 3), sep = ".")),
                                 deprecate = "",
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
-    expect_true(dplyr::all_equal(cov_matrix,
-                                 expect_matrix))
+    expect_equal(cov_matrix,
+                                 expect_matrix)
     
     cov_matrix_tex_file <- tempfile(fileext = ".tex", tmpdir = getwd())
     writeLines(
@@ -304,16 +304,16 @@ test_that("coverage matrix no dynam num", {
         ""))
     cov_matrix <- vt_scrape_coverage_matrix()
     expect_matrix <- data.frame(req_title = factor(rep(paste("Requirement", 1:3), each = 7)),
-                                req_id = paste(rep(1:3, each = 7), rep(c(1, 1, 2, 2, 3, 3, 4), 3), sep = "."),
+                                req_id = paste(rep(1:3, each = 7), rep(c(1, 2, 2, 3,1, 3, 4), 3), sep = "."),
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
-                                tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
-                                          paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                tc_id = c(paste(1, c(1, 1, 2, 2, 3, 3, 3), sep = "."),
+                                          paste(2, c(2, 2, 1, 1, 3, 3, 3), sep = "."),
+                                          paste(3, c(1, 1, 2, 2, 3, 3, 3), sep = ".")),
                                 deprecate = "",
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
-    expect_true(dplyr::all_equal(cov_matrix,
-                 expect_matrix))
+    expect_equal(cov_matrix,
+                 expect_matrix)
     
     cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
     expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 1:3), each = 7),
@@ -337,8 +337,8 @@ test_that("coverage matrix no dynam num", {
                                                    deprecate = "",
                                                    stringsAsFactors = FALSE)
     
-    expect_true(dplyr::all_equal(cov_matrix2,
-                 expect_matrix2))
+    expect_equal(cov_matrix2,
+                 expect_matrix2)
     
     
   })
@@ -453,18 +453,18 @@ test_that("existing reference obj", {
                       `req:dynamic_numbering2` = 4,
                       `req:dynamic_numbering3` = 5))
     expect_matrix <- data.frame(req_title = factor(rep(paste("Requirement", 3:5), each = 7)),
-                                req_id = c(paste(3, c(1, 1, 2, 2, 3, 3, 4), sep = "."),
-                                           paste(4, c(1, 1, 2, 2, 3, 3, 4), sep = "."),
-                                           paste(5, c(1, 1, 2, 2, 3, 3, 4), sep = ".")),
+                                req_id = c(paste(3, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                           paste(4, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
+                                           paste(5, c(1, 2, 2, 3, 1, 3, 4), sep = ".")),
                                 tc_title = rep(paste("Test Case", 1:3), each = 7),
-                                tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
-                                          paste(2, c(2, 3, 2, 1, 1, 3, 3), sep = "."),
-                                          paste(3, c(1, 3, 1, 2, 2, 3, 3), sep = ".")),
+                                tc_id = c(paste(1, c(1, 1, 2, 2, 3, 3, 3), sep = "."),
+                                          paste(2, c(2, 2, 1, 1, 3, 3, 3), sep = "."),
+                                          paste(3, c(1, 1, 2, 2, 3, 3, 3), sep = ".")),
                                 deprecate = "",
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
-    expect_true(dplyr::all_equal(cov_matrix,
-                                 expect_matrix))
+    expect_equal(cov_matrix,
+                                 expect_matrix)
     
     cov_matrix2 <- vt_scrape_coverage_matrix(reference = references, type = "wide")
     expect_matrix2 <- data.frame(req_title = rep(paste("Requirement", 3:5), each = 7),
@@ -487,8 +487,8 @@ test_that("existing reference obj", {
                                                    tc_title = rep(paste("Test Case", 1:3), each = 3),
                                                    deprecate = "",
                                                    stringsAsFactors = FALSE)
-    expect_true(dplyr::all_equal(cov_matrix2,
-                          expect_matrix2))
+    expect_equal(cov_matrix2,
+                          expect_matrix2)
     
     
   })
@@ -554,17 +554,17 @@ test_that("coverage matrix missing or deprecated entry", {
     cov_matrix <- vt_scrape_coverage_matrix()
     expect_matrix <- data.frame(req_title = factor(c(rep("Requirement 1", each = 7),
                                               rep("Requirement 3", each = 4))),
-                                req_id = c(paste(1, c(1, 1, 2, 2, 3, 3, 4), sep = "."),
+                                req_id = c(paste(1, c(1, 2, 2, 3, 1, 3, 4), sep = "."),
                                            paste(3, 1:4, sep = ".")),
                                 tc_title = c(rep("Test Case 1", each = 7),
                                              rep("Test Case 3", each = 4)),
-                                tc_id = c(paste(1, c(1, 3, 1, 2, 2, 3, 3), sep = "."),
+                                tc_id = c(paste(1, c(1, 1, 2, 2, 3, 3, 3), sep = "."),
                                           paste(3, c(1, 1, 2, 2), sep = ".")),
                                 deprecate = c(rep("", 7), rep("Deprecated in v1.2", 4)),
                                 stringsAsFactors = FALSE)
     attr(expect_matrix, "table_type") <- "long"
-    expect_true(dplyr::all_equal(cov_matrix,
-                 expect_matrix))
+    expect_equal(cov_matrix,
+                 expect_matrix)
     
     cov_matrix2 <- vt_scrape_coverage_matrix(type = "wide")
     cov2_tc_title <- attr(cov_matrix2, "tc_title")
@@ -572,8 +572,8 @@ test_that("coverage matrix missing or deprecated entry", {
                                        tc_title = c(rep("Test Case 1", 3), rep("Test Case 3", 2)),
                                        deprecate = c(rep("", 3), rep("Deprecated in v1.2", 2)),
                                        stringsAsFactors = FALSE)
-    expect_true(dplyr::all_equal(cov2_tc_title,
-                 expect_cov2_tc_title))
+    expect_equal(cov2_tc_title,
+                 expect_cov2_tc_title)
     
   })
 })
