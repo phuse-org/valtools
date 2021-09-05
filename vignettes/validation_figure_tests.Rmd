@@ -26,11 +26,11 @@ However, not all functions are used for their value-generation.
 In fact, there are a number of functions that are used for their side effects, such as plot generation. 
 This has long been the achilles heel of testing. 
 
-With {testthat} 3e (third edition), there came the advent to the R world the concept of snapshot testing. 
+{testthat} 3e (third edition) adds the option to perform snapshot, i.e. golden, testing. 
 That is, to create a reference file that is then compared against in future runs. 
 This is an incredibly powerful tool that creates the opportunity to add testing of not only known outputs in the form of numbers, but of files and figures as well.
 
-{valtools} is built around taking the brilliant work of {testthat} and using it to make validation easier. Here we will give a short demo on how to short-circuit these sorts tests to make our own figure validation paradigm.
+{valtools} extends automated testing first introduced by {testthat} to make validation easier. Here we will give a short demo on how to short-circuit these sorts tests to make our own figure validation paradigm.
 
 ## Test Case
 
