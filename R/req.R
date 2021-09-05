@@ -29,9 +29,14 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
                       title = title,
                       editDate = as.character(Sys.Date())
                     ))
+    
+    vt_add_file_to_config(
+      filename = name,
+      after = {{add_after}},
+      before = {{add_before}}
+      )
   }
 
-  vt_add_file_to_config(filename = name, after = {{add_after}}, before = {{add_before}})
 
   if(open){
     edit_file(req_name)
