@@ -477,3 +477,27 @@ test_that("Dynaming referencing within a data.frame",{
                           stringsAsFactors = FALSE))
 
 })
+
+
+test_that("Dynaming referencing within a data.frame with NA's",{
+  
+  df_content <- 
+    data.frame( req_id = c("##req:first","##req:first","##req:second",NA),
+                tc_id = c("##tc:first", "##tc:second","##tc:second","##tc:third"),
+                stringsAsFactors = FALSE)
+  
+  dyn_ref1 <- vt_dynamic_referencer$new()
+  dyn_ref1$scrape_references(df_content)
+  
+  dyn_ref_df_content <- dyn_ref1$reference_insertion(df_content)
+  
+  expect_equal(
+    dyn_ref_df_content,
+    data.frame( req_id = c("1","1","2",NA),
+                tc_id = c("1", "2","2","3"),
+                stringsAsFactors = FALSE)
+  )
+
+
+})
+

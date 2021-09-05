@@ -50,9 +50,12 @@ vt_dynamic_referencer <- R6::R6Class("vt_dynamic_referencer",
           #' ref$list_references()
 
           scrape_references = function(text){
-
+            
             ## Drop roxygen comment headers from text for scraping references.
             text <- unname(unlist(text[!grepl("^#'", text)]))
+            
+            ## drop NA text from scraping
+            text <- text[!is.na(text)]
 
             reference_locations <-
               gregexpr(
