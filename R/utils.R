@@ -13,6 +13,13 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
   type <- match.arg(type)
 
   validation_directory <- vt_path()
+  
+  item_file_path <- file.path(validation_directory, type, item_name)
+  
+  ## if file exists, just return path
+  if(file.exists(item_file_path)){
+    return(item_file_path)
+  }
 
   # Create item folder if this is the first item
   if(!dir.exists(file.path(validation_directory, type))) {
@@ -35,19 +42,29 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
     })
   }
 
-  item_file_path <- file.path(validation_directory, type, item_name)
+
 
   tryCatch({
-
     file.create(item_file_path)
-    inform(paste0("Item created:", file.path(type, item_name), sep = " ", collapse = ""))
+    inform(paste0(
+      "Item created:",
+      file.path(type, item_name),
+      sep = " ",
+      collapse = ""
+    ))
     return(item_file_path)
-
+    
   }, error = function(e) {
-    abort(paste0("Failed to create validation", type, item_name,
-                                  sep = " ", collapse = ""),
-                           class = "vt.itemCreateFail")
+    abort(paste0(
+      "Failed to create validation",
+      type,
+      item_name,
+      sep = " ",
+      collapse = ""
+    ),
+    class = "vt.itemCreateFail")
   })
+  
 
 
 }
