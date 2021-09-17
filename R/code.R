@@ -20,11 +20,16 @@ vt_use_test_code <- function(name, username = vt_username(), open = interactive(
                       username = username,
                       editDate = as.character(Sys.Date())
                     ))
+    
+    # Add file to validation configuration
+    vt_add_file_to_config(
+      filename = name,
+      after = {{add_after}},
+      before = {{add_before}}
+      )
   }
 
-  # Add file to validation configuration
-  vt_add_file_to_config(filename = name, after = {{add_after}},
-                        before = {{add_before}})
+
 
   if(open){
     edit_file(code_name)
