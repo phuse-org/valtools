@@ -75,11 +75,18 @@ Read the [`Starting New Validation Package using {valtools}`](vignettes/starting
 
 Cheat sheet on how to use the {valtools} R Package
 
-<a href="man/figures/cheatsheets/valtools-cheatsheet.png">
-<img src="man/figures/cheatsheets/valtools-cheatsheet.png" 
-     alt="Cheatsheet on how to use the {valtools} R Package - functions & validation types" 
+<a href="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png">
+<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png" 
+     alt="Cheatsheet on how to use the {valtools} R Package - functions" 
      style="width:50%;height:auto"/>
 </a>
+
+<a href="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png">
+<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png" 
+     alt="Cheatsheet on how to use the {valtools} R Package - functions & validation modes" 
+     style="width:50%;height:auto"/>
+</a>
+
 
 ## Code of conduct
 
