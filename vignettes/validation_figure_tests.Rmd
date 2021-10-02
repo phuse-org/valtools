@@ -35,7 +35,8 @@ The test cases need to provide enough instruction for another programmer to cons
 
 Additionally, the test case author needs to provide instructions on how to compare files. Usually this will be what device to use to save the generated plot (ie. PNG, JPEG, TIFF) and then reference file that the test code writer will compare against.
 
-The comparison for most file types can be done by comparing the raw file contents, which the function `compare_file_binary()`, found in {testthat} V3.0.4.9000.
+The comparison for most file types can be done by comparing the raw file contents or raw text via `compare_file_binary()` and `compare_file_text()` found in {testthat} V3.0.4.9000 or newer.
+When performing the comparison, the two files should have been generated on the same OS to ensure consistency.
 
 ```
 
