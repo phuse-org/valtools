@@ -51,7 +51,7 @@ Compare this plot against the reference file provided by the the test case write
 ```
 
 In this situation, the test case author generated
-a reference png that is saved in the validation folder under `test_case/references/reference_plot.png` for the test code writer to compare against. 
+a reference png on the same OS that the code is intended to be run on and is saved in the validation folder under `test_case/references/reference_plot.png` for the test code writer to compare against. 
 
 ## Test Code
 
