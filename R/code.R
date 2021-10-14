@@ -32,7 +32,7 @@ vt_use_test_code <- function(name, username = vt_username(), open = interactive(
 
 
   if(open){
-    edit_file(code_name)
+    edit_file(code_name) # nocov
   }
 
   invisible(code_name)

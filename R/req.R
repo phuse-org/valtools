@@ -39,7 +39,7 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
 
 
   if(open){
-    edit_file(req_name)
+    edit_file(req_name) # nocov
   }
 
   invisible(req_name)

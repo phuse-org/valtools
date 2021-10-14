@@ -30,6 +30,8 @@ roxy_tag_parse.roxy_tag_deprecate <- function(x) {
   tag_markdown(x)
 }
 
+# nocov start
+
 #' @export
 #' @importFrom roxygen2 rd_section roxy_tag_rd
 roxy_tag_rd.roxy_tag_editor <- function(x, base_path, env) {
@@ -97,6 +99,7 @@ format.rd_section_deprecate <- function(x, ...) {
   )
 }
 
+# nocov end
 
 format_coverage_text <- function(x){
 

@@ -70,7 +70,7 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
   }
 
   if(open){
-    edit_file(case_name)
+    edit_file(case_name) # nocov
   }
 
   invisible(case_name)
