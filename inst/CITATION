@@ -1,0 +1,14 @@
+citHeader("To cite valtools in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "Automate Validated Package Creation",
+  author   = "Hughes, E., Vendettuoli, M., Miller, E., and Peyman, E.",
+  year     = "2021",
+  #volume   = "",
+  #number   = "",
+  #pages    = "",
+  url      = "https://github.com/phuse-org/valtools",
+  note     = "See also: `R Validation Framework`",
+  textVersion = paste("")
+)
