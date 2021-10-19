@@ -23,3 +23,22 @@ test_that("overriding extentions", {
   )
 
 })
+
+test_that("setting extentions when multiple exist", {
+  
+  expect_equal(
+    vt_set_ext("test_input.md",c("md","Rmd")),
+    "test_input.md"
+  )
+  
+  expect_equal(
+    vt_set_ext("test_input.Rmd",c("md","Rmd")),
+    "test_input.Rmd"
+  )
+  
+  expect_equal(
+    vt_set_ext("test_input.zzz",c("md","Rmd")),
+    "test_input.md"
+  )
+  
+})
