@@ -80,7 +80,7 @@ file_parse.default <- function(file, ..., dynamic_referencing = FALSE){
 
 #' @importFrom knitr knit_child
 #' @importFrom withr with_options
-file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), dynamic_referencing = FALSE){
+file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), interactive_output = interactive(), dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
     text <- dynamic_reference_rendering(file, reference = reference)
@@ -91,6 +91,28 @@ file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), d
   ## remove roxygen comments
   text <- text[!grepl("^#'", text)]
 
+  if(interactive_output){
+    file_parse.md.interactive(text, ..., envir = envir)
+  }else{
+    file_parse.md.knitting(text, ..., envir = envir)
+  }
+
+}
+
+#' @importFrom knitr knit
+file_parse.md.interactive <- function(text, ..., envir = parent.frame()){
+  with_options(new = list(knitr.duplicate.label = "allow"), {
+    cat(asis_output(knit(
+      text = text,
+      envir = envir,
+      ...,
+      quiet = TRUE
+    )))
+  })
+}
+
+#' @importFrom knitr knit_child
+file_parse.md.knitting <- function(text, ..., envir = parent.frame()){
   with_options(new = list(knitr.duplicate.label = "allow"), {
     cat(asis_output(knit_child(
       text = text,
@@ -101,11 +123,12 @@ file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), d
   })
 }
 
+
 file_parse.rmd <- file_parse.md
 
 
 
-file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.frame(), dynamic_referencing = FALSE){
+file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.frame(), interactive_output = interactive(), dynamic_referencing = FALSE){
 
   text <- c("```{r echo = FALSE}",
             paste0("results <- eval_test_code(path = ",bquote(file),")"),
@@ -116,14 +139,11 @@ file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.f
 
   text <- text[!is.na(text)]
 
-  with_options(new = list(knitr.duplicate.label = "allow"), {
-    cat(asis_output(knit_child(
-      text = text,
-      envir = envir,
-      ...,
-      quiet = TRUE
-    )))
-  })
+  if(interactive_output){
+    file_parse.md.interactive(text, ..., envir = envir)
+  }else{
+    file_parse.md.knitting(text, ..., envir = envir)
+  }
 }
 
 #' output to render kable to

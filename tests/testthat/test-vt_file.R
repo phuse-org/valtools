@@ -28,45 +28,48 @@ test_that("evaluting markdown files works", {
     referencer <- vt_dynamic_referencer$new()
 
     sample_output <- capture.output({
-      cat(file_parse.md(file = "sample.md"))
+      cat(file_parse.md(file = "sample.md", interactive_output = TRUE))
     })
 
     sample_output2 <- capture.output({
       cat(file_parse.md(
         file = "sample2.md",
         reference = referencer,
+        interactive_output = TRUE,
         dynamic_referencing = TRUE))
     })
 
+    
     sample_output3 <- capture.output({
-      vt_file(file = "sample.md")
+      vt_file(file = "sample.md", interactive_output = TRUE)
     })
 
     sample_output4 <- capture.output({
       vt_file(
         file = "sample2.md",
         reference = referencer,
+        interactive_output = TRUE,
         dynamic_referencing = TRUE)
     })
 
     expect_equal(
       sample_output,
-      c("","## Header", "+ Content", "  + more content", "+ Content 2")
+      c("## Header", "+ Content", "  + more content", "+ Content 2")
     )
 
     expect_equal(
       sample_output2,
-      c("","## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
+      c("## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
     )
 
     expect_equal(
       sample_output3,
-      c("","## Header", "+ Content", "  + more content", "+ Content 2")
+      c("## Header", "+ Content", "  + more content", "+ Content 2")
     )
 
     expect_equal(
       sample_output4,
-      c("","## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
+      c("## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
     )
 
   })
@@ -115,6 +118,7 @@ test_that("evaluating Rmarkdown files works", {
     sample_output <- capture.output({
       file_parse.rmd(
         file = "sample.Rmd",
+        interactive_output = FALSE,
         envir = curr_env)
     })
 
@@ -122,12 +126,14 @@ test_that("evaluating Rmarkdown files works", {
       file_parse.rmd(
         file = "sample2.Rmd",
         reference = referencer,
+        interactive_output = FALSE,
         dynamic_referencing = TRUE,
         envir = curr_env)
     })
 
     sample_output3 <- capture.output({
       vt_file(file = "sample.Rmd",
+              interactive_output = FALSE,
               envir = curr_env)
     })
 
@@ -135,10 +141,13 @@ test_that("evaluating Rmarkdown files works", {
       vt_file(
         file = "sample2.Rmd",
         reference = referencer,
+        interactive_output = FALSE,
         dynamic_referencing = TRUE,
         envir = curr_env)
     })
 
+    browser()
+    
     expect_equal(
       sample_output,
       c("","","",
