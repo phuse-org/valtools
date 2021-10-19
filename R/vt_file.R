@@ -108,6 +108,7 @@ file_parse.md.interactive <- function(text, ..., envir = parent.frame()){
       ...,
       quiet = TRUE
     )))
+    cat("\n")
   })
 }
 

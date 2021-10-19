@@ -146,8 +146,6 @@ test_that("evaluating Rmarkdown files works", {
         envir = curr_env)
     })
 
-    browser()
-    
     expect_equal(
       sample_output,
       c("","","",
