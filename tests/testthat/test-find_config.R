@@ -66,7 +66,7 @@ test_that("Informative error when outside a packet or package", {
     expect_error(
       vt_find_config(),
       paste0(
-      "Could not find root directory found. ",
+      "Could not find root directory. ",
       "Is your working directory inside a package, validation packet, or project?\n"
       ),
       fixed = TRUE)

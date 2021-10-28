@@ -64,7 +64,7 @@ vt_find_config <- function(){
   }, error = function(e){
     abort(
       paste0(
-      "Could not find root directory found. ",
+      "Could not find root directory. ",
       "Is your working directory inside a package, validation packet, or project?\n"
       ),
       class = "vt.validation_root_missing"
