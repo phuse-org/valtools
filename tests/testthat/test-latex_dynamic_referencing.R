@@ -1,6 +1,8 @@
 test_that("latex Number Referencing across rmarkdown chunks", {
 
   skip_if_not_installed("valtools")
+  skip_if_not(rmarkdown::pandoc_version() == numeric_version("2.7.3"))
+  
   withr::with_tempdir({
 
   ## Create test files
