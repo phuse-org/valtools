@@ -58,8 +58,18 @@ vt_path <- function(...){
 #'
 #' @export
 vt_find_config <- function(){
-
-  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+  
+  tryCatch({
+    root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+  }, error = function(e){
+    abort(
+      paste0(
+      "Could not find root directory found. ",
+      "Is your working directory inside a package, validation packet, or project?\n"
+      ),
+      class = "vt.validation_root_missing"
+    )
+  })
 
   tryCatch({
 
