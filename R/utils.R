@@ -104,7 +104,7 @@ vt_username <- function(){
 #'
 #' @noRd
 #' @param filename the filname to add/replace extention
-#' @param ext intended extention
+#' @param ext intended extention(s)
 #'
 #' @returns filename with correct extention
 #'
@@ -115,9 +115,9 @@ vt_set_ext <- function(filename, ext){
     filename <- file_path_sans_ext(filename)
 
     filename_ext <- ifelse(
-      identical(tolower(filename_ext), tolower(ext)),
+      tolower(filename_ext) %in% tolower(ext),
       filename_ext,
-      ext
+      ext[1]
     )
 
     paste0(filename, ".", filename_ext)

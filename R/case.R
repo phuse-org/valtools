@@ -40,7 +40,7 @@
 vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(),
                              add_before = NULL, add_after = NULL) {
 
-  name <- vt_set_ext(name, ext = "md")
+  name <- vt_set_ext(name, ext = c("md","rmd"))
 
   is_valid_name(name)
 
