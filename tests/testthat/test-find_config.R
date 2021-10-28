@@ -11,7 +11,7 @@ test_that("Find config when within a package with validation", {
     withr::with_dir(new = "example.package", {
       expect_equal(
         vt_find_config(),
-        file.path(getwd(), "vignettes","validation","validation.yml")
+        normalizePath(file.path(getwd(), "vignettes","validation","validation.yml"),winslash = "/")
       )
     })
   })
@@ -31,7 +31,9 @@ test_that("Find config when within a package with validation when working dir is
     withr::with_dir(new = "example.package", {
       expect_equal(
         vt_find_config(),
-        file.path(getwd(), "inst","validation","validation.yml")
+        normalizePath(
+          file.path(getwd(), "inst","validation","validation.yml"),
+          winslash = "/")
       )
     })
   })
@@ -50,7 +52,9 @@ test_that("Find config when within a validation packet", {
       withr::with_dir(new = "example_packet", {
         expect_equal(
           vt_find_config(),
-          file.path(getwd(), "validation","validation.yml")
+          normalizePath(
+            file.path(getwd(), "validation","validation.yml"),
+            winslash = "/")
         )
       })
 
