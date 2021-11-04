@@ -1,0 +1,86 @@
+---
+title: "Validation: Figure Tests"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{validation_figure_tests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(valtools)
+library(testthat)
+```
+
+Effective test cases cover a broad spectrum of use cases of the code intended to be validated. 
+More often than not, this is confirming that an input returns a specific or set of specific values.
+
+However, not all functions are used for their value-generation.
+In fact, there are a number of functions that are used for their side effects, such as plot generation. 
+
+{testthat} 3e (third edition) adds the option to perform snapshot, i.e. golden, testing. 
+That is, to use a reference output that is then compared against outputs in future runs. 
+This is an powerful tool that creates the opportunity to add testing of not only known outputs in the form of numbers, but of files and figures as well.
+
+## Image Comparison Example
+
+The test cases need to provide enough instruction for another programmer to consistently generate the same results. When it comes to test cases related to figure comparison, the same holds true. The test case author needs to provide the specific set of instructions, including the layering of the plot elements, to generate the same plots.
+
+Additionally, the test case author needs to provide instructions on how to compare files. Usually this will be what device to use to save the generated plot (ie. PNG, JPEG, TIFF) and then reference file that the test code writer will compare against.
+
+The comparison for most file types can be done by comparing the raw file contents or raw text via `compare_file_binary()` and `compare_file_text()` found in {testthat} V3.0.4.9000 or newer.
+When performing the comparison, the two files should have been generated on the same OS to ensure consistency.
+
+```
+
+Figure Expectation 01
+---
+
+First create the temporary file path via `tempfile()` and assign to the object `tmp_png`.
+Set the RNG seed to 100.
+Run the function `png()`, with the argument `filename` set to be `tmp_png` to start capturing the plot generated.
+Create a histogram with the function `hist()` and set the arg `x` to be the result of 100 values randomly generated from the normal distribution.
+Stop capturing the plot by calling `dev.off()`.
+Compare this plot against the reference file provided by the the test case writer using the `compare_file_binary()` function from {testthat} by passing the pass to the reference file to the first argument (`vt_file("test_case/references/reference_plot.png")`) and `tmp_png` to the second argument and confirming the result is "TRUE"
+```
+
+In this situation, the test case author generated
+a reference png on the same OS that the code is intended to be run on and is saved in the validation folder under `test_case/references/reference_plot.png` for the test code writer to compare against. 
+
+## Test Code
+
+The test code writer now follows the instructions to write the test case and compares the file. Note how the last instructions are to confirm the output is true, so the final expectation is to use the `expect_true()` expectation from {testthat}.
+
+```r
+
+test_that("Figure Expectation 01",{
+
+  tmp_png <- tempfile()
+  set.seed(100)
+  
+  png(tmp_png)
+  hist(rnorm(100))
+  dev.off()
+
+  expect_true(
+   compare_file_binary(
+   vt_file("test_case/references/reference_plot.png"),
+   tmp_plot
+  )
+  
+})
+
+```
+
+
+
+
+
+

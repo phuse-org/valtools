@@ -108,3 +108,32 @@ test_that("Throw an error if the validation directory has not been set up", {
     )
   })
 })
+
+test_that("simple item creation does not overwrite file", {
+  withr::with_tempdir({
+    # set up "validation" infrastructure
+    dir.create("vignettes/validation", recursive = TRUE)
+    writeLines(c("working_dir: vignettes"),"vignettes/validation/validation.yml")
+    file.create(".here")
+    
+    
+    spec_path <- create_item(
+      item_name = "new_specification",
+      type = "requirements")
+    
+    spec_path_file_info <- file.info(spec_path)
+
+    
+    spec_path <- create_item(
+      item_name = "new_specification",
+      type = "requirements")
+    
+    spec_path_file_info_2 <- file.info(spec_path)
+    
+    expect_equal(
+      spec_path_file_info[,c("mtime","ctime")],
+      spec_path_file_info_2[,c("mtime","ctime")]
+    )
+  })
+})
+

@@ -217,3 +217,28 @@ test_that("Test getting package name from config file", {
 
 })
 
+test_that("Accessing config output dirs returns working dir when it is missing", {
+
+  withr::with_tempdir({
+
+    vt_use_validation(
+      pkg = ".",
+      package = "test.package"
+    )
+
+    ## remove output_dir from config
+    write_yaml(
+        x = list(
+          package = "test.package",
+          working_dir = "working_dir"
+        ),
+        file = file.path("validation", "validation.yml")
+    )
+
+    expect_equal(
+      get_config_output_dir(),
+      "working_dir"
+    )
+
+  })
+})

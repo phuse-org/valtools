@@ -109,14 +109,6 @@ vt_scrape_requirement_editors() %>%
   vt_kable_requirement_editors()
 ```
 
-### Functions
-
-```{r func-authors}
-vt_scrape_function_editors(tags = c("editor", "editDate")) %>%
- vt_kable_function_editors()
-
-```
-
 ### Test Case Authors
 
 ```{r test-case-authors}

@@ -11,3 +11,4 @@ CONTRIBUTING.md
 ^validation\.yml$
 
 vignettes/validation/validation.yml
+^man/figures/cheatsheets/*

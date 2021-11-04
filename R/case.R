@@ -40,7 +40,7 @@
 vt_use_test_case <- function(name, username = vt_username(), title = NULL, open = interactive(),
                              add_before = NULL, add_after = NULL) {
 
-  name <- vt_set_ext(name, ext = "md")
+  name <- vt_set_ext(name, ext = c("md","rmd"))
 
   is_valid_name(name)
 
@@ -60,14 +60,17 @@ vt_use_test_case <- function(name, username = vt_username(), title = NULL, open 
                        username = username,
                        editDate = as.character(Sys.Date())
                      ))
-
+    
+    # Add file to validation configuration
+    vt_add_file_to_config(
+      filename = name,
+      after = {{add_after}},
+      before = {{add_before}}
+      )
   }
 
-  # Add file to validation configuration
-  vt_add_file_to_config(filename = name, after = {{add_after}}, before = {{add_before}})
-
   if(open){
-    edit_file(case_name)
+    edit_file(case_name) # nocov
   }
 
   invisible(case_name)

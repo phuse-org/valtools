@@ -4,7 +4,7 @@
   [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-# valtools
+# valtools <img src='man/figures/logo.png' align="right" height="139" />
 
 valtools helps automate the validation of R packages used in clinical research and drug development:
 It provides useful templates and helper functions for tasks that arise during project set up and development
@@ -18,7 +18,7 @@ For background on the `R Package Validation Framework`, watch [this presentation
 
 ## Installation
 
-{valtools} is under active development!
+{valtools} is under active development. To get the latest version, install from github:
 
 ```
 devtools::install_github("phuse-org/valtools")
@@ -70,6 +70,23 @@ These functions are helper functions for use within the validation report Rmd.
 ## Vignettes
 
 Read the [`Starting New Validation Package using {valtools}`](vignettes/starting-validated-package.Rmd) vignette for a high level overview of the functions that exist in {valtools} and their intended uses.
+
+## Cheat Sheet
+
+Cheat sheet on how to use the {valtools} R Package
+
+<a href="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png">
+<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png" 
+     alt="Cheatsheet on how to use the {valtools} R Package - functions" 
+     style="width:50%;height:auto"/>
+</a>
+
+<a href="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png">
+<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png" 
+     alt="Cheatsheet on how to use the {valtools} R Package - functions & validation modes" 
+     style="width:50%;height:auto"/>
+</a>
+
 
 ## Code of conduct
 
