@@ -8,6 +8,13 @@
 
 <title>Create a validation structure — vt_use_validation • valtools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -41,7 +48,10 @@
 
 <meta property="og:title" content="Create a validation structure — vt_use_validation" />
 <meta property="og:description" content="Creates a structure for validation artifacts. Validation items are stored in
-inst/validation" />
+inst/validation
+Create the validation packet infrastructure. Intended to create
+validation infrastructure external to an R package." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -73,7 +83,7 @@ inst/validation" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">valtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -97,6 +107,12 @@ inst/validation" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/starting-validated-package.html">Starting New Validation Package using {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validating-external-resources.html">Validating External Resources with {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validation_figure_tests.html">Validation: Figure Tests</a>
     </li>
   </ul>
 </li>
@@ -124,6 +140,8 @@ inst/validation" />
     <div class="ref-description">
     <p>Creates a structure for validation artifacts. Validation items are stored in
 <code>inst/validation</code></p>
+<p>Create the validation packet infrastructure. Intended to create
+validation infrastructure external to an R package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>vt_use_validation</span><span class='op'>(</span>pkg <span class='op'>=</span> <span class='st'>"."</span>, <span class='va'>working_dir</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -135,6 +153,14 @@ inst/validation" />
   rstudio <span class='op'>=</span> <span class='fu'>rstudioapi</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rstudioapi/man/isAvailable.html'>isAvailable</a></span><span class='op'>(</span><span class='op'>)</span>,
   roxygen <span class='op'>=</span> <span class='cn'>TRUE</span>,
   check_name <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  open <span class='op'>=</span> <span class='fu'>rlang</span><span class='fu'>::</span><span class='fu'><a href='https://rlang.r-lib.org/reference/is_interactive.html'>is_interactive</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='fu'>vt_create_packet</span><span class='op'>(</span>
+  path <span class='op'>=</span> <span class='st'>"."</span>,
+  <span class='va'>target</span>,
+  <span class='va'>...</span>,
+  rstudio <span class='op'>=</span> <span class='fu'>rstudioapi</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rstudioapi/man/isAvailable.html'>isAvailable</a></span><span class='op'>(</span><span class='op'>)</span>,
   open <span class='op'>=</span> <span class='fu'>rlang</span><span class='fu'>::</span><span class='fu'><a href='https://rlang.r-lib.org/reference/is_interactive.html'>is_interactive</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
@@ -184,6 +210,15 @@ error if not</p></td>
 <li><p>If on RStudio server, the current RStudio project is activated.</p></li>
 <li><p>Otherwise, the working directory and active project is changed.</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>path</th>
+      <td><p>A path. If it exists, it is used. If it does not exist, it is
+created, provided that the parent path exists.</p></td>
+    </tr>
+    <tr>
+      <th>target</th>
+      <td><p>target of validation. Character name of package or scope validation packet is being performed for.</p></td>
     </tr>
     </table>
 

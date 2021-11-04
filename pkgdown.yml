@@ -3,5 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   starting-validated-package: starting-validated-package.html
-last_built: 2021-06-04T02:08Z
+  validating-external-resources: validating-external-resources.html
+  validation_figure_tests: validation_figure_tests.html
+last_built: 2021-11-04T14:29Z
 

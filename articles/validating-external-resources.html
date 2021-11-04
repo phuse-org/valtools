@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Starting New Validation Package using {valtools} • valtools</title>
+<title>Validating External Resources with {valtools} • valtools</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Starting New Validation Package using {valtools}">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Validating External Resources with {valtools}">
 <meta property="og:description" content="valtools">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -82,14 +82,14 @@
 
       
 
-      </header><script src="starting-validated-package_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="validating-external-resources_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Starting New Validation Package using {valtools}</h1>
+      <h1 data-toc-skip>Validating External Resources with {valtools}</h1>
             
       
       
-      <div class="hidden name"><code>starting-validated-package.Rmd</code></div>
+      <div class="hidden name"><code>validating-external-resources.Rmd</code></div>
 
     </div>
 
@@ -98,26 +98,34 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># remotes::install_github("phuse-org/valtools")</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">valtools</span><span class="op">)</span></code></pre></div>
-<p>This vignette steps through the process of creating an R package that is intended to be validated, by extending <code>usethis</code> and <code>devtools</code> functionality to provide a seamless validation process.</p>
-<p>There is a combination of explaining how to use {valtools} and tutorial steps for the reader to follow along in creating a simple R package that could undergo validation.</p>
-<div id="creating-a-new-r-package" class="section level2">
+<p>This vignette steps through the process of validating external resources with {valtools}. “External resources” is defined for this vignette as any software or environment that does not follow the validation process defined in the <a href="starting-validated-package.html">Starting New Validation Package using {valtools}</a> vignette. This means packages installed from other sources, collections of packages, external software, and environments.</p>
+<p>This process may be invoked when an R package was already developed and only after the fact was validation decided to be of value, validating an externally generated package (for example a package installed from CRAN), or validating an environment or system.</p>
+<div id="creating-a-new-validation-packet" class="section level2">
 <h2 class="hasAnchor">
-<a href="#creating-a-new-r-package" class="anchor"></a>Creating A New R Package</h2>
-<p>Starting a new R package using {valtools} is a one line command, where the only information required is the path to the location the new package structure is to be built, with the last folder name in the path being the new name of the package.</p>
+<a href="#creating-a-new-validation-packet" class="anchor"></a>Creating A New Validation Packet</h2>
+<p>Starting a new validation packet using {valtools} starts with <code><a href="../reference/vt_use_validation.html">vt_create_packet()</a></code>. Here, the user passes the directory the project is to be performed in, and optionally the target of validation.</p>
+<p>The “target of validation” is what the packet intends to validate - be it an external package, environment, software, etc.</p>
+<p>If the target is not provided, {valtools} will request the user provide this information</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="co"># create a new package skeleton</span>
-<span class="fu"><a href="../reference/vt_use_validation.html">vt_create_package</a></span><span class="op">(</span><span class="st">"example.package"</span><span class="op">)</span></code></pre></div>
-<p>The package is constructed using the <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_package()</a></code> function, this function acts as a wrapper and adds the necessary validation infrastructure required for {valtools}.</p>
-<p>Importantly, there is now a <code>vignettes/validation</code> folder, which is the working directory for the validation. This is where almost all the content for validation will be created.</p>
+<span class="co"># create a new validation packet skeleton</span>
+<span class="fu"><a href="../reference/vt_use_validation.html">vt_create_packet</a></span><span class="op">(</span>
+  path <span class="op">=</span> <span class="st">"/my/path/to/example_validation_packet"</span>, 
+  target <span class="op">=</span> <span class="st">"super.package"</span>
+  <span class="op">)</span></code></pre></div>
+<p>The validation packet folder is constructed using the <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_project()</a></code> function, and then all the necessary validation infrastructure required for {valtools}.</p>
+<p>Importantly, there is now a <code>validation</code> folder, which is the working directory for the validation. This is where almost all the content for validation will be created.</p>
 <p>Inside this folder, there is the <code>validation.yml</code> file, which will be referred as the validation config file going forward. This YML file informs {valtools} how to interact with the various pieces of validation that will be created, and information that needs to be shared across multiple sessions/users. The user does not need to interact with this file directly, the functions inside {valtools} will update this file as necessary.</p>
 <div id="tutorial" class="section level4">
 <h4 class="hasAnchor">
 <a href="#tutorial" class="anchor"></a>Tutorial</h4>
-<p>Run the chunk of code below to create a package in a temporary directory to follow along with the tutorial. The new package will be created in a new session. Run all subsequent code in that new session.</p>
+<p>Run the chunk of code below to create a validation packet in a temporary directory to follow along with the tutorial for the {whoami} package. The new packet project will be opened in a new session. Run all subsequent code in that new session.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_validation.html">vt_create_package</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">"example.package"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_validation.html">vt_create_packet</a></span><span class="op">(</span>
+  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">"validation_packet_whoami"</span><span class="op">)</span>,
+  target <span class="op">=</span> <span class="st">"whoami"</span>
+  <span class="op">)</span></code></pre></div>
 <p>To examine the folder structure of the new package, run the following function:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -127,9 +135,10 @@
 <div id="add-requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#add-requirements" class="anchor"></a>Add Requirements</h2>
-<p>Requirements document the goals of the package - what it does to solve whatever problem or task - and should be documented before any code is written. Requirements are recorded within the <code>vignettes/validation/requirements</code> folder by default. The collection of requirements may be called specifications.</p>
+<p>Requirements document users needs of the target - what are the problems the target solves for the users - and must be documented before any test cases are written. Requirements are recorded within the <code>validation/requirements</code> folder by default. The collection of requirements may be called specifications.</p>
+<p>Requirements are written as markdown (.md) documents with special roxygen headers. Each requirement must have the following roxygen comments in the header: title, editor, editDate, and riskAssessment. The last the roxygen comments are custom {valtools} supported roxygen tags to support validation. <code>@editor</code> is for tracking the last editor of the function, <code>@editDate</code> is for recording whenever a function is modified, and <code>@riskAssessment</code> is for tracking risks for each requirement.</p>
 <p>To make adding validation content easy, {valtools} extended the <code>usethis</code> approach to package contents creation through a family of “vt_use_*” functions.</p>
-<p><code><a href="../reference/vt_use_test_case.html">vt_use_req()</a></code> creates a new requirement in the <code>vignettes/validation/requirements</code> folder, with the main argument being the name of the requirement, and an optional argument <code>username</code> to record the name of the person writing the requirement.</p>
+<p><code><a href="../reference/vt_use_test_case.html">vt_use_req()</a></code> creates a new requirement in the <code>validation/requirements</code> folder, with the main argument being the name of the requirement, and an optional argument <code>username</code> to record the name of the person writing the requirement.</p>
 <p>If the <code>username</code> argument is not passed, {valtools} will automatically get the computer username of the user creating the requirement and attempt to put in their full name. If the user has not created any validation contents before, it will ask the user some questions (Name, Title, and Role) and record them in the validation config file for documentation in the validation report.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -140,92 +149,51 @@
 <p>Run the command above and in the newly opened requirements file, on line 5, Replace <code>REQUIREMENTS</code> with <code>1.1</code>, and <code>ASSESSMENT</code> with <code>1, Low Risk, Small Impact</code> to indicate requirement 1.1 has a risk assessment that determined it has a low risk and small impact when it is wrong.</p>
 <p>Add a new line underneath the line above (at line 6) line that contains: <code>#' 1.2: 5, Low risk, Medium Impact</code></p>
 <p>Copy the following content:</p>
-<pre><code>## Say Hello
-
-+ 1.1 Say Hello to users
-+ 1.2 Say Hello to multiple users at once</code></pre>
-</div>
-</div>
-<div id="package-development" class="section level2">
-<h2 class="hasAnchor">
-<a href="#package-development" class="anchor"></a>Package Development</h2>
-<p>Now that requirements are set, the normal package development process can be followed. {valtools} expects the developers to be using <code>usethis</code> and <code>devtools</code> to create the rest of the package contents, but it is not required.</p>
-<p>A critical piece to validation during development is tracking which programmers wrote which functions. {valtools} supports this by augmenting the {roxygen2} framework of function documentation with two custom roxygen tags: <code>@editor</code> and <code>@editDate</code>.</p>
-<p><code>@editor</code> is for tracking the last editor of the function, and <code>@editDate</code> is for recording whenever a function is modified.</p>
-<div id="tutorial-2" class="section level4">
-<h4 class="hasAnchor">
-<a href="#tutorial-2" class="anchor"></a>Tutorial</h4>
-<p>Run the command below to create an R file in the package and copy the following code into the file.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_r.html">use_r</a></span><span class="op">(</span><span class="st">"hello_world"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' Hello World</span>
-<span class="co">#' @param name name to say hello to</span>
-<span class="co">#' @returns character string saying hello</span>
-<span class="co">#' @editor Ellis Hughes</span>
-<span class="co">#' @editDate 2021-03-12</span>
-<span class="co">#' @export</span>
-<span class="va">hello_world</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Hello,"</span>,<span class="va">name</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="co">#' Hello World - internal</span>
-<span class="co">#' @param name name to say hello to</span>
-<span class="co">#' @returns character string saying hello</span>
-<span class="co">#' @editor Ellis Hughes</span>
-<span class="co">#' @editDate 2021-03-12</span>
-<span class="va">hello_world_internal</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"hello,"</span>,<span class="va">name</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># generate documentation</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co">#GPP: unit testing, update DESCRIPTION, ...</span></code></pre></div>
+<pre><code>+ 1.1 Collect user id for current session
++ 1.2 Collect full name of user for current session</code></pre>
 </div>
 </div>
 <div id="change-log" class="section level2">
 <h2 class="hasAnchor">
 <a href="#change-log" class="anchor"></a>Change Log</h2>
-<p>Similar to a news file, {valtools} suggests the use of a change log that is directly tied to validation. The purpose of this is to separate package update and information that is useful for developers from information that is important to capture in validation.</p>
+<p>Similar to a news file, {valtools} suggests the use of a change log that is directly tied to validation for recording changes. The purpose of this is to capture update and information that is useful for developers from information that is important to capture in validation.</p>
 <p>To create this change log file, {valtools} has the function <code><a href="../reference/vt_scrape_change_log.html">vt_use_change_log()</a></code>. It will create the change log file inside the working directory and open it up for editing.</p>
-<p>The header information tracks the version of validation (usually tied to the package version when developing a package), and the date of the release of validation. This is a markdown file, so normal markdown can be used to document the changes. However, critically here, only bullets marked with [validation] will be recorded in the validation report.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>The header information tracks the version of validation and the date of the release of validation. This is a markdown file, so normal markdown can be used to document the changes. However, critically here, only bullets marked with [validation] will be recorded in the validation report.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_scrape_change_log.html">vt_use_change_log</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div id="tutorial-3" class="section level4">
+<div id="tutorial-2" class="section level4">
 <h4 class="hasAnchor">
-<a href="#tutorial-3" class="anchor"></a>Tutorial</h4>
+<a href="#tutorial-2" class="anchor"></a>Tutorial</h4>
 <p>Run the command above to create a change log.</p>
 </div>
 </div>
 <div id="testing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#testing" class="anchor"></a>Testing</h2>
-<p>Testing is done to ensure that the package meets the requirements that were set out for the project. Testing is done in two major steps: the firsts consists of writing out a series of cases that would prove that the requirements have been met, the second is the application of these cases.</p>
+<p>Testing is done to ensure that the target meets the requirements that were set out for the project. Testing is done in two major steps: the firsts consists of writing out a series of cases that would prove that the requirements have been met, the second is the application of these cases.</p>
 <div id="test-cases" class="section level3">
 <h3 class="hasAnchor">
 <a href="#test-cases" class="anchor"></a>Test Cases</h3>
 <p>The addition and writing of test cases is handled by the <code><a href="../reference/vt_use_test_case.html">vt_use_test_case()</a></code> function. Similarly to <code><a href="../reference/vt_use_test_case.html">vt_use_req()</a></code>, a username can be passed, or it will look to determine which user is calling the function and input their information.</p>
-<p>This function creates the test case file in the <code>vignettes/validation/test_cases</code> folder of the package and opens it for editing.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>This function creates the test case file in the <code>validation/test_cases</code> folder of the package and opens it for editing.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_test_case.html">vt_use_test_case</a></span><span class="op">(</span><span class="st">"Test_case_001"</span><span class="op">)</span></code></pre></div>
-<div id="tutorial-4" class="section level4">
+<div id="tutorial-3" class="section level4">
 <h4 class="hasAnchor">
-<a href="#tutorial-4" class="anchor"></a>Tutorial</h4>
+<a href="#tutorial-3" class="anchor"></a>Tutorial</h4>
 <p>Run the code above and in the newly opened test case file, replace <code>TESTCASE</code> with <code>1.1</code>, and <code>REQUIREMENT</code> with <code>1.1</code> to indicate test case 1.1 shows that requirement 1.1 is being met.</p>
 <p>Add a new line underneath the line above (at line 6) line that contains: <code>#' 1.2: 1.1, 1.2</code></p>
 <p>This is to indicate test case 1.2 shows requirements 1.1 and 1.2 are being met.</p>
 <p>Copy the following test case into file where test cases are to be documented:</p>
-<pre><code>## Test Case 1: hello_world
-
-+ 1.1 test that the software can say "hello, Johnny" by passing a user "Johnny" 
-to the hello_world function
-+ 1.2 test that the software can say hello to multiple people by passing a vector of users - "Johnny", "Beth", "Andy","Elisabeth"
-to the hello_world function and getting back a vector of: c("Hello, Johnny", "Hello, Beth", "Hello, Andy","Hello, Elisabeth")</code></pre>
+<pre><code>+ 1.1 Test that the software can identify the username pf the user by
+setting the environment variable `LOGNAME` to `jsmith` for the duration of
+the test and  confirming that the output of whoami::username is `jsmith`.
++ 1.2 Test that the software can identify the full name of the user by 
+setting the environment variable `FULLNAME` to "John Smith" for the
+duration of the test and confirming  that the output of whoami::fullname()
+is "John Smith"</code></pre>
 </div>
 </div>
 <div id="test-code" class="section level3">
@@ -233,14 +201,14 @@ to the hello_world function and getting back a vector of: c("Hello, Johnny", "He
 <a href="#test-code" class="anchor"></a>Test Code</h3>
 <p>Test code is the implementation of the test cases as code. The goal is that the code is completely reproducible and able to be run without human interaction. Additionally, test code is written by a third party - someone that was not involved with writing the actual code or the test case. This helps ensure the integrity of the testing as well as providing valuable review of the documentation of the test cases and package code.</p>
 <p>Similarly to <code><a href="../reference/vt_use_test_case.html">vt_use_req()</a></code> for requirements and <code>vt_use_test_case</code> for test cases, {valtools} provide a function for creating test code files and recording which user created the file.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_test_case.html">vt_use_test_code</a></span><span class="op">(</span><span class="st">"Test_code_001"</span><span class="op">)</span></code></pre></div>
-<div id="tutorial-5" class="section level4">
+<div id="tutorial-4" class="section level4">
 <h4 class="hasAnchor">
-<a href="#tutorial-5" class="anchor"></a>Tutorial</h4>
+<a href="#tutorial-4" class="anchor"></a>Tutorial</h4>
 <p>Add “Val A Dashun” to the validation config file:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_add_file_to_config.html">vt_add_user_to_config</a></span><span class="op">(</span>
   username <span class="op">=</span> <span class="st">"user_b"</span>,
@@ -249,31 +217,43 @@ to the hello_world function and getting back a vector of: c("Hello, Johnny", "He
   role <span class="op">=</span> <span class="st">"tester"</span>
 <span class="op">)</span></code></pre></div>
 <p>Now that this persons information is recorded, construct the test code file that they will use to record the test code through the code below.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_test_case.html">vt_use_test_code</a></span><span class="op">(</span><span class="st">"Test_code_001"</span>, username <span class="op">=</span> <span class="st">"Val A Dashun"</span><span class="op">)</span></code></pre></div>
 <p>In the newly opened test code file. Update <code>TESTNUMBER</code> to <code>1.1</code> in the new test code file and copy the code below into the body of the test:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
- <span class="va">hello_result</span> <span class="op">&lt;-</span> <span class="fu">hello_world</span><span class="op">(</span><span class="st">"Johnny"</span><span class="op">)</span>
+<span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html">with_envvar</a></span><span class="op">(</span> 
+  new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>LOGNAME <span class="op">=</span> <span class="st">"jsmith"</span><span class="op">)</span>,
+  <span class="op">{</span>
+  
+  <span class="va">user</span> <span class="op">&lt;-</span> <span class="fu">whoami</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/whoami/man/username.html">username</a></span><span class="op">(</span><span class="op">)</span>
+  
+  <span class="fu">expect_equal</span><span class="op">(</span>
+  <span class="va">user</span>,
+  <span class="st">"jsmith"</span>
+ <span class="op">)</span>
  
- <span class="fu">expect_equal</span><span class="op">(</span>
-  <span class="va">hello_result</span>,
-  <span class="st">"Hello, Johnny"</span>
- <span class="op">)</span></code></pre></div>
+<span class="op">}</span><span class="op">)</span></code></pre></div>
 <p>add a new test with the following beneath the test. Replace “TODAYS DATE” with today’s date.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co">#' @editor Val A Dashun</span>
 <span class="co">#' @editDate TODAYS DATE</span>
 <span class="fu">test_that</span><span class="op">(</span><span class="st">"1.2"</span>,<span class="op">{</span>
 
- <span class="va">hello_result</span> <span class="op">&lt;-</span> <span class="fu">hello_world</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Johnny"</span>, <span class="st">"Beth"</span>, <span class="st">"Andy"</span>,<span class="st">"Elisabeth"</span><span class="op">)</span><span class="op">)</span>
- 
- <span class="fu">expect_equal</span><span class="op">(</span>
-  <span class="va">hello_result</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Hello, Johnny"</span>, <span class="st">"Hello, Beth"</span>, <span class="st">"Hello, Andy"</span>,<span class="st">"Hello, Elisabeth"</span><span class="op">)</span>
- <span class="op">)</span>
+  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_envvar.html">with_envvar</a></span><span class="op">(</span> 
+    new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>FULLNAME <span class="op">=</span> <span class="st">"John Smith"</span><span class="op">)</span>,
+    <span class="op">{</span>
+    
+    <span class="va">user_full_name</span> <span class="op">&lt;-</span> <span class="fu">whoami</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/whoami/man/fullname.html">fullname</a></span><span class="op">(</span><span class="op">)</span>
+    
+    <span class="fu">expect_equal</span><span class="op">(</span>
+    <span class="va">user_full_name</span>,
+    <span class="st">"John Smith"</span>
+   <span class="op">)</span>
+  
+  <span class="op">}</span><span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -283,9 +263,9 @@ to the hello_world function and getting back a vector of: c("Hello, Johnny", "He
 <a href="#authoring-validation-reports" class="anchor"></a>Authoring Validation Reports</h2>
 <p>{valtools} provides dynamic access via a Rmarkdown file to details necessary for generating a validation report at push of button. This validation report documents that the package meets stated goals and can be re-evaluated as necessary to generate the report in PDF or HTML format.</p>
 <p>The function <code><a href="../reference/vt_use_report.html">vt_use_report()</a></code> creates a validation report rmarkdown file pre-populated with code to scrape all the pieces of information that were generated in the prior steps to create the final report when being knit.</p>
-<p><code><a href="../reference/vt_use_report.html">vt_use_report()</a></code> saves the validation report rmarkdown file in the working directory identified in the validation config file. Within packages this defaults to the <code>vignettes</code> folder. This rmarkdown file will have a default name <code>validation.Rmd</code> if unspecified.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_report.html">vt_use_report</a></span><span class="op">(</span>template <span class="op">=</span> <span class="st">"validation"</span><span class="op">)</span></code></pre></div>
+<p><code><a href="../reference/vt_use_report.html">vt_use_report()</a></code> saves the validation report rmarkdown file in the working directory identified in the validation config file. Within packages this defaults to the base folder. This rmarkdown file will have a default name <code>validation.Rmd</code> if unspecified.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_use_report.html">vt_use_report</a></span><span class="op">(</span>template <span class="op">=</span> <span class="st">"packet"</span><span class="op">)</span></code></pre></div>
 <p>There are several sections included by default in the provided validation report rmarkdown:</p>
 <ul>
 <li><p>Signatures: Capture signatures of everyone involved in the validation.</p></li>
@@ -294,7 +274,7 @@ to the hello_world function and getting back a vector of: c("Hello, Johnny", "He
 <ul>
 <li>Records the validation environment</li>
 <li>Presents the change log of the validation.</li>
-<li>Subsections to show the last editor for each piece of the validation; requirements, functions, test cases and test code.</li>
+<li>Subsections to show the last editor for each piece of the validation; requirements, test cases and test code.</li>
 <li>Traceability table to show which requirements are being</li>
 <li>Risk Assessment: Combines all the risk assessments made into a single table</li>
 </ul>
@@ -316,80 +296,25 @@ to the hello_world function and getting back a vector of: c("Hello, Johnny", "He
 <code><a href="../reference/vt_get_child_files.html">vt_get_child_files()</a></code> returns the list of files that are indicated in the validation.yml to be included in the validation report. This allows for batch creation of the dynamic content in the report.</li>
 </ul>
 <p>Keep in mind, the report is an Rmarkdown, so there is no limit to editing and customization, and templates.</p>
-<div id="tutorial-6" class="section level4">
+<div id="tutorial-5" class="section level4">
 <h4 class="hasAnchor">
-<a href="#tutorial-6" class="anchor"></a>Tutorial</h4>
+<a href="#tutorial-5" class="anchor"></a>Tutorial</h4>
 <p>Run the code above to generate the report, and inspect the overall structure of the report. See what happens when contents are moved around.</p>
 </div>
 </div>
 <div id="running-a-validation-report" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-a-validation-report" class="anchor"></a>Running a Validation Report</h2>
-<p>Now that there is a validation report as an Rmarkdown, validation is only a compiling of the report away. However, different organizations might follow different approaches to when the validation documentation might be necessary. {valtools} can support several different methods of validation at this moment:</p>
-<table class="table">
-<colgroup>
-<col width="33%">
-<col width="25%">
-<col width="41%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Validation Type</th>
-<th align="left">Description</th>
-<th align="center">{valtools} Function</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Validation on Source</td>
-<td align="left">Validation of the source code, where individuals might install from a controlled source.</td>
-<td align="center"><code><a href="../reference/vt_validate_source.html">valtools::vt_validate_source()</a></code></td>
-</tr>
-<tr class="even">
-<td align="left">Validation on Build</td>
-<td align="left">Validation of the source code and then compiles it into a usable tar so that the source code cannot change after validation, so users can install from a controlled source without having to build/compile as well.</td>
-<td align="center"><code><a href="../reference/vt_validate_source.html">valtools::vt_validate_build()</a></code></td>
-</tr>
-<tr class="odd">
-<td align="left">Validation on Install</td>
-<td align="left">Validation of the source code, and then the validation report is also re-built on install to the machine it will ultimately be running on.</td>
-<td align="center"><code><a href="../reference/vt_validate_source.html">valtools::vt_validate_install()</a></code></td>
-</tr>
-<tr class="even">
-<td align="left">Validation <em>After</em> Install</td>
-<td align="left">This assumes the package was built and installed using the prior methods, but in this method, the validation report can be re-run at any point to re-validated based on updates to the environment.</td>
-<td align="center"><code><a href="../reference/vt_validate_source.html">valtools::vt_validate_installed_package()</a></code></td>
-</tr>
-</tbody>
-</table>
-<div id="tutorial-7" class="section level4">
+<p>Now that there is a validation report as an Rmarkdown, validation is only a compiling of the report away. To validate the target, we execute the report non-interactively and save the results.</p>
+<div id="tutorial-6" class="section level4">
 <h4 class="hasAnchor">
-<a href="#tutorial-7" class="anchor"></a>Tutorial</h4>
-<p>Run each method of validation and observe the differences</p>
+<a href="#tutorial-6" class="anchor"></a>Tutorial</h4>
+<p>Run the validation report</p>
 <div id="validation-mode-running-on-source" class="section level5">
 <h5 class="hasAnchor">
 <a href="#validation-mode-running-on-source" class="anchor"></a>Validation Mode: Running on Source</h5>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_validate_source.html">vt_validate_source</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="validation-mode-generating-validated-bundle-for-distribution" class="section level5">
-<h5 class="hasAnchor">
-<a href="#validation-mode-generating-validated-bundle-for-distribution" class="anchor"></a>Validation Mode: Generating validated bundle for distribution</h5>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_validate_source.html">vt_validate_build</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="validation-mode-validating-and-installing-package" class="section level5">
-<h5 class="hasAnchor">
-<a href="#validation-mode-validating-and-installing-package" class="anchor"></a>Validation Mode: Validating and installing package</h5>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_validate_source.html">vt_validate_install</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="validation-mode-re-validating-an-installed-package" class="section level5">
-<h5 class="hasAnchor">
-<a href="#validation-mode-re-validating-an-installed-package" class="anchor"></a>Validation Mode: Re-validating an installed package</h5>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_validate_source.html">vt_validate_installed_package</a></span><span class="op">(</span><span class="st">"example.package"</span><span class="op">)</span></code></pre></div>
-<p>Compare this result against the original validation vignette:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span><span class="op">(</span><span class="st">"validation"</span>,<span class="st">"example.package"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">valtools</span><span class="fu">::</span><span class="fu"><a href="../reference/vt_validate_source.html">vt_validate_report</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 </div>

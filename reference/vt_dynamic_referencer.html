@@ -8,6 +8,13 @@
 
 <title>Manage dynamic refrerencing — vt_dynamic_referencer • valtools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -42,6 +49,7 @@
 <meta property="og:title" content="Manage dynamic refrerencing — vt_dynamic_referencer" />
 <meta property="og:description" content="Manage dynamic refrerencing
 Manage dynamic refrerencing" />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -73,7 +81,7 @@ Manage dynamic refrerencing" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">valtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -97,6 +105,12 @@ Manage dynamic refrerencing" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/starting-validated-package.html">Starting New Validation Package using {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validating-external-resources.html">Validating External Resources with {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validation_figure_tests.html">Validation: Figure Tests</a>
     </li>
   </ul>
 </li>
@@ -242,56 +256,64 @@ test case  or test code ('tc')</p></dd>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>reference</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>reference</span>
-</div><div class='output co'>#&gt; &lt;vt_dynamic_referencer&gt;
-#&gt;   Public:
-#&gt;     clone: function (deep = FALSE) 
-#&gt;     initialize: function (reference_indicator = "##", type = c("number", "letter")) 
-#&gt;     list_references: function () 
-#&gt;     reference_insertion: function (text) 
-#&gt;     scrape_references: function (text) 
-#&gt;   Private:
-#&gt;     add_reference: function (reference_id, type = c("req", "tc")) 
-#&gt;     advance_reference: function (type = c("req", "tc")) 
-#&gt;     ref_iter_number: list
-#&gt;     reference_indicator: ##
-#&gt;     reference_indicator_regex: \#\#
-#&gt;     references: list
-#&gt;     type: number</div><div class='input'>
-
-
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `vt_dynamic_referencer$scrape_references`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>ref</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; list()</div><div class='input'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>scrape_references</span><span class='op'>(</span><span class='st'>"##req:new_reference"</span><span class='op'>)</span>
-<span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`req:new_reference`
-#&gt; [1] 1
-#&gt; </div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `vt_dynamic_referencer$reference_insertion`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>ref</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; list()</div><div class='input'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>scrape_references</span><span class='op'>(</span><span class='st'>"##new_reference"</span><span class='op'>)</span>
-<span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; list()</div><div class='input'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>reference_insertion</span><span class='op'>(</span><span class='st'>"This is my ##new_reference"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "This is my ##new_reference"</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `vt_dynamic_referencer$list_references`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>ref</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; list()</div><div class='input'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>scrape_references</span><span class='op'>(</span><span class='st'>"##new_reference"</span><span class='op'>)</span>
-<span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; list()</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>reference</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>reference</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;vt_dynamic_referencer&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Public:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     clone: function (deep = FALSE) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     initialize: function (reference_indicator = "##", type = c("number", "letter")) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     list_references: function () </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     reference_insertion: function (text) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     scrape_references: function (text) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Private:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     add_reference: function (reference_id, type = c("req", "tc")) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     advance_reference: function (type = c("req", "tc")) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ref_iter_number: list</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     reference_indicator: ##</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     reference_indicator_regex: \#\#</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     references: list</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     type: number</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `vt_dynamic_referencer$scrape_references`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ref</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> list()</span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>scrape_references</span><span class='op'>(</span><span class='st'>"##req:new_reference"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`req:new_reference`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `vt_dynamic_referencer$reference_insertion`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ref</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> list()</span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>scrape_references</span><span class='op'>(</span><span class='st'>"##new_reference"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> list()</span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>reference_insertion</span><span class='op'>(</span><span class='st'>"This is my ##new_reference"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "This is my ##new_reference"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `vt_dynamic_referencer$list_references`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ref</span> <span class='op'>&lt;-</span> <span class='va'>vt_dynamic_referencer</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> list()</span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>scrape_references</span><span class='op'>(</span><span class='st'>"##new_reference"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ref</span><span class='op'>$</span><span class='fu'>list_references</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> list()</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

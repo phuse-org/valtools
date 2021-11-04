@@ -6,8 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • valtools</title>
+<title>Citation and Authors • valtools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -39,7 +46,8 @@
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Citation and Authors" />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -58,7 +66,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-authors">
+    <div class="container template-citation-authors">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -71,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">valtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -96,6 +104,12 @@
     <li>
       <a href="articles/starting-validated-package.html">Starting New Validation Package using {valtools}</a>
     </li>
+    <li>
+      <a href="articles/validating-external-resources.html">Validating External Resources with {valtools}</a>
+    </li>
+    <li>
+      <a href="articles/validation_figure_tests.html">Validation: Figure Tests</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -113,6 +127,23 @@
 
 <div class="row">
   <div class="contents col-md-9">
+    <div class="page-header">
+      <h1>Citation</h1>
+      
+    </div>
+
+    <p>Hughes, E., Vendettuoli, M., Miller, E., Peyman, E. (2021).
+<em>Automate Validated Package Creation</em>.
+See also: 'R Validation Framework', <a href="https://github.com/phuse-org/valtools">https://github.com/phuse-org/valtools</a>. 
+</p>
+    <pre>@Manual{,
+  title = {Automate Validated Package Creation},
+  author = {{Hughes} and {E.} and {Vendettuoli} and {M.} and {Miller} and {E.} and {Peyman} and {E.}},
+  year = {2021},
+  url = {https://github.com/phuse-org/valtools},
+  note = {See also: `R Validation Framework`},
+}</pre>
+
     <div class="page-header">
       <h1>Authors</h1>
     </div>
@@ -132,6 +163,10 @@
       </li>
       <li>
         <p><strong>Peyman Eshghi</strong>. Author. <a href='https://orcid.org/0000-0003-1613-2705' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
+        </p>
+      </li>
+      <li>
+        <p><strong>Maya Gans</strong>. Contributor. <a href='https://orcid.org/0000-0002-5452-6089' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>

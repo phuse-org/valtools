@@ -8,6 +8,13 @@
 
 <title>Retrieve the value block of a custom section tagged via roxygen2 — vt_scrape_section • valtools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -43,6 +50,7 @@
 <meta property="og:description" content="Looks for the value in a custom roxygen sections. Custom
 sections are named using @section &amp;lt;NAME&amp;gt;:, where colon is use to indicate
 end of the name, and value starts on next line." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -74,7 +82,7 @@ end of the name, and value starts on next line." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">valtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -98,6 +106,12 @@ end of the name, and value starts on next line." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/starting-validated-package.html">Starting New Validation Package using {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validating-external-resources.html">Validating External Resources with {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validation_figure_tests.html">Validation: Figure Tests</a>
     </li>
   </ul>
 </li>
@@ -159,14 +173,16 @@ may be present or omitted.</p></td>
 <p>2021-02-18</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>roxy_block1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"@title Title1"</span>, <span class='st'>"@param param1 definition"</span>,
-    <span class='st'>"@section Last updated date:"</span>, <span class='st'>"2021-01-01"</span>, <span class='st'>"@importFrom utils sessionInfo"</span>,
-    <span class='st'>"@export"</span> <span class='op'>)</span>
-<span class='fu'>vt_scrape_section</span><span class='op'>(</span><span class='st'>"Last updated date:"</span>, <span class='va'>roxy_block1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "2021-01-01"</div><div class='input'>
-<span class='va'>roxy_block2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"#' "</span>, <span class='va'>roxy_block1</span><span class='op'>)</span>
-<span class='fu'>vt_scrape_section</span><span class='op'>(</span><span class='st'>"Last updated date:"</span>, <span class='va'>roxy_block2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "2021-01-01"</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>roxy_block1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"@title Title1"</span>, <span class='st'>"@param param1 definition"</span>,</span>
+<span class='r-in'>    <span class='st'>"@section Last updated date:"</span>, <span class='st'>"2021-01-01"</span>, <span class='st'>"@importFrom utils sessionInfo"</span>,</span>
+<span class='r-in'>    <span class='st'>"@export"</span> <span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vt_scrape_section</span><span class='op'>(</span><span class='st'>"Last updated date:"</span>, <span class='va'>roxy_block1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2021-01-01"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>roxy_block2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"#' "</span>, <span class='va'>roxy_block1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vt_scrape_section</span><span class='op'>(</span><span class='st'>"Last updated date:"</span>, <span class='va'>roxy_block2</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2021-01-01"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

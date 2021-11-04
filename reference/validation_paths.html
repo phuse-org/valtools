@@ -8,6 +8,13 @@
 
 <title>Use dynamic file paths in a validation. — vt_path • valtools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -44,6 +51,7 @@
 identified by the config file. It is also required to be used in the validation
 report for cases where validation of installed packages is intended as it will
 shift access to the correct location for the installed package for access." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -75,7 +83,7 @@ shift access to the correct location for the installed package for access." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">valtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -99,6 +107,12 @@ shift access to the correct location for the installed package for access." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/starting-validated-package.html">Starting New Validation Package using {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validating-external-resources.html">Validating External Resources with {valtools}</a>
+    </li>
+    <li>
+      <a href="../articles/validation_figure_tests.html">Validation: Figure Tests</a>
     </li>
   </ul>
 </li>
@@ -152,19 +166,20 @@ path components separated by a forward slash <code>"/"</code>.</p></td>
 returns the full path to it.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>withr</span><span class='fu'>::</span><span class='fu'><a href='https://withr.r-lib.org/reference/with_tempfile.html'>with_tempdir</a></span><span class='op'>(</span><span class='op'>{</span><span class='fu'>callr</span><span class='fu'>::</span><span class='fu'><a href='https://callr.r-lib.org/reference/r.html'>r</a></span><span class='op'>(</span><span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span><span class='op'>{</span>
-
- <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'><a href='vt_use_validation.html'>vt_use_validation</a></span><span class='op'>(</span><span class='op'>)</span>
-
- <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_path</span><span class='op'>(</span><span class='op'>)</span>
- <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_path</span><span class='op'>(</span><span class='st'>"some"</span>, <span class='st'>"reqs"</span>, <span class='st'>"req01.md"</span><span class='op'>)</span>
- <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_path</span><span class='op'>(</span><span class='st'>"some/reqs/req01.md"</span><span class='op'>)</span>
-
- <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_find_config</span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='op'>}</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/tmp/RtmpP8vq8c/file382329211c3b/validation/validation.yml"</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>withr</span><span class='fu'>::</span><span class='fu'><a href='https://withr.r-lib.org/reference/with_tempfile.html'>with_tempdir</a></span><span class='op'>(</span><span class='op'>{</span><span class='fu'>callr</span><span class='fu'>::</span><span class='fu'><a href='https://callr.r-lib.org/reference/r.html'>r</a></span><span class='op'>(</span><span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'></span>
+<span class='r-in'> <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'><a href='vt_use_validation.html'>vt_use_validation</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'> <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_path</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'> <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_path</span><span class='op'>(</span><span class='st'>"some"</span>, <span class='st'>"reqs"</span>, <span class='st'>"req01.md"</span><span class='op'>)</span></span>
+<span class='r-in'> <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_path</span><span class='op'>(</span><span class='st'>"some/reqs/req01.md"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'> <span class='fu'>valtools</span><span class='fu'>::</span><span class='fu'>vt_find_config</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='op'>}</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "/tmp/Rtmpd5lcbS/file4366500cb043/validation/validation.yml"</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
