@@ -23,6 +23,11 @@ Authors@R:
            role = "aut",
            email = "peymaan.es@gmail.com",
            comment = c(ORCID = "0000-0003-1613-2705")),
+    person(given = "Maya",
+           family = "Gans",
+           role = "ctb",
+           email = "maya.gans@atorusresearch.com",
+           comment = c(ORCID = "0000-0002-5452-6089")),
     person(given = "PHUSE",
            role = "cph")
     )
