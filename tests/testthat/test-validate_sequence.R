@@ -254,7 +254,8 @@ test_that("test building a validated bundle from source", {
         "")
     )
 
-  })})
+  })
+})
 
 test_that("test installing a validated bundle from source and rerunning report", {
   skip_if(!"valtools" %in% rownames(installed.packages()))
