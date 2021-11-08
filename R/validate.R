@@ -338,7 +338,7 @@ copy_validation_content <- function(pkg = ".", src = pkg){
   
 
   if(validation_directory != validation_output_directory){
-    # tryCatch({
+    tryCatch({
 
       if(!dir.exists(file.path(pkg, validation_output_directory))){
         dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
@@ -352,12 +352,6 @@ copy_validation_content <- function(pkg = ".", src = pkg){
         recursive = TRUE,
         overwrite = TRUE)
       
-      writeLines(
-        con = "c:/Users/ehh82309/OneDrive - GSK/Documents/test_list.csv",
-        list.files(path = pkg, all.files = TRUE,recursive = TRUE),
-        sep = "\n"
-      )
-
       ## copy validation Rmd
       file.copy(
         from = file.path(pkg, "vignettes", get_config_report_rmd_name()),
@@ -372,11 +366,11 @@ copy_validation_content <- function(pkg = ".", src = pkg){
         to = file.path(pkg, validation_output_directory, "R/Function_Roxygen_Blocks.R"),
         overwrite = TRUE)
 
-    # },
-    # error = function(e) {
-    #   abort(paste0(c("Error in moving validated content", e), sep = .Platform$file.sep),
-    #         class = "vt.buildFail")
-    # })
+    },
+    error = function(e) {
+      abort(paste0(c("Error in moving validated content", e), sep = .Platform$file.sep),
+            class = "vt.buildFail")
+    })
   }
 
   invisible(TRUE)
