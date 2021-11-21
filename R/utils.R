@@ -13,6 +13,13 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
   type <- match.arg(type)
 
   validation_directory <- vt_path()
+  
+  item_file_path <- file.path(validation_directory, type, item_name)
+  
+  ## if file exists, just return path
+  if(file.exists(item_file_path)){
+    return(item_file_path)
+  }
 
   # Create item folder if this is the first item
   if(!dir.exists(file.path(validation_directory, type))) {
@@ -35,19 +42,29 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
     })
   }
 
-  item_file_path <- file.path(validation_directory, type, item_name)
+
 
   tryCatch({
-
     file.create(item_file_path)
-    inform(paste0("Item created:", file.path(type, item_name), sep = " ", collapse = ""))
+    inform(paste0(
+      "Item created:",
+      file.path(type, item_name),
+      sep = " ",
+      collapse = ""
+    ))
     return(item_file_path)
-
+    
   }, error = function(e) {
-    abort(paste0("Failed to create validation", type, item_name,
-                                  sep = " ", collapse = ""),
-                           class = "vt.itemCreateFail")
+    abort(paste0(
+      "Failed to create validation",
+      type,
+      item_name,
+      sep = " ",
+      collapse = ""
+    ),
+    class = "vt.itemCreateFail")
   })
+  
 
 
 }
@@ -75,7 +92,11 @@ create_item <- function(type = c("requirements","test_cases","test_code"), item_
 #' @importFrom whoami username
 vt_username <- function(){
   user <- username(fallback = "")
-  get_config_user_name(username = user)
+  tryCatch({
+    get_config_user_name(username = user)
+  }, error = function(e){
+    return("")
+  })
 }
 
 
@@ -83,7 +104,7 @@ vt_username <- function(){
 #'
 #' @noRd
 #' @param filename the filname to add/replace extention
-#' @param ext intended extention
+#' @param ext intended extention(s)
 #'
 #' @returns filename with correct extention
 #'
@@ -94,9 +115,9 @@ vt_set_ext <- function(filename, ext){
     filename <- file_path_sans_ext(filename)
 
     filename_ext <- ifelse(
-      identical(tolower(filename_ext), tolower(ext)),
+      tolower(filename_ext) %in% tolower(ext),
       filename_ext,
-      ext
+      ext[1]
     )
 
     paste0(filename, ".", filename_ext)
@@ -152,3 +173,63 @@ set_dir_ref <- function(pkg = "."){
     file.create(file.path(pkg, ".here"))
   }
 }
+
+#' @importFrom desc desc_get_deps desc_set_deps
+add_package_to_desc <- function(package, type, pkg = "."){
+  if(is_package(pkg = pkg)){
+
+    type <- match.arg(type, c("Depends", "Imports", "Suggests"))
+    stopifnot(length(package) == length(type) | length(type) == 1)
+    deps <- desc::desc_get_deps(file = pkg)
+    if(length(type) == 1){
+      type <- rep(type, length(package))
+    }
+
+    for(pak_idx in seq_along(package)){
+      pak <- package[[pak_idx]]
+      pak_type <- type[pak_idx]
+      pak_ver <- "*"
+      existing <- deps$package == pak
+      if(any(existing)){
+        dep_type <- deps$type[existing]
+        dep_ver <- deps$version[existing]
+
+        ## if new type is "higher" than old, replace
+        if(!factor(dep_type, levels = c("Depends", "Imports", "Suggests"),ordered = TRUE) < pak_type ){
+          dep_type <- pak_type
+        }
+        deps[existing,] <- data.frame(
+          type = dep_type,
+          package = pak,
+          version = dep_ver,
+          stringsAsFactors = FALSE
+        )
+      }else{
+        deps[nrow(deps)+1,] <- data.frame(
+          type = pak_type,
+          package = pak,
+          version = pak_ver,
+          stringsAsFactors = FALSE
+          )
+      }
+    }
+    desc::desc_set_deps(deps, file = pkg)
+  }
+}
+
+add_valtools_dep <- function(pkg = "."){
+  add_package_to_desc("valtools", type = "Imports", pkg = pkg)
+}
+
+#' @importFrom desc desc_get desc_set
+#' @importFrom rlang abort
+add_field_to_desc <- function(field, value, force = FALSE, pkg = "."){
+  if(is_package(pkg = pkg)){
+    curr <- desc::desc_get(field, file = pkg)[[1]]
+    if(is.na(curr) | force){
+      desc::desc_set(field, value, file = pkg)
+    }
+  }
+}
+
+

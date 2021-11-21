@@ -29,8 +29,7 @@ vt_use_req(
   title = NULL,
   open = interactive(),
   add_before = NULL,
-  add_after = NULL,
-  use_shiny = FALSE
+  add_after = NULL
 )
 }
 \arguments{
@@ -48,12 +47,6 @@ sans file paths or extensions.}
 \item{add_before, add_after}{If either parameters is supplied, the location to
 add the validation item to the validation configuration. If no parameter is
 passed the item is added at the end.}
-
-\item{use_shiny}{if \code{TRUE}, collect requirements details through a
-shiny gadget in RStudio's viewer pane.
-If RStudio or its viewer pane/dialog APIs are not available in the
-current R environment, then the gadget will be displayed in the system's
-default web browser.}
 }
 \value{
 Path to the newly created validation item file, invisibly.
@@ -73,8 +66,12 @@ vt_add_user_to_config(
  )
 # Create req at the cases top level `inst/validation/cases/case1`
 vt_use_test_case("case1", open = FALSE)
+
 # Create req at `inst/validation/cases/regTests/Update2/case2`
 vt_use_test_case("regTests/Update2/case2", open = FALSE, add_before = "case1.md")
+
+# Create a test case using tidy select
+vt_use_test_case("case1a", open = FALSE, add_after = tidyselect::starts_with("case1"))
 
 })
 }

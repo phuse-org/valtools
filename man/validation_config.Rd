@@ -22,8 +22,10 @@ vt_get_user_info(username, type = c("name", "title", "role"))
 
 vt_use_config(
   pkg = ".",
+  package,
   working_dir,
   output_dir,
+  report_rmd_name = "validation.Rmd",
   report_naming_format = "Validation_Report_{package}_v{version}_{date}",
   username_list = list(),
   validation_files = list(),
@@ -36,7 +38,9 @@ vt_user(username, name, title, role, ...)
 \arguments{
 \item{filename}{character vector containing filenames in order}
 
-\item{before, after}{Optional destination of new filenames, default is end of existing list. Specifying both is error.}
+\item{before, after}{Optional destination of new filenames, default is end of
+existing list. Supports <\code{\link[tidyselect:language]{tidy-select}}> functions.
+Specifying both is error.}
 
 \item{username}{username of the user.}
 
@@ -50,11 +54,15 @@ vt_user(username, name, title, role, ...)
 
 \item{pkg}{where to write config file}
 
+\item{package}{\link{character} name of package or set validation is being performed for.}
+
 \item{working_dir}{\link{character} which directory to be have working validation
 contents that are used interactively}
 
 \item{output_dir}{\link{character} which folder should the contents for validation
 output to.}
+
+\item{report_rmd_name}{\link{character} name of rmarkdown document that is to be used for validation.}
 
 \item{report_naming_format}{\link{character} a \link[glue]{glue} friendly string
 of the naming structure of the output validation report. use \code{{package}}
@@ -74,8 +82,8 @@ Validation report content will be populated using this list in order.}
 Defaults to FALSE.}
 }
 \value{
-Used for side effect of adding validation file ordering to validation config
-file. Invisibly returns TRUE on success.
+Used for side effect of adding validation file ordering to
+validation config file. Invisibly returns TRUE on success.
 
 Used for side effect of removing file ordering information from validation config
 file. Invisibly returns TRUE on success.
@@ -168,6 +176,7 @@ vt_get_user_info(username = "ellis", type = c("name","title"))
 
 withr::with_tempdir({
 vt_use_validation(
+              package = "test.package",
               working_dir = ".",
               output_dir  = ".",
               report_naming_format = "Validation_Report_{package}_v{version}_{date}",

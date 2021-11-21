@@ -32,6 +32,8 @@ test_that("Creating requirements and set user/title", {
         "#' @title Requirement 001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
+        "#' @riskAssessment",
+        "#' REQUIREMENT: ASSESSMENT",
         "",
         "+ Start documenting requirements here!",
         ""
@@ -75,6 +77,8 @@ test_that("Creating requirements and not setting user takes username", {
         "#' @title req001",
         "#' @editor New User",
         paste ("#' @editDate",as.character(Sys.Date())),
+        "#' @riskAssessment",
+        "#' REQUIREMENT: ASSESSMENT",
         "",
         "+ Start documenting requirements here!",
         ""

@@ -12,7 +12,7 @@
 #'
 #' @returns a list of roxygen blocks found in the file.
 
-vt_scrape_roxygen <- function(file, ..., type = tools::file_ext(file)){
+scrape_roxygen <- function(file, ..., type = tools::file_ext(file)){
 
   text <- readLines(file)
 
@@ -161,25 +161,34 @@ parse_roxygen.r <- function(text){
 #' @importFrom utils capture.output
 #' @noRd
 parse_roxygen.r_test_code <- function(text){
-
   roxyblocks <- roxygen2::parse_text(text,env = NULL)
   roxyblocks <- cleanup_section_last_update(roxyblocks)
+  roxyblocks <- lapply(seq_along(roxyblocks), function(i, file){
+    this_block <- roxyblocks[[i]]
+    test <- tryCatch({
+      as.list(this_block$call)[[2]]
+    }, error = function(e){
 
-  roxyblocks <- lapply(roxyblocks,function(block){
+      roxygen2::block_get_tag(this_block, "title")$val
+    })
 
-    test <- as.list(block$call)[[2]]
+    if(is.null(this_block$call)){
+      this_block$call <- call("test_that", "empty test", {})
+    }
 
-    block$object <- structure(
+    this_block$object <- structure(
       list(alias = test,
            topic = test,
-           value = block$call,
-           methods = NULL
+           value =  this_block$call,
+           methods = NULL,
+           file = file,
+           block_id = i
            ),
       class = c("test_code","function","object"))
 
-    block
+    this_block
 
-  })
+  }, file = attr(text, "file"))
 
   ## confirm no duplicated test names
   roxy_test_names <- sapply(roxyblocks, function(block) block$object$alias)
@@ -293,7 +302,7 @@ cleanup_section_last_update <- function(blocks){
       section_tags <- block_get_tags(block = block, tags = "section")
 
       content <- do.call('c',lapply(section_tags, function(tags){
-        section_split <- strsplit(tags[["val"]],":\n",fixed = TRUE)[[1]]
+        section_split <- strsplit(tags[["val"]],"[:]\\s*\\n")[[1]]
         selection <- section_split[[2]]
         names(selection) <- section_split[[1]]
         selection

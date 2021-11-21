@@ -33,7 +33,7 @@ test_that("Copying roxygen comments works", {
   })
 })
 
-test_that("Copying roxygen comments works", {
+test_that("Copying roxygen comments works for multiple comments", {
   withr::with_tempdir({
     dir.create("R")
     writeLines(
@@ -42,6 +42,15 @@ test_that("Copying roxygen comments works", {
         "#' @editDate 1900-01-01",
         "NULL"),
       con = "R/deprecated.R"
+    )
+
+    writeLines(
+      c("#' @title Deprecated_Function",
+        "#' @editor Test Person",
+        "#' @editDate 1900-01-01",
+        "#' @deprecate Deprecated in v1.2",
+        "NULL"),
+      con = "R/deprecated2.R"
     )
 
     roxygen_copy(
@@ -58,13 +67,19 @@ test_that("Copying roxygen comments works", {
         "#' @editor Test Person",
         "#' @editDate 1900-01-01",
         "NULL",
+        "",
+        "#' @title Deprecated_Function",
+        "#' @editor Test Person",
+        "#' @editDate 1900-01-01",
+        "#' @deprecate Deprecated in v1.2",
+        "NULL",
         ""
       )
     )
   })
 })
 
-test_that("Copying roxygen and error gets returned", {
+test_that("Copying roxygen and error gets returned when copy fails", {
   withr::with_tempdir({
     dir.create("R")
     writeLines(
@@ -84,4 +99,36 @@ test_that("Copying roxygen and error gets returned", {
 
   })
 })
+
+
+test_that("Copying roxygen and error gets returned when file already exists", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(
+      c("#' @title Test",
+        "#' @param name name to say hello to",
+        "#' @editor Test Person",
+        "#' @editDate 1900-01-01",
+        "hello_world <- function(name){",
+        "  print('hello,',name)",
+        "}"),
+      con = "R/hello.R"
+    )
+
+    ## Copy once
+    roxygen_copy(
+      from = "R",
+      to = "function_roxygen.R"
+    )
+
+    expect_error(
+      roxygen_copy(from = "R",
+                   to = "function_roxygen.R"),
+      "Error in copying function roxygen comments:\n",
+      fixed = TRUE
+    )
+
+  })
+})
+
 

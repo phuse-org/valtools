@@ -2,7 +2,7 @@ test_that("Accessing config dirs works", {
 
     withr::with_tempdir({
 
-      vt_use_validation()
+      vt_use_validation(pkg = ".", package = "test.package")
 
       expect_equal(
         get_config_working_dir(),
@@ -15,6 +15,11 @@ test_that("Accessing config dirs works", {
       )
 
       expect_equal(
+        get_config_report_rmd_name(),
+        "validation.Rmd"
+      )
+
+      expect_equal(
         get_config_report_naming_format(),
         "Validation_Report_{package}_v{version}_{date}"
       )
@@ -24,8 +29,10 @@ test_that("Accessing config dirs works", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "test.package",
       working_dir = "new/dir",
       output_dir = "test",
+      report_rmd_name = "test_validation.Rmd",
       report_naming_format = "{package}_v{version}_Validation_report"
     )
 
@@ -39,6 +46,11 @@ test_that("Accessing config dirs works", {
       "test"
     )
 
+    expect_equal(
+      get_config_report_rmd_name(),
+      "test_validation.Rmd"
+    )
+
   })
 
 })
@@ -47,7 +59,9 @@ test_that("Accessing config user info works", {
 
   withr::with_tempdir({
 
-    vt_use_validation(username_list = list(
+    vt_use_validation(
+      package = "test.package",
+      username_list = list(
                                vt_user(
                                  name = "test-name",
                                  title = "test-title",
@@ -87,6 +101,7 @@ test_that("Accessing config user info works even with multiple users", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "test.package",
       username_list = list(
                                vt_user(
                                  name = "test-name",
@@ -140,6 +155,7 @@ test_that("Accessing config user info that does not exist throws informative err
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "test.package",
                              username_list = list(
                                vt_user(
                                  name = "test-name",
@@ -171,3 +187,58 @@ test_that("Accessing config user info that does not exist throws informative err
 
 })
 
+
+
+test_that("Test getting package name from config file", {
+
+  withr::with_tempdir({
+
+    vt_use_validation(package = "test.package")
+
+    expect_equal(
+      get_config_package(),
+      "test.package"
+    )
+  })
+
+  withr::with_tempdir({
+
+    quiet <- capture.output({
+      vt_create_package(pkg = "my.package", open = FALSE)
+    })
+
+    setwd("my.package")
+
+    expect_equal(
+      get_config_package(),
+      "my.package"
+    )
+  })
+
+})
+
+test_that("Accessing config output dirs returns working dir when it is missing", {
+
+  withr::with_tempdir({
+
+    vt_use_validation(
+      pkg = ".",
+      package = "test.package"
+    )
+
+    ## remove output_dir from config
+    write_yaml(
+        x = list(
+          package = "test.package",
+          working_dir = "working_dir"
+        ),
+        file = file.path("validation", "validation.yml")
+    )
+
+    expect_equal(
+      get_config_output_dir(),
+      "working_dir"
+    )
+
+  })
+})

@@ -28,45 +28,48 @@ test_that("evaluting markdown files works", {
     referencer <- vt_dynamic_referencer$new()
 
     sample_output <- capture.output({
-      cat(file_parse.md(file = "sample.md"))
+      cat(file_parse.md(file = "sample.md", interactive_output = TRUE))
     })
 
     sample_output2 <- capture.output({
       cat(file_parse.md(
         file = "sample2.md",
         reference = referencer,
+        interactive_output = TRUE,
         dynamic_referencing = TRUE))
     })
 
+    
     sample_output3 <- capture.output({
-      cat(vt_file(file = "sample.md"))
+      vt_file(file = "sample.md", interactive_output = TRUE)
     })
 
     sample_output4 <- capture.output({
-      cat(vt_file(
+      vt_file(
         file = "sample2.md",
         reference = referencer,
-        dynamic_referencing = TRUE))
+        interactive_output = TRUE,
+        dynamic_referencing = TRUE)
     })
 
     expect_equal(
       sample_output,
-      c("","## Header", "+ Content", "  + more content", "+ Content 2")
+      c("## Header", "+ Content", "  + more content", "+ Content 2")
     )
 
     expect_equal(
       sample_output2,
-      c("","## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
+      c("## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
     )
 
     expect_equal(
       sample_output3,
-      c("","## Header", "+ Content", "  + more content", "+ Content 2")
+      c("## Header", "+ Content", "  + more content", "+ Content 2")
     )
 
     expect_equal(
       sample_output4,
-      c("","## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
+      c("## Header", "+ 1.1 Reference", "  + more content", "+ Content 2")
     )
 
   })
@@ -115,6 +118,7 @@ test_that("evaluating Rmarkdown files works", {
     sample_output <- capture.output({
       file_parse.rmd(
         file = "sample.Rmd",
+        interactive_output = FALSE,
         envir = curr_env)
     })
 
@@ -122,12 +126,14 @@ test_that("evaluating Rmarkdown files works", {
       file_parse.rmd(
         file = "sample2.Rmd",
         reference = referencer,
+        interactive_output = FALSE,
         dynamic_referencing = TRUE,
         envir = curr_env)
     })
 
     sample_output3 <- capture.output({
       vt_file(file = "sample.Rmd",
+              interactive_output = FALSE,
               envir = curr_env)
     })
 
@@ -135,6 +141,7 @@ test_that("evaluating Rmarkdown files works", {
       vt_file(
         file = "sample2.Rmd",
         reference = referencer,
+        interactive_output = FALSE,
         dynamic_referencing = TRUE,
         envir = curr_env)
     })
@@ -269,11 +276,11 @@ test_that("evaluating default files works", {
     })
 
     sample_output3 <- capture.output({
-      cat(vt_file(file = "sample.html"))
+      vt_file(file = "sample.html")
     })
 
     sample_output4 <- capture.output({
-      cat(vt_file(file = "sample.tex"))
+      vt_file(file = "sample.tex")
     })
 
     sample_output_dynamic <- capture.output({
@@ -291,17 +298,17 @@ test_that("evaluating default files works", {
     })
 
     sample_output3_dynamic <- capture.output({
-      cat(vt_file(
+      vt_file(
         file = "sample_dynamic.html",
         reference = referencer,
-        dynamic_referencing = TRUE))
+        dynamic_referencing = TRUE)
     })
 
     sample_output4_dynamic <- capture.output({
-      cat(vt_file(
+      vt_file(
         file = "sample_dynamic.tex",
         reference = referencer,
-        dynamic_referencing = TRUE))
+        dynamic_referencing = TRUE)
     })
 
     expect_equal(
@@ -569,6 +576,88 @@ test_that("rendered report works using file.path inside vt_file", {
         "1"
       )
     )
+
+  })
+})
+
+test_that("rendered report works using file.path inside vt_file - vectorized", {
+  withr::with_tempdir({
+
+    vt_use_validation()
+    vt_use_req("example_req.md",username = "sample")
+    vt_use_test_case("example_test_case.md",username = "sample")
+    vt_use_test_code("example_test_code.r",username = "sample")
+
+    writeLines(c(
+      "## header",
+      "Content",
+      "",
+      "  - bullet 1",
+      "  - bullet 2",
+      "```{r}",
+      "print(\"hello\")",
+      "```"
+    ),
+    con = vt_path("rando_file.Rmd"))
+
+    writeLines(c(
+      "## header",
+      "test_that(\"1.1\",{",
+      " expect_equal(1,1)",
+      "})"
+    ),
+    con = vt_path("test_code","example_test_code.r"))
+
+    writeLines(
+      c("---",
+        "title: test report",
+        "output: pdf_document",
+        "header-includes:",
+        "  - \\usepackage{float}",
+        "  - \\usepackage{array}",
+        "  - \\usepackage{multirow}",
+        "  - \\usepackage{longtable}",
+        "---",
+        "",
+        "```{r rando-file, echo = FALSE, results = 'asis'}",
+        "vt_file(file=c(vt_path(\"rando_file.Rmd\"),
+                        vt_path(\"requirements\",\"example_req.md\"),
+                        vt_path(\"test_cases\",\"example_test_case.md\"),
+                        vt_path(\"test_code\",\"example_test_code.r\")))",
+        "```"
+      ), con = "report.Rmd"
+    )
+
+
+    ## test rendering report
+    quiet <- capture_warnings({
+      quiet <- capture.output({
+        rmarkdown::render("report.Rmd")
+      })})
+
+    test_report_rendered <-
+      trimws(strsplit(split = "\r\n", gsub("((\r)|(\n))+","\r\n",
+                                           pdftools::pdf_text("report.pdf")))[[1]])
+
+
+    expect_equal(
+      test_report_rendered[1:10],
+      c(
+        "test report",
+        "header",
+        "Content",
+        "• bullet 1",
+        "• bullet 2",
+        "print(\"hello\")",
+        "## [1] \"hello\"" ,
+        "• Start documenting requirements here!",
+        "• Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+        "• Start documenting test case here!"
+      )
+    )
+
+    ## table section of pdf
+    expect_true(all(test_report_rendered[11:12] != ""))
 
   })
 })

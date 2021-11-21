@@ -136,8 +136,27 @@ test_that("parsing R function files with old nomenclature as expected", {
     ",
     class = "r")
 
+  ## This example has trailing spaces after the ":"
+  file_content_trailing_spaces <- structure(paste(c(
+   "#' @title sample title:",
+   "#' @section last updated by:  ",
+   "#' Sample Editor",
+   "#' @section last update date:  ",
+   "#' 1900-01-01",
+   "#' @param name name printed",
+   "#' @export",
+   "#' @rdname test",
+   "hello_world <- function(name){",
+   "  print(\"hello,\",name)",
+   "}"),collapse = "\n"),
+    class = "r")
+
   warnings <- capture_warnings({
     block_list <- parse_roxygen(file_content)
+  })
+
+  warnings_trailing <- capture_warnings({
+    block_list_trailing <- parse_roxygen(file_content_trailing_spaces)
   })
 
   expect_equal(
@@ -146,7 +165,17 @@ test_that("parsing R function files with old nomenclature as expected", {
   )
 
   expect_equal(
+    roxygen2::block_get_tag(block_list_trailing[[1]],"editor")$val,
+    "Sample Editor"
+  )
+
+  expect_equal(
     roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+    "1900-01-01"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag(block_list_trailing[[1]],"editDate")$val,
     "1900-01-01"
   )
 
@@ -157,6 +186,15 @@ test_that("parsing R function files with old nomenclature as expected", {
     "`@section last update date:` is superseded.\nUse `@editDate 1900-01-01` instead."
     )
   )
+
+  expect_equal(
+    warnings_trailing,
+    c(
+      "`@section last updated by:` is superseded.\nUse `@editor Sample Editor` instead.",
+      "`@section last update date:` is superseded.\nUse `@editDate 1900-01-01` instead."
+    )
+  )
+
 })
 
 test_that("parsing R test code files as expected", {
@@ -430,6 +468,56 @@ test_that("parsing deprecated md files as expected", {
     )
   })
 
+  withr::with_tempdir({
+
+    ## create sample md file
+    fil <- tempfile(fileext = ".md")
+    cat(c(
+      "#' @title sample title",
+      "#' @editor Sample Editor",
+      "#' @editDate 1900-01-01",
+      "#' @coverage",
+      "#' 1.All:1.All",
+      "#' @deprecate Deprecated in v1.2",
+      ""),
+      sep = "\n",
+      file = fil)
+
+    file_content <- roxy_text(
+      readLines(fil),
+      file = fil,
+      class = "md")
+
+    block_list <- parse_roxygen(file_content)
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editor")$val,
+      "Sample Editor"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"editDate")$val,
+      "1900-01-01"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$val,
+      "1.All:1.All"
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"coverage")$coverage,
+      structure(
+        list(data.frame(test_case = "1.All", requirements= "1.All", stringsAsFactors = FALSE)),
+        class = "vt_test_req_coverage")
+    )
+
+    expect_equal(
+      roxygen2::block_get_tag(block_list[[1]],"deprecate")$val,
+      "Deprecated in v1.2"
+    )
+  })
+
 })
 
 test_that("parsing Rmd function files as expected", {
@@ -524,7 +612,7 @@ test_that("writing the block list can subset to keep blocks with specific tags",
     ""),
     con = "hello.r")
 
-  block_list <- vt_scrape_roxygen("hello.r")
+  block_list <- scrape_roxygen("hello.r")
 
   subset_list <- subset_blocks(
     block_list,

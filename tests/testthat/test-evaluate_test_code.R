@@ -19,7 +19,7 @@ test_that("Evaluate test code works", {
     expect_equal(
       results,
       data.frame(
-        Test = "test_example",
+        Test = "test_example.1",
         Results = "As expected",
         Pass_Fail = "Pass",
         stringsAsFactors = FALSE
@@ -29,7 +29,7 @@ test_that("Evaluate test code works", {
     expect_equal(
       results2,
       data.frame(
-        Test = "test_example",
+        Test = "test_example.1",
         Results = "2 * 2 not equal to 5.\n1/1 mismatches\n[1] 4 - 5 == -1",
         Pass_Fail = "Fail",
         stringsAsFactors = FALSE
@@ -140,7 +140,7 @@ test_that("Empty test_that returns skip", {
     expect_equal(
       results,
       data.frame(
-        Test = "test_example",
+        Test = "test_example.1",
         Results = "Reason: empty test",
         Pass_Fail = "Skip",
         stringsAsFactors = FALSE
@@ -182,6 +182,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "rlang",
       username_list = list(
         vt_user(
           username = "user1",
@@ -238,6 +239,7 @@ test_that("Can run tests with vt_run_test_code_file()", {
   withr::with_tempdir({
 
     vt_use_validation(
+      package = "rlang",
       username_list = list(
         vt_user(
           username = "user1",
@@ -290,34 +292,38 @@ test_that("Can run tests with vt_run_test_code_file()", {
 })
 
 
-test_that("vt_kable_test_code returns formatted kable object",{
+test_that("vt_kable_test_code_results returns formatted kable object",{
 
-  output_pass <- vt_kable_test_code(data.frame(
+  pass_ex <- data.frame(
     Test = "test_example",
     Results = "As expected ",
     Pass_Fail = "Pass",
     stringsAsFactors = FALSE
-    ))
+  )
 
-  expect_equal(
+  output_pass <- vt_kable_test_code_results(pass_ex)
+
+  expect_equivalent(
     output_pass,
     kable_styling(
+      kable_styling(
+        column_spec(
       column_spec(
         kable(
           data.frame(
             Test = "test_example",
             Results = "As expected ",
-            Pass_Fail = "\\shortstack{\\textcolor{OliveGreen}{Pass}}",
+            Pass_Fail = "Pass",
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-        ),2:3, width = "10em"
-    ),position = "center")
+        ),2:3, width = "10em"),
+        3, color = "#006400"),
+    position = "center"), latex_options = "hold_position")
   )
 
-  output_fail <- vt_kable_test_code(data.frame(
+  output_fail <- vt_kable_test_code_results(data.frame(
     Test = "test_example",
     Results = "Failure Reasons ",
     Pass_Fail = "Fail",
@@ -326,23 +332,24 @@ test_that("vt_kable_test_code returns formatted kable object",{
 
   expect_equal(
     output_fail,
-    kable_styling(
+    kable_styling(kable_styling(
+      column_spec(
       column_spec(
         kable(
           data.frame(
             Test = "test_example",
             Results = "Failure Reasons ",
-            Pass_Fail = "\\shortstack{\\textcolor{red}{Fail}}",
+            Pass_Fail = "Fail",
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-        ),2:3, width = "10em"
-      ),position = "center")
+        ),2:3, width = "10em"),
+      3, color = "#FF0000"
+      ), latex_options = "hold_position"), position = "center")
   )
 
-  output_skip <- vt_kable_test_code(data.frame(
+  output_skip <- vt_kable_test_code_results(data.frame(
     Test = "test_example",
     Results = "Skipped test for reasons",
     Pass_Fail = "Skip",
@@ -351,23 +358,24 @@ test_that("vt_kable_test_code returns formatted kable object",{
 
   expect_equal(
     output_skip,
-    kable_styling(
+    kable_styling(kable_styling(
       column_spec(
+        column_spec(
         kable(
           data.frame(
             Test = "test_example",
             Results = "Skipped test for reasons",
-            Pass_Fail = "\\shortstack{\\textcolor{YellowOrange}{Skip}}",
+            Pass_Fail = "Skip",
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-        ),2:3, width = "10em"
-      ),position = "center")
+        ),2:3, width = "10em"),
+        3, color = "#FFC800"
+      ),position = "center"), latex_options = "hold_position")
   )
 
-  output_empty <- vt_kable_test_code(data.frame(
+  output_empty <- vt_kable_test_code_results(data.frame(
     Test = character(),
     Results = character(),
     Pass_Fail = character(),
@@ -377,6 +385,7 @@ test_that("vt_kable_test_code returns formatted kable object",{
   expect_equal(
     output_empty,
     kable_styling(
+    kable_styling(
         kable(
           data.frame(
             Test = character(),
@@ -384,19 +393,54 @@ test_that("vt_kable_test_code returns formatted kable object",{
             Pass_Fail = character(),
             stringsAsFactors = FALSE
           ),
-          format = "latex",
           escape = FALSE,
           col.names = c("Test", "Results", "Pass/Fail")
-      ),position = "center")
+      ),position = "center"), latex_options = "hold_position")
   )
 
 
+  skip_on_cran()
+  withr::with_tempfile(
+    "tf", fileext = ".Rmd", {
+      cat("---",
+          "output: ",
+          "  pdf_document:",
+          "    fig_crop: false",
+          "header-includes:",
+          "  - \\usepackage{array}",
+          "  - \\usepackage{multirow}",
+          "---",
+          "\n\n",
+          "```{r}",
+          "library(knitr)",
+          "library(kableExtra)",
+          "pass_ex <- data.frame(",
+          "Test = \"test\\\\_example\",",
+          "Results = \"As expected \",",
+          "Pass_Fail = \"Pass\",",
+          "stringsAsFactors = FALSE",
+          ")",
+          "```",
+          "\n\n",
+          "```{r results=\"asis\"}",
+          "vt_kable_test_code_results(pass_ex, format = \"latex\")",
+          "```",
+          "\n\n", file = tf, sep = "\n")
+
+      quiet <- capture.output({
+        rmarkdown::render(tf)
+      })
+
+      testthat::expect_true(file.exists(gsub(tf, pattern = '.Rmd$', replacement = ".pdf")))
+
+
+    })
 })
 
-test_that("vt_kable_test_code returns error when incorrect data are entered",{
+test_that("vt_kable_test_code_results returns error when incorrect data are entered",{
 
   expect_error(
-    vt_kable_test_code(data.frame(bad_entry = 1)),
+    vt_kable_test_code_results(data.frame(bad_entry = 1)),
     "Results data must contain the fields `Test`, `Results`, and `Pass_Fail`",
     fixed = TRUE
   )

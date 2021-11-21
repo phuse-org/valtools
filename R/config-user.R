@@ -44,8 +44,10 @@ vt_add_user_to_config <- function(username = whoami::username(), name, title, ro
 
   write_validation_config(
     path = dirname(vt_find_config()),
+    package = validation_config$package,
     working_dir = validation_config$working_dir,
     output_dir = validation_config$output_dir,
+    report_rmd_name = validation_config$report_rmd_name,
     report_naming_format = validation_config$report_naming_format,
     username_list = user_list,
     validation_files = validation_config$validation_files
@@ -113,8 +115,10 @@ vt_drop_user_from_config <- function(username){
 
     write_validation_config(
       path = dirname(vt_find_config()),
+      package = validation_config$package,
       working_dir = validation_config$working_dir,
       output_dir = validation_config$output_dir,
+      report_rmd_name = validation_config$report_rmd_name,
       report_naming_format = validation_config$report_naming_format,
       username_list = user_list,
       validation_files = validation_config$validation_files
@@ -199,7 +203,7 @@ get_config_user <- function(username){
 
   if( !username %in% names(users)){
 
-    if(is_interactive()){
+    if(is_interactive()){  # nocov start
 
 
       inform(
@@ -217,14 +221,10 @@ get_config_user <- function(username){
         vt_add_user_to_config(username = username)
         read_validation_config()$usernames[[username]]
       }else{
-        abort(
-          paste0("User `",username,"` does not exist in the config file.\n",
-                 "Add `",username,"` to the config file with `vt_add_user_to_config(\"",username,"\")`."),
-          class = "vt.validation_config_missing_user_error_interactive"
-        )
+        return("")
       }
 
-    }else{
+    }else{   # nocov end
       abort(
         paste0("User `",username,"` does not exist in the config file.\n",
                "Add `",username,"` to the config file with `vt_add_user_to_config(\"",username,"\")`."),
@@ -256,30 +256,37 @@ ask_user_name_title_role <- function(username = whoami::username(), name, title,
     )
   }
 
-  message(paste(collapse = "\n",c("",
+  # nocov start
+
+  message(paste(strwrap(paste(collapse = "\n",c("",
                                   "Please supply some information for recording users within the package.",
                                   "Note, that this information can be updated at any time though `vt_add_user_to_config()`"
-  )))
+  ))), collapse = "\n"))
 
   if(missing(name)){
     cat("\n")
-    name <- readline(paste0(" Please provide the name of the person associated with the username `",username,"` and press `Enter`: "))
+    message(paste(strwrap(paste0(" Please provide the name of the person associated with the username `",username,"` and press `Enter`. ")), collapse = "\n"))
+
+    name <- readline("Name: ")
   }
 
   if(missing(title)){
     cat("\n")
-    title <- readline(paste0(" Please provide the title of the person associated with the username `",username,"` and press `Enter`: "))
+    message(paste(strwrap(paste0(" Please provide the title of the person associated with the username `",username,"` and press `Enter`. ")), collapse = "\n"))
+    title <- readline("Title: ")
+
   }
 
   if(missing(role)){
     cat("\n")
-    role <- readline(paste0(" Please provide the role of the person for this validation associated with the username `",username,"` and press `Enter`: "))
+    message(paste(strwrap(paste0(" Please provide the role of the person for this validation associated with the username `",username,"` and press `Enter`: ")), collapse = "\n"))
+    role <- readline("Role: ")
   }
 
   cat("\n")
 
   vt_user(username = username, name = name, title = title, role = role)
-
+  # nocov end
 }
 
 #' @noRd

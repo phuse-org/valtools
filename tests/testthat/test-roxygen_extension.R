@@ -8,6 +8,7 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   #' @editDate 1900-01-01
   #' @coverage
   #' test1: req1, req2, req3
+  #' @deprecate Deprecated in v1.2
   #' @export
   #' @aliases testing
   hello_world <- function(name = \"\"){
@@ -29,6 +30,11 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
     roxygen2::block_has_tags(roxygen_block, tags = c("coverage"))
   )
 
+  expect_true(
+    roxygen2::block_has_tags(roxygen_block, tags = c("deprecate"))
+  )
+
+
   expect_equal(
     roxygen2::block_get_tag_value(roxygen_block,"editor"),
     "Sample Person"
@@ -42,6 +48,11 @@ test_that("Roxygen can read in new tags - YYYY-MM-DD", {
   expect_equal(
     roxygen2::block_get_tag_value(roxygen_block,"coverage"),
     "test1: req1, req2, req3"
+  )
+
+  expect_equal(
+    roxygen2::block_get_tag_value(roxygen_block, "deprecate"),
+    "Deprecated in v1.2"
   )
 
 })
@@ -129,3 +140,58 @@ test_that("formatting coverage section parses correctly", {
 
 
 })
+
+test_that("formatting risk assessment parses correctly", {
+  # one test case
+  risk_tag1 <- roxygen2::roxy_tag(tag = "riskAssessment",
+                                 raw = "1.1: 1 Low Risk, unlikely to occur")
+  expect_s3_class(class = "roxy_tag_riskAssessment",
+                  format_coverage_text(risk_tag1))
+
+  parsed_risk_tag1 <- roxygen2::roxy_tag_parse(risk_tag1)
+
+
+  expect_equal(
+    parsed_risk_tag1$riskAssessment,
+    structure(
+      list(data.frame(
+        Requirement = "1.1",
+        `Risk Assessment` = "1 Low Risk, unlikely to occur",
+        stringsAsFactors = FALSE,
+        check.names = FALSE
+      )),
+      class = "vt_req_risk_assessment"
+    )
+  )
+
+  # multiple test cases
+  risk_tag2 <- roxygen2::roxy_tag(tag = "riskAssessment",
+                                 raw = "1.1: 1 Low Risk, unlikely to occur\n1.2: 10 Not likely, but huge impact if occurs",
+                                 line = 4)
+  expect_s3_class(class = "roxy_tag_riskAssessment",
+                  format_coverage_text(risk_tag2))
+
+  parsed_risk_tag2 <- roxygen2::roxy_tag_parse(risk_tag2)
+
+
+  expect_equal(
+    parsed_risk_tag2$riskAssessment,
+    structure(
+      list(data.frame(
+        Requirement = "1.1",
+        `Risk Assessment` = "1 Low Risk, unlikely to occur",
+        stringsAsFactors = FALSE,
+        check.names = FALSE
+      ),
+      data.frame(
+        Requirement = "1.2",
+        `Risk Assessment` = "10 Not likely, but huge impact if occurs",
+        stringsAsFactors = FALSE,
+        check.names = FALSE
+      )),
+      class = "vt_req_risk_assessment"
+    )
+  )
+
+})
+

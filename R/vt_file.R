@@ -5,9 +5,6 @@
 #'
 #' @param file file to evaluate
 #' @param ... These dots are for future extensions and must be empty.
-#' @param type method of file_parse to use if other that file extension.
-#'   If not a supported file, it will just print the contents of the file.
-#'   Currently supported types: md, Rmd
 #' @param dynamic_referencing Whether to employ dynamic referencing or not.
 #'    defaults to FALSE.
 #'
@@ -15,20 +12,36 @@
 #'
 #' @export
 
-vt_file <- function(file, ..., type = tools::file_ext(file), dynamic_referencing = FALSE){
+vt_file <- function(file, ..., dynamic_referencing = FALSE){
+  invisible(vt_file_vectorized(file = file, ...,dynamic_referencing = dynamic_referencing))
+}
+
+vt_file_serial <- function(file, ..., dynamic_referencing = FALSE){
 
   file_path <- vignette_file_path(
-    path = file,
-    type = type
+    file = file,
+    ...
   )
 
   file_parse(file = file_path, ..., dynamic_referencing = dynamic_referencing)
 
 }
 
-vignette_file_path <- function(path, type){
+vt_file_vectorized <- Vectorize(vt_file_serial)
+
+
+vignette_file_path <- function(file, type, ...){
+
+
+  if(missing(type)){
+    type <- tools::file_ext(file)
+    if("test_code" %in% split_path(file) & tolower(type) == "r"){
+      type <- "r_test_code"
+    }
+  }
+
   structure(
-    path,
+    file,
     type = type,
     class = c(tolower(type),"vignette_file_path")
   )
@@ -67,7 +80,7 @@ file_parse.default <- function(file, ..., dynamic_referencing = FALSE){
 
 #' @importFrom knitr knit_child
 #' @importFrom withr with_options
-file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), dynamic_referencing = FALSE){
+file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), interactive_output = interactive(), dynamic_referencing = FALSE){
 
   if(dynamic_referencing){
     text <- dynamic_reference_rendering(file, reference = reference)
@@ -78,6 +91,29 @@ file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), d
   ## remove roxygen comments
   text <- text[!grepl("^#'", text)]
 
+  if(interactive_output){
+    file_parse.md.interactive(text, ..., envir = envir)
+  }else{
+    file_parse.md.knitting(text, ..., envir = envir)
+  }
+
+}
+
+#' @importFrom knitr knit
+file_parse.md.interactive <- function(text, ..., envir = parent.frame()){
+  with_options(new = list(knitr.duplicate.label = "allow"), {
+    cat(asis_output(knit(
+      text = text,
+      envir = envir,
+      ...,
+      quiet = TRUE
+    )))
+    cat("\n")
+  })
+}
+
+#' @importFrom knitr knit_child
+file_parse.md.knitting <- function(text, ..., envir = parent.frame()){
   with_options(new = list(knitr.duplicate.label = "allow"), {
     cat(asis_output(knit_child(
       text = text,
@@ -88,4 +124,48 @@ file_parse.md <- function(file, ..., reference = NULL, envir = parent.frame(), d
   })
 }
 
+
 file_parse.rmd <- file_parse.md
+
+
+
+file_parse.r_test_code <- function(file, ..., reference = NULL, envir = parent.frame(), interactive_output = interactive(), dynamic_referencing = FALSE){
+
+  text <- c("```{r echo = FALSE}",
+            paste0("results <- eval_test_code(path = ",bquote(file),")"),
+            ifelse(dynamic_referencing,
+                   paste(" results <- dynamic_reference_rendering(results,reference = ",as.character(substitute(reference)),")"),NA),
+            paste0("vt_kable_test_code_results(results, format = \"",vt_render_to(),"\")"),
+            "```")
+
+  text <- text[!is.na(text)]
+
+  if(interactive_output){
+    file_parse.md.interactive(text, ..., envir = envir)
+  }else{
+    file_parse.md.knitting(text, ..., envir = envir)
+  }
+}
+
+#' output to render kable to
+#'
+#' reads the knitr and rmarkdown options to determine which output type is being rendered
+#'
+#' @importFrom knitr opts_knit current_input
+#' @importFrom rmarkdown all_output_formats
+#' @export
+
+vt_render_to <- function(){
+  output <- opts_knit$get("rmarkdown.pandoc.to")
+  if(is.null(output)){
+    output <- tryCatch({
+      all_output_formats(knitr::current_input())[[1]]
+    }, error = function(e){
+      NULL
+    })
+  }
+  if(is.null(output)){
+    output <- "html"
+  }
+  return(output)
+}

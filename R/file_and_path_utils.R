@@ -58,8 +58,18 @@ vt_path <- function(...){
 #'
 #' @export
 vt_find_config <- function(){
-
-  root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+  
+  tryCatch({
+    root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+  }, error = function(e){
+    abort(
+      paste0(
+      "Could not find root directory. ",
+      "Is your working directory inside a package, validation packet, or project?\n"
+      ),
+      class = "vt.validation_root_missing"
+    )
+  })
 
   tryCatch({
 
@@ -136,7 +146,7 @@ find_file <- function(filename, ref = ".", full_names = FALSE){
 ## it is source by whether it lives in the "Working" or "output" dir
 ## if not interactive, select file that is within the wd
 config_selector <- function(files, is_live = interactive()){
-  if (is_live) {
+  if (is_live) {  # nocov start
 
     files[sapply(files,
                  function(config_file) {
@@ -148,7 +158,7 @@ config_selector <- function(files, is_live = interactive()){
                      FALSE
                    }
                  })]
-  } else{
+  } else{ # nocov end
     wd <- normalizePath(do.call('file.path', as.list(split_path(getwd()))), winslash = "/")
     files <- files[grepl(wd, normalizePath(files, winslash = "/"), fixed = TRUE)]
     if(length(files) > 1){

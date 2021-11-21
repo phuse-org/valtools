@@ -4,7 +4,7 @@
 \alias{vt_kable_val_env}
 \title{Generates kable code for validation environment details}
 \usage{
-vt_kable_val_env(val_env, format = "latex")
+vt_kable_val_env(val_env, format = vt_render_to())
 }
 \arguments{
 \item{val_env}{data.frame as output from \code{\link{vt_scrape_val_env}}}
