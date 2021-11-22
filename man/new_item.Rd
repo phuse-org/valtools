@@ -29,7 +29,8 @@ vt_use_req(
   title = NULL,
   open = interactive(),
   add_before = NULL,
-  add_after = NULL
+  add_after = NULL,
+  use_shiny = FALSE
 )
 }
 \arguments{
@@ -47,6 +48,12 @@ sans file paths or extensions.}
 \item{add_before, add_after}{If either parameters is supplied, the location to
 add the validation item to the validation configuration. If no parameter is
 passed the item is added at the end.}
+
+\item{use_shiny}{if \code{TRUE}, collect requirements details through a
+shiny gadget in RStudio's viewer pane.
+If RStudio or its viewer pane/dialog APIs are not available in the
+current R environment, then the gadget will be displayed in the system's
+default web browser.}
 }
 \value{
 Path to the newly created validation item file, invisibly.

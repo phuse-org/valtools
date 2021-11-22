@@ -13,25 +13,23 @@
 #' @export
 vt_use_req <- function(name, username = vt_username(), title = NULL, open = interactive(),
                        add_before = NULL, add_after = NULL, use_shiny = FALSE){
-
+  
   # ensure file extensions are of the acceptable type
-  name <- vt_set_ext(name, ext = "md")
-
+  name <- vt_set_ext(name, ext = c("md", "rmd"))
+  
   is_valid_name(name)
-
+  
   # Create file to write in
   req_name <- create_item("requirements", name)
-
+  
   ## if the file didnt exist before, populate with contents
   if (file.size(req_name) == 0){
     
-    editDate <- as.character(Sys.Date())
-
     if(is.null(title)){
       title <- basename(file_path_sans_ext(req_name))
     }
     
-    reqs <- " "
+    reqs = " "
     
     if(use_shiny){
       reqList <- vt_use_req_shiny(name, username, title)
@@ -40,25 +38,30 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
       editDate <- reqList$editDate
       reqs <- unname(rowSplit(reqList$reqs))
     }
-
+    
     # Create the content to write
     render_template("requirements", output = req_name,
                     data = list(
                       username = username,
                       title = title,
-                      editDate = editDate,
+                      editDate = as.character(Sys.Date()),
                       reqs = reqs
                     ))
+    
+    vt_add_file_to_config(
+      filename = name,
+      after = {{add_after}},
+      before = {{add_before}}
+    )
   }
-
-  vt_add_file_to_config(filename = name, after = add_after, before = add_before)
-
+  
+  
   if(open){
-    edit_file(req_name)
+    edit_file(req_name) # nocov
   }
-
+  
   invisible(req_name)
-
+  
 }
 
 #' provide a shiny gadget interface to collect  requirements
@@ -78,8 +81,8 @@ vt_use_req <- function(name, username = vt_username(), title = NULL, open = inte
 vt_use_req_shiny <- function(name, username, title){
   
   dfReqs <- data.frame(ID = "1.1",
-                  Requirement = "Start typing here to document requirements.\n Right click to insert or remove rows.",
-                  stringsAsFactors = FALSE)
+                       Requirement = "Start typing here to document requirements.\n Right click to insert or remove rows.",
+                       stringsAsFactors = FALSE)
   
   
   # Our ui will display a simple gadget page to collect 
@@ -108,9 +111,9 @@ vt_use_req_shiny <- function(name, username, title){
     # pass on the data in reqList list.
     observeEvent(input$done, {
       lsReqs <- list(username = input$username,
-                      title = input$title,
-                      editDate = input$editDate,
-                      reqs = rvReqs$data)
+                     title = input$title,
+                     editDate = input$editDate,
+                     reqs = rvReqs$data)
       stopApp(lsReqs)
     })
     
