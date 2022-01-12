@@ -63,16 +63,16 @@ vt_kable_test_code_results <- function(results, format = vt_render_to()) {
     t <- column_spec(t, 2:3, width = "10em")
   }
 
-  t <- kable_styling(t, position = "center")
-  if(!is.null(Pass_Fail_colorized)){
-  t <- column_spec(
-    t,
-    3,
-    color = Pass_Fail_colorized
-  )
-  }
+  # t <- kable_styling(t, position = "center")
+  # if(!is.null(Pass_Fail_colorized)){
+  # t <- column_spec(
+  #   t,
+  #   3,
+  #   color = Pass_Fail_colorized
+  # )
+  # }
 
-  t <- kable_styling(t, latex_options = "hold_position")
+  # t <- kable_styling(t, latex_options = "hold_position")
 
   return(t)
 }
