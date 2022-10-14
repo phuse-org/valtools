@@ -60,7 +60,7 @@ vt_kable_test_code_results <- function(results, format = vt_render_to()) {
     x$Results <- gsub("\n","",x$Results)
   }
 
-  t <- kable(x,format = format)
+  t <- kable(x, format = format, longtable = TRUE)
 
   if(nrow(results) > 0){
     t <- column_spec(t, 2:3, width = "10em")
