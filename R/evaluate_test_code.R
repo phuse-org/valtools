@@ -57,7 +57,7 @@ vt_kable_test_code_results <- function(results, format = vt_render_to()) {
   x <- results[, c("Test", "Results", "Pass_Fail")]
   colnames(x) <- c("Test", "Results", "Pass/Fail")
   if (nrow(x) > 0) {
-    x$Results <- gsub("\n","",x$Results)
+    x$Results <- gsub("\n","", gsub("\a|\033","", x$Results))
   }
 
   t <- kable(x, format = format, longtable = TRUE)
