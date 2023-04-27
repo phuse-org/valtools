@@ -136,7 +136,8 @@ vt_scrape_function_editors  <- function(tags = c("editor", "editDate", "export")
 #' @importFrom knitr kable
 #' @rdname scraping
 #'
-vt_kable_requirement_editors  <- function(x,format = vt_render_to()){
+vt_kable_requirement_editors  <- function(x,format = vt_render_to(),
+                                          latex_options = "hold_position"){
   all_colnames <- c(requirements = "Requirement ID",
                     editor = "Editor",
                     editDate = "Edit Date")
@@ -145,7 +146,7 @@ vt_kable_requirement_editors  <- function(x,format = vt_render_to()){
              col.names = all_colnames)
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, ncol(x), border_right = TRUE)
-  t <- kable_styling(t, latex_options = "hold_position")
+  t <- kable_styling(t, latex_options)
   t
 }
 
@@ -178,7 +179,8 @@ vt_kable_function_editors  <- function(x,format = vt_render_to()){
 #' @importFrom knitr kable
 #' @rdname scraping
 #'
-vt_kable_test_case_editors  <- function(x,format = vt_render_to()){
+vt_kable_test_case_editors  <- function(x,format = vt_render_to(), 
+                                        latex_options = "hold_position"){
     all_colnames <- c(test_cases = "Test Case ID",
                     editor = "Editor",
                     editDate = "Edit Date")
@@ -187,7 +189,7 @@ vt_kable_test_case_editors  <- function(x,format = vt_render_to()){
              col.names = all_colnames)
   t <- column_spec(t, 1, border_left = TRUE)
   t <- column_spec(t, length(all_colnames), border_right = TRUE)
-  t <- kable_styling(t, latex_options = "hold_position")
+  t <- kable_styling(t, latex_options)
   t
 }
 
