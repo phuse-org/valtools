@@ -47,14 +47,14 @@ Suggests:
     bookdown,
     here,
     xml2,
-    rvest
+    rvest,
+    fs
 Imports:
     desc,
     devtools,
     R6,
     roxygen2,
     lubridate,
-    fs,
     rlang,
     yaml,
     whoami,
@@ -68,7 +68,8 @@ Imports:
     knitr,
     kableExtra,
     testthat,
-    tidyselect
+    tidyselect,
+    rstudioapi
 VignetteBuilder: knitr
 SystemRequirements:
     lua
