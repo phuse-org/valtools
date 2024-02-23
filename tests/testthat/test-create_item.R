@@ -84,13 +84,13 @@ test_that("vt_use_ family works nicely with simple item creation", {
       type = "test_code")
 
     expect_true(
-      file.exists("validation/requirements/new_dir/new_specification")
+      file.exists("vignettes/validation/requirements/new_dir/new_specification")
     )
     expect_true(
-      file.exists("validation/test_cases/new_dir/new_test_case")
+      file.exists("vignettes/validation/test_cases/new_dir/new_test_case")
     )
     expect_true(
-      file.exists("validation/test_code/new_dir/new_test_code")
+      file.exists("vignettes/validation/test_code/new_dir/new_test_code")
     )
   })
 
