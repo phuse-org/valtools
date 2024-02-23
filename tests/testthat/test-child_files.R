@@ -1,12 +1,6 @@
 test_that("child files in pkg", {
   withr::with_tempdir({
-    withr::with_options(
-      list(
-        usethis.quiet = TRUE
-      ),
-      {
-        vt_create_package(rstudio = FALSE, open = FALSE)
-      })
+    make_vt_test_package()
 
     vt_use_req("req1", username = "a user", open = FALSE)
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
@@ -48,13 +42,7 @@ test_that("child files in pkg", {
 
 test_that("child files outside pkg", {
   withr::with_tempdir({
-    withr::with_options(
-      list(
-        usethis.quiet = TRUE
-      ),
-      {
-        vt_create_package(rstudio = FALSE, open = FALSE)
-      })
+     make_vt_test_package()
      vt_use_test_case("testcase1", username = "a user", open = FALSE)
      vt_use_req("req1", username = "a user", open = FALSE)
      vt_use_test_code("testcode1", username = "another user", open = FALSE)
@@ -75,13 +63,7 @@ test_that("child files outside pkg", {
 
 test_that("incomplete set", {
   withr::with_tempdir({
-    withr::with_options(
-      list(
-        usethis.quiet = TRUE
-      ),
-      {
-        vt_create_package(rstudio = FALSE, open = FALSE)
-      })
+    make_vt_test_package()
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_req("req1", username = "a user", open = FALSE)
@@ -105,13 +87,7 @@ test_that("incomplete set", {
 
 test_that("compatibility between vt_get_child_files and vt_files", {
   withr::with_tempdir({
-    withr::with_options(
-      list(
-        usethis.quiet = TRUE
-      ),
-      {
-        vt_create_package(rstudio = FALSE, open = FALSE)
-      })
+    make_vt_test_package()
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_req("req1", username = "a user", open = FALSE)

@@ -68,7 +68,7 @@ test_that("vt_use_ family works nicely with simple item creation", {
   withr::with_tempdir({
 
     # set up validation infrastructure
-    vt_use_validation()
+    make_vt_test_package()
 
     ## create items
     spec_path <- create_item(

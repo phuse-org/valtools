@@ -1,13 +1,7 @@
 test_that("validation file path finds files within the validation infrastructure, throws error otherwise", {
   withr::with_tempdir({
 
-    withr::with_options(
-      list(
-        usethis.quiet = TRUE
-      ),
-      {
-        vt_create_package(rstudio = FALSE, open = FALSE)
-      })
+    make_vt_test_package()
     vt_use_req("example_req.md", username = "sample", open = FALSE)
 
     fp <- validation_file_path(
