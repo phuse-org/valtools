@@ -110,7 +110,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     expect_equal(
       add_user_message,
-      "User `test` added to validation config file.\n",
+      "User `test` added to validation config file.",
     )
 
     expect_equal(
@@ -137,7 +137,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     expect_equal(
       add_user_message2,
-      "User `test2` added to validation config file.\n",
+      "User `test2` added to validation config file.",
     )
 
     expect_equal(
@@ -212,7 +212,7 @@ test_that("Test creation of the config file without passed values in a non-inter
 
     expect_equal(
       add_user_message,
-      "User `test` information updated in the validation config file.\n",
+      "User `test` information updated in the validation config file.",
     )
 
     expect_equal(
