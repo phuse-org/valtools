@@ -114,7 +114,7 @@ test_that("lua numbering for html", {
                           pattern = "Later\\sreference\\sto\\s\\((\\d)\\)\\s-\\s(\\d)",
                           replacement = "\\1")))
   expect_equal(c(1, 1, 2, 2, 1, 3, 2),
-               as.numeric(unlist(lapply(strsplit(list_rendered, ": "), FUN = function(x){x[2]}))))
+               as.integer(sub(".*(\\d{1})$", "\\1", list_rendered)))
 
 })
 
