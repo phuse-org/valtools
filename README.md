@@ -1,5 +1,5 @@
 <!-- badges: start -->
-  [![R build status](https://github.com/phuse-org/valtools/workflows/R-CMD-check/badge.svg)](https://github.com/phuse-org/valtools/actions)
+  [![R-CMD-check](https://github.com/phuse-org/valtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/phuse-org/valtools/actions/workflows/R-CMD-check.yaml)
   [![Codecov test coverage](https://codecov.io/gh/phuse-org/valtools/branch/main/graph/badge.svg)](https://codecov.io/gh/phuse-org/valtools?branch=main)
   [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
