@@ -4,21 +4,6 @@ test_that("Scrape roxygen tags from reqs works", {
 
     ## test setup
     make_vt_test_package()
-    # vt_use_validation(
-    #   username_list = list(
-    #     vt_user(
-    #       username = "user1",
-    #       name = "Test User",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     ),
-    #     vt_user(
-    #       username = "user2",
-    #       name = "Test User 2",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     )
-    #   ))
 
     vt_use_req("req001.md",username = "Test User", open = FALSE)
     vt_use_req("req002.md",username = "Test User", open = FALSE)
@@ -64,21 +49,6 @@ test_that("Scrape roxygen tags from test cases works", {
 
     ## test setup
     make_vt_test_package()
-    # vt_use_validation(
-    #   username_list = list(
-    #     vt_user(
-    #       username = "user1",
-    #       name = "Test User",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     ),
-    #     vt_user(
-    #       username = "user2",
-    #       name = "Test User 2",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     )
-    #   ))
 
     vt_use_test_case("test_case_001.md",username = "Test User", open = FALSE)
     vt_use_test_case("test_case_002.md",username = "Test User", open = FALSE)
@@ -124,33 +94,6 @@ test_that("Scrape roxygen tags from test code works", {
 
     ## test setup
     make_vt_test_package()
-    # vt_use_validation(
-    #   username_list = list(
-    #     vt_user(
-    #       username = "user1",
-    #       name = "Test User",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     ),
-    #     vt_user(
-    #       username = "user2",
-    #       name = "Test User 2",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     ),
-    #     vt_user(
-    #       username = "user3",
-    #       name = "Test User 3",
-    #       role = "sample",
-    #       title = "Test Code Writer"
-    #     ),
-    #     vt_user(
-    #       username = "user4",
-    #       name = "Test User 4",
-    #       role = "sample",
-    #       title = "Test Code Writer"
-    #     )
-    #   ))
 
     vt_use_test_code("test_code_001",username = "Test User 3")
     text <- readLines("vignettes/validation/test_code/test_code_001.R")
@@ -331,21 +274,6 @@ test_that("Scrape roxygen tags and specific tags are missing throws warnings", {
 
     ## test setup
     make_vt_test_package()
-    # vt_use_validation(
-    #   username_list = list(
-    #     vt_user(
-    #       username = "user1",
-    #       name = "Test User",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     ),
-    #     vt_user(
-    #       username = "user2",
-    #       name = "Test User 2",
-    #       role = "sample",
-    #       title = "Req Writer"
-    #     )
-    #   ))
 
     vt_use_test_case("test_case_001.md",username = "Test User")
 
