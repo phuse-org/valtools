@@ -375,28 +375,23 @@ test_that("vt_kable_test_code_results returns formatted kable object",{
       ),position = "center"), latex_options = "hold_position")
   )
 
-  output_empty <- vt_kable_test_code_results(data.frame(
+  output_empty_df <- data.frame(
     Test = character(),
     Results = character(),
     Pass_Fail = character(),
     stringsAsFactors = FALSE
-  ))
-
-  expect_equal(
-    output_empty,
-    kable_styling(
-    kable_styling(
-        kable(
-          data.frame(
-            Test = character(),
-            Results = character(),
-            Pass_Fail = character(),
-            stringsAsFactors = FALSE
-          ),
-          escape = FALSE,
-          col.names = c("Test", "Results", "Pass/Fail")
-      ),position = "center"), latex_options = "hold_position")
   )
+
+  output_empty <- vt_kable_test_code_results(output_empty_df)
+
+  output_empty_df2 <- output_empty_df
+  names(output_empty_df2) <- c('Test', 'Results', 'Pass/Fail')
+  output_empty2 <- output_empty_df2 %>%
+    kable(format = 'html') %>%
+    kable_styling(position = "center") %>%
+    kable_styling(latex_options = "hold_position")
+
+  expect_equal(output_empty, output_empty2)
 
 
   skip_on_cran()
