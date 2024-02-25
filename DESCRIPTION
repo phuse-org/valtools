@@ -73,3 +73,4 @@ Imports:
 VignetteBuilder: knitr
 SystemRequirements:
     lua
+URL: https://phuse-org.github.io/valtools/
