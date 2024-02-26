@@ -50,8 +50,8 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
     # req_title uses only first numeric position
     out$req_title <- factor(out$req_title,
                             levels = paste0("Requirement ", 
-                                            sort(as.numeric(unique(unlist(lapply(strsplit(out$req_title, split = " "), 
-                                                        function(x){x[2]})))))))
+                                            sort(unique(unlist(lapply(strsplit(out$req_title, split = " "), 
+                                                        function(x){x[2]}))))))
     out[order(out$req_title),]
     
   }
@@ -127,15 +127,15 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
 #' @importFrom knitr kable
 #' @importFrom kableExtra kable_styling collapse_rows add_header_above
 #' @export
-vt_kable_coverage_matrix <- function(x, format = vt_render_to()){
+vt_kable_coverage_matrix <- function(x, format = vt_render_to(), ...){
   switch(attr(x, "table_type"),
-         "long" = kable_cov_matrix_long(x, format = format),
-         "wide" = kable_cov_matrix_wide(x, format = format))
+         "long" = kable_cov_matrix_long(x, format = format, ...),
+         "wide" = kable_cov_matrix_wide(x, format = format, ...))
 
 }
 
 
-kable_cov_matrix_long <- function(x, format = vt_render_to()){
+kable_cov_matrix_long <- function(x, format = vt_render_to(), ...){
   this_col_names <- c("Requirement Name", "Requirement ID", "Test Case Name", "Test Cases")
   if(all(x$deprecate == "")){
     x <- x[,-which(names(x) == "deprecate")]
@@ -149,7 +149,7 @@ kable_cov_matrix_long <- function(x, format = vt_render_to()){
   out_tab <- kable_styling(out_tab, font_size = 6)
   out_tab <- column_spec(out_tab, 1, border_left = TRUE)
   out_tab <- column_spec(out_tab, ncol(x), border_right = TRUE)
-  out_tab <- collapse_rows(out_tab, c(1, 3))
+  out_tab <- collapse_rows(out_tab, c(1, 3), ...)
   out_tab
 }
 
