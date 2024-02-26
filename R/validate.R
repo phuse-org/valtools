@@ -335,6 +335,7 @@ copy_validation_content <- function(pkg = ".", src = pkg){
 
   validation_directory <- file.path(get_config_working_dir(), "validation")
   validation_output_directory <- file.path(get_config_output_dir(),"validation")
+  
 
   if(validation_directory != validation_output_directory){
     tryCatch({
@@ -343,20 +344,22 @@ copy_validation_content <- function(pkg = ".", src = pkg){
         dir.create(file.path(pkg, validation_output_directory),recursive = TRUE)
       }
 
+
       ## copy validation contents to validation output dir
       directory_copy(
         from = file.path(pkg, validation_directory),
         to = file.path(pkg, validation_output_directory),
         recursive = TRUE,
         overwrite = TRUE)
-
+      
       ## copy validation Rmd
       file.copy(
         from = file.path(pkg, "vignettes", get_config_report_rmd_name()),
         to = file.path(pkg, validation_output_directory),
         overwrite = TRUE
       )
-
+      
+      
       # copy and strip down code documentation to validation output dir
       roxygen_copy(
         from = file.path(pkg, "R"),
