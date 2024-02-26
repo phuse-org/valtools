@@ -69,7 +69,7 @@ of the naming structure of the output validation report. use \code{{package}}
 for package name, \code{{version}} to record package version, and \code{{date}} to
 capture the date the report was run.}
 
-\item{username_list}{list of user objects created by {make_user}. Each user
+\item{username_list}{list of user objects created by make_user. Each user
 contains entries for username, name, title, and role to be used for
 documentation.}
 

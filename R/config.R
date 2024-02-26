@@ -16,7 +16,7 @@
 #'  of the naming structure of the output validation report. use `{package}`
 #'  for package name, `{version}` to record package version, and `{date}` to
 #'  capture the date the report was run.
-#' @param username_list list of user objects created by {make_user}. Each user
+#' @param username_list list of user objects created by make_user. Each user
 #'     contains entries for username, name, title, and role to be used for
 #'     documentation.
 #' @param validation_files list of validation files: requirements, test cases and test code.
