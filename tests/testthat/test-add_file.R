@@ -1,8 +1,8 @@
 test_that("validation file path finds files within the validation infrastructure, throws error otherwise", {
   withr::with_tempdir({
 
-    vt_use_validation()
-    vt_use_req("example_req.md",username = "sample")
+    make_vt_test_package()
+    vt_use_req("example_req.md", username = "sample", open = FALSE)
 
     fp <- validation_file_path(
       file = "example_req.md",

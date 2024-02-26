@@ -1,10 +1,8 @@
 test_that("create change log from template", {
   withr::with_tempdir({
 
-    captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
-    setwd("myTestPkg")
-
-    vt_use_change_log(date = "2021-01-01")
+    make_vt_test_package()
+    vt_use_change_log(date = "2021-01-01", open = FALSE)
 
     expect_true(file.exists("vignettes/validation/change_log.md"))
     expect_equal(readLines("vignettes/validation/change_log.md")[1],
@@ -13,9 +11,8 @@ test_that("create change log from template", {
   })
 
   withr::with_tempdir({
-    captured_output <- capture.output(vt_create_package("myTestPkg", open = FALSE))
-    setwd("myTestPkg")
-    vt_use_change_log()
+    make_vt_test_package()
+    vt_use_change_log(open = FALSE)
     expect_true(file.exists("vignettes/validation/change_log.md"))
     expect_equal(readLines("vignettes/validation/change_log.md")[1],
                  paste("# 0.0.0.9000",format(Sys.Date(), "%Y-%m-%d")))
@@ -27,10 +24,9 @@ test_that("change log not in a package", {
 
   withr::with_tempdir({
 
-    file.create(".here")
-    vt_use_validation()
+    make_vt_test_package()
 
-    vt_use_change_log(date = "2021-01-01", version = "0.0.0.9000")
+    vt_use_change_log(date = "2021-01-01", version = "0.0.0.9000", open = FALSE)
 
     expect_equal(
       vt_scrape_change_log(),
@@ -43,10 +39,8 @@ test_that("change log not in a package", {
 
   withr::with_tempdir({
 
-    file.create(".here")
-    vt_use_validation()
-
-    vt_use_change_log()
+    make_vt_test_package()
+    vt_use_change_log(open = FALSE, version = "1.0")
     expect_equal(
       vt_scrape_change_log(),
       data.frame(version = "1.0",
@@ -62,8 +56,7 @@ test_that("Throw informative error when change log does not exist", {
 
   withr::with_tempdir({
 
-    file.create(".here")
-    vt_use_validation()
+    make_vt_test_package()
 
     expect_error(
       vt_scrape_change_log(),

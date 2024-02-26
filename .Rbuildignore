@@ -12,3 +12,4 @@ CONTRIBUTING.md
 
 vignettes/validation/validation.yml
 ^man/figures/cheatsheets/*
+^pkgdown$

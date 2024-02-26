@@ -74,16 +74,16 @@ ref$list_references()
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-scrape_references}{\code{vt_dynamic_referencer$scrape_references()}}
-\item \href{#method-reference_insertion}{\code{vt_dynamic_referencer$reference_insertion()}}
-\item \href{#method-list_references}{\code{vt_dynamic_referencer$list_references()}}
-\item \href{#method-new}{\code{vt_dynamic_referencer$new()}}
-\item \href{#method-clone}{\code{vt_dynamic_referencer$clone()}}
+\item \href{#method-vt_dynamic_referencer-scrape_references}{\code{vt_dynamic_referencer$scrape_references()}}
+\item \href{#method-vt_dynamic_referencer-reference_insertion}{\code{vt_dynamic_referencer$reference_insertion()}}
+\item \href{#method-vt_dynamic_referencer-list_references}{\code{vt_dynamic_referencer$list_references()}}
+\item \href{#method-vt_dynamic_referencer-new}{\code{vt_dynamic_referencer$new()}}
+\item \href{#method-vt_dynamic_referencer-clone}{\code{vt_dynamic_referencer$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-scrape_references"></a>}}
-\if{latex}{\out{\hypertarget{method-scrape_references}{}}}
+\if{html}{\out{<a id="method-vt_dynamic_referencer-scrape_references"></a>}}
+\if{latex}{\out{\hypertarget{method-vt_dynamic_referencer-scrape_references}{}}}
 \subsection{Method \code{scrape_references()}}{
 collect references from text.
 \subsection{Usage}{
@@ -113,8 +113,8 @@ ref$list_references()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reference_insertion"></a>}}
-\if{latex}{\out{\hypertarget{method-reference_insertion}{}}}
+\if{html}{\out{<a id="method-vt_dynamic_referencer-reference_insertion"></a>}}
+\if{latex}{\out{\hypertarget{method-vt_dynamic_referencer-reference_insertion}{}}}
 \subsection{Method \code{reference_insertion()}}{
 replace references in text with values
 \subsection{Usage}{
@@ -142,8 +142,8 @@ ref$reference_insertion("This is my ##new_reference")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-list_references"></a>}}
-\if{latex}{\out{\hypertarget{method-list_references}{}}}
+\if{html}{\out{<a id="method-vt_dynamic_referencer-list_references"></a>}}
+\if{latex}{\out{\hypertarget{method-vt_dynamic_referencer-list_references}{}}}
 \subsection{Method \code{list_references()}}{
 list references available and their value
 \subsection{Usage}{
@@ -163,8 +163,8 @@ ref$list_references()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-vt_dynamic_referencer-new"></a>}}
+\if{latex}{\out{\hypertarget{method-vt_dynamic_referencer-new}{}}}
 \subsection{Method \code{new()}}{
 create a new dynamic reference object
 \subsection{Usage}{
@@ -188,8 +188,8 @@ a new \code{vt_dynamic_reference} object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-vt_dynamic_referencer-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-vt_dynamic_referencer-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

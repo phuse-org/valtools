@@ -1,6 +1,6 @@
 #' Create validation report from template
 #' @param pkg_name name of package
-#' @param template what validation report template from {valtools} to use,
+#' @param template what validation report template from valtools to use,
 #' one of "validation" (default) or "requirements"
 #' @param dynamic_referencing Should dynamic referencing be enabled by default. Boolean defaults to FALSE.
 #' @param open boolean to open the validation report for further editing

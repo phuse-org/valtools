@@ -2,11 +2,11 @@ test_that("vt_path returns expected path", {
   withr::with_tempdir({
 
     ## setup
-    vt_use_validation()
-    actual_dir <- file.path(getwd(),"validation")
+    make_vt_test_package()
+    actual_dir <- file.path(getwd(), "vignettes", "validation")
 
     path_check <- vt_path()
-    setwd("validation/")
+    setwd(file.path("vignettes", "validation"))
     path_check2 <- vt_path()
 
 
