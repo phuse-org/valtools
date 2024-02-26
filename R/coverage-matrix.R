@@ -50,8 +50,8 @@ vt_scrape_coverage_matrix <- function(type = c("long", "wide"),
     # req_title uses only first numeric position
     out$req_title <- factor(out$req_title,
                             levels = paste0("Requirement ", 
-                                            sort(as.numeric(unique(unlist(lapply(strsplit(out$req_title, split = " "), 
-                                                        function(x){x[2]})))))))
+                                            sort(unique(unlist(lapply(strsplit(out$req_title, split = " "), 
+                                                        function(x){x[2]}))))))
     out[order(out$req_title),]
     
   }
