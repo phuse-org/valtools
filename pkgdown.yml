@@ -1,11 +1,11 @@
-pandoc: 2.19.2
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   starting-validated-package: starting-validated-package.html
   validating-external-resources: validating-external-resources.html
   validation_figure_tests: validation_figure_tests.html
-last_built: 2024-02-26T03:36Z
+last_built: 2024-03-05T23:45Z
 urls:
   reference: https://phuse-org.github.io/valtools/reference
   article: https://phuse-org.github.io/valtools/articles
