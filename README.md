@@ -18,13 +18,13 @@ For background on the `R Package Validation Framework`, watch [this presentation
 
 ## Installation
 
-To install the most recent release, use:
+To install the most recent version officially released on GitHub, use:
 
 ```
-remotes::install_github("phuse-org/valtools", ref = "V0.4.0")
+remotes::install_github("phuse-org/valtools", ref = remotes::github_release())
 ```
 
-{valtools} is under active development. To get the very latest version in development, use:
+To install the latest development version, use:
 
 ```
 remotes::install_github("phuse-org/valtools")
