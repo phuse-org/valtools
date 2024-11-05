@@ -1,120 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://phuse-org.github.io/valtools/404.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/articles/starting-validated-package.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/articles/validating-external-resources.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/articles/validation_figure_tests.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/change_log.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/dynamic_reference_rendering.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/eval_test_code.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/new_item.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/scrape.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/scrape_roxygen.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/scraping.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/val_init.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/validate.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/validation_config.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/validation_paths.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_dynamic_referencer.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_file.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_get_all_users.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_get_child_files.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_kable_coverage_matrix.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_kable_sig_table.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_kable_val_env.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_render_to.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_render_validation_report.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_scrape_coverage_matrix.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_scrape_section.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_scrape_sig_table.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_scrape_tags_from.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_scrape_val_env.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_use_report.html</loc>
-  </url>
-  <url>
-    <loc>https://phuse-org.github.io/valtools/reference/vt_username.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://phuse-org.github.io/valtools/404.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/CONDUCT.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/CONTRIBUTING.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/LICENSE-text.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/LICENSE.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/articles/index.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/articles/starting-validated-package.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/articles/validating-external-resources.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/articles/validation_figure_tests.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/authors.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/index.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/news/index.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/change_log.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/dynamic_reference_rendering.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/eval_test_code.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/index.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/new_item.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/scrape.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/scrape_roxygen.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/scraping.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/val_init.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/validate.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/validation_config.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/validation_paths.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_dynamic_referencer.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_file.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_get_all_users.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_get_child_files.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_kable_coverage_matrix.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_kable_sig_table.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_kable_val_env.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_render_to.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_render_validation_report.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_scrape_coverage_matrix.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_scrape_section.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_scrape_sig_table.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_scrape_tags_from.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_scrape_val_env.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_use_report.html</loc></url>
+<url><loc>https://phuse-org.github.io/valtools/reference/vt_username.html</loc></url>
 </urlset>
+
