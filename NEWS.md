@@ -1,5 +1,7 @@
 # valtools (development version)
 
+* Temporary fixes for incompatibility between usethis <= 3.0.0 and R >= 4.5.x
+
 # valtools 0.4.1
 
 * Initialize this NEWS.md
