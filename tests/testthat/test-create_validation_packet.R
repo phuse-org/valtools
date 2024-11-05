@@ -22,7 +22,7 @@ test_that("throws error when trying to add to existing package", {
   withr::with_tempdir({
 
     quiet <- capture.output({
-      usethis::create_package(".")
+      safe_usethis_create_package(".")
       })
 
     expect_error(

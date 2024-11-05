@@ -77,7 +77,7 @@ test_that("test running validation.Rmd from source for failure", {
 
     ## create blank package
     quiet <- capture.output({
-      usethis::create_package("example.package", open = FALSE)
+      safe_usethis_create_package("example.package")
     })
 
     setwd("example.package")
@@ -134,7 +134,7 @@ test_that("test building a validated bundle from source", {
 
     ## create blank package
     quiet <- capture.output({
-      usethis::create_package("example.package")
+      safe_usethis_create_package("example.package")
     })
 
     setwd("example.package")
@@ -266,7 +266,7 @@ test_that("test installing a validated bundle from source and rerunning report",
 
     ## create blank package
     quiet <- capture.output({
-      usethis::create_package(pkg_name)
+      safe_usethis_create_package(pkg_name)
     })
 
     setwd(pkg_name)

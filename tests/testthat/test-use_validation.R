@@ -2,7 +2,7 @@ test_that("Able to add validation structure to package", {
   withr::with_tempdir({
 
     quite <- capture.output({
-      usethis::create_package(".", open = FALSE)
+      safe_usethis_create_package(".")
     })
 
     vt_use_validation(".")

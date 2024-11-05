@@ -296,7 +296,7 @@ test_that("Test config creation without validation infrastructure throws error",
   withr::with_tempdir({
 
     quiet <- capture.output(
-      usethis::create_package(path = ".")
+      safe_usethis_create_package(path = ".")
     )
 
     expect_error(

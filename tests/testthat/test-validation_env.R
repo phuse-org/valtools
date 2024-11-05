@@ -22,8 +22,7 @@ test_that("temp", {
 
   withr::with_tempdir({
 
-  captured_output <- capture.output({usethis::create_package(path = ".", open = FALSE,
-                                            rstudio = TRUE)})
+  captured_output <- capture.output(safe_usethis_create_package(path = "."))
 
   # bare
   validation_env0 <- vt_scrape_val_env()
