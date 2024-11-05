@@ -38,9 +38,8 @@ Description: Automate the steps necessary to create a validation ready package
     situations to provide documentation for validation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.1
 Suggests: 
     covr,
     XML,
@@ -48,14 +47,14 @@ Suggests:
     bookdown,
     here,
     xml2,
-    rvest
+    rvest,
+    fs
 Imports:
     desc,
     devtools,
     R6,
     roxygen2,
     lubridate,
-    fs,
     rlang,
     yaml,
     whoami,
@@ -69,7 +68,9 @@ Imports:
     knitr,
     kableExtra,
     testthat,
-    tidyselect
+    tidyselect,
+    rstudioapi
 VignetteBuilder: knitr
 SystemRequirements:
     lua
+URL: https://phuse-org.github.io/valtools/

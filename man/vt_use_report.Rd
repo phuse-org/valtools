@@ -14,7 +14,7 @@ vt_use_report(
 \arguments{
 \item{pkg_name}{name of package}
 
-\item{template}{what validation report template from {valtools} to use,
+\item{template}{what validation report template from valtools to use,
 one of "validation" (default) or "requirements"}
 
 \item{dynamic_referencing}{Should dynamic referencing be enabled by default. Boolean defaults to FALSE.}

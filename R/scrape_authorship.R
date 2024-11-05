@@ -115,7 +115,7 @@ vt_scrape_test_code_editors <- function(tags = c("editor", "editDate", "deprecat
   out
 }
 
-#' @note vt_scrape_functions Requires access to raw R/ or function documentation parsed via {valtools} into validation/ folder.
+#' @note vt_scrape_functions Requires access to raw R/ or function documentation parsed via valtools into validation/ folder.
 #' Cannot pull information from installed R/ location.
 #' @export
 #' @rdname scraping

@@ -1,5 +1,5 @@
 <!-- badges: start -->
-  [![R build status](https://github.com/phuse-org/valtools/workflows/R-CMD-check/badge.svg)](https://github.com/phuse-org/valtools/actions)
+  [![R-CMD-check](https://github.com/phuse-org/valtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/phuse-org/valtools/actions/workflows/R-CMD-check.yaml)
   [![Codecov test coverage](https://codecov.io/gh/phuse-org/valtools/branch/main/graph/badge.svg)](https://codecov.io/gh/phuse-org/valtools?branch=main)
   [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
@@ -18,10 +18,16 @@ For background on the `R Package Validation Framework`, watch [this presentation
 
 ## Installation
 
-{valtools} is under active development. To get the latest version, install from github:
+To install the most recent version officially released on GitHub, use:
 
 ```
-devtools::install_github("phuse-org/valtools")
+remotes::install_github("phuse-org/valtools", ref = remotes::github_release())
+```
+
+To install the latest development version, use:
+
+```
+remotes::install_github("phuse-org/valtools")
 ```
 
 ## Usage
@@ -75,14 +81,11 @@ Read the [`Starting New Validation Package using {valtools}`](vignettes/starting
 
 Cheat sheet on how to use the {valtools} R Package
 
-<a href="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png">
-<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png" 
+<a href="man/figures/cheatsheets/valtools-cheatsheet.pdf">
+<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p1.png"
      alt="Cheatsheet on how to use the {valtools} R Package - functions" 
      style="width:50%;height:auto"/>
-</a>
-
-<a href="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png">
-<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png" 
+<img src="man/figures/cheatsheets/valtools-cheatsheet/valtools-cheatsheet-p2.png"
      alt="Cheatsheet on how to use the {valtools} R Package - functions & validation modes" 
      style="width:50%;height:auto"/>
 </a>

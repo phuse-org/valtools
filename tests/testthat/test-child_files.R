@@ -1,6 +1,6 @@
 test_that("child files in pkg", {
   withr::with_tempdir({
-    capture_output <- capture.output({vt_create_package(open = FALSE)})
+    make_vt_test_package()
 
     vt_use_req("req1", username = "a user", open = FALSE)
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
@@ -42,7 +42,7 @@ test_that("child files in pkg", {
 
 test_that("child files outside pkg", {
   withr::with_tempdir({
-     vt_use_validation()
+     make_vt_test_package()
      vt_use_test_case("testcase1", username = "a user", open = FALSE)
      vt_use_req("req1", username = "a user", open = FALSE)
      vt_use_test_code("testcode1", username = "another user", open = FALSE)
@@ -63,7 +63,7 @@ test_that("child files outside pkg", {
 
 test_that("incomplete set", {
   withr::with_tempdir({
-    vt_use_validation()
+    make_vt_test_package()
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_req("req1", username = "a user", open = FALSE)
@@ -87,7 +87,7 @@ test_that("incomplete set", {
 
 test_that("compatibility between vt_get_child_files and vt_files", {
   withr::with_tempdir({
-    captured_output <- capture.output({vt_create_package(open = FALSE)})
+    make_vt_test_package()
     vt_use_test_case("testcase1", username = "a user", open = FALSE)
     vt_use_test_case("testcase2", username = "a user", open = FALSE)
     vt_use_req("req1", username = "a user", open = FALSE)
@@ -97,11 +97,12 @@ test_that("compatibility between vt_get_child_files and vt_files", {
     setwd(file.path("vignettes", "validation"))
 
     knitr::opts_knit$set("output.dir"= ".")
-    rmd_asis <- capture.output({vt_file(child_files)})
-    testthat::expect_equal(rmd_asis[9],
-                           "+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING")
 
-    suppressWarnings(testthat::expect_error(vt_file(basename(child_files))))
+    rmd_asis <- capture.output({vt_file(child_files)})
+    testthat::expect_in("+ Setup: DOCUMENT ANY SETUP THAT NEEDS TO BE DONE FOR TESTING",
+                        rmd_asis)
+
+    testthat::expect_error(suppressWarnings(vt_file(basename(child_files))))
 
   })
 })

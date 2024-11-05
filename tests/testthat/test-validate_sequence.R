@@ -3,19 +3,11 @@ test_that("test running validation.Rmd from source", {
   withr::with_tempdir({
 
     ## create blank package
-    quiet <- capture.output({
-      usethis::create_package("example.package")
-    })
-
-    setwd("example.package")
-
-    ## make vignette and validation dir
-    dir.create("vignettes")
-    dir.create("vignettes/validation")
+    make_vt_test_package()
 
     ## create config file
     writeLines(text = c(
-      "package: example.package",
+      paste0('package: ', basename(getwd())),
       "working_dir: vignettes",
       "output_dir: inst",
       "report_rmd_name: validation.Rmd",
@@ -54,7 +46,7 @@ test_that("test running validation.Rmd from source", {
       normalizePath(validation_report_output,winslash = "/"),
       normalizePath(file.path(
         getwd(),
-        paste0("inst/validation/Validation_Report_example.package_v0.0.0.9000_",format(Sys.Date(),"%Y%m%d.pdf"))),
+        paste0("inst/validation/Validation_Report_", basename(getwd()), "_v0.0.0.9000_",format(Sys.Date(),"%Y%m%d.pdf"))),
         winslash = "/")
     )
 
@@ -262,7 +254,8 @@ test_that("test building a validated bundle from source", {
         "")
     )
 
-  })})
+  })
+})
 
 test_that("test installing a validated bundle from source and rerunning report", {
   skip_if(!"valtools" %in% rownames(installed.packages()))

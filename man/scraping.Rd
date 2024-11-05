@@ -72,7 +72,7 @@ opinionated kable formatting functions are provided as well to facilitate nice
 printing in the reports.
 }
 \note{
-vt_scrape_functions Requires access to raw R/ or function documentation parsed via {valtools} into validation/ folder.
+vt_scrape_functions Requires access to raw R/ or function documentation parsed via valtools into validation/ folder.
 Cannot pull information from installed R/ location.
 }
 \examples{

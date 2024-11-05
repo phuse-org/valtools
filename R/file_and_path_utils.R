@@ -53,14 +53,14 @@ vt_path <- function(...){
 }
 
 
-#' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project is_vcs_root
+#' @importFrom rprojroot find_root has_file is_r_package is_rstudio_project
 #' @rdname validation_paths
 #'
 #' @export
 vt_find_config <- function(){
   
   tryCatch({
-    root <- find_root(has_file(".here") | is_rstudio_project | is_r_package | is_vcs_root)
+    root <- find_root(has_file(".here") | is_rstudio_project | is_r_package )
   }, error = function(e){
     abort(
       paste0(
@@ -70,7 +70,8 @@ vt_find_config <- function(){
       class = "vt.validation_root_missing"
     )
   })
-
+  
+  
   tryCatch({
 
     config <- find_file("validation.yml", root, full_names = TRUE)
@@ -88,7 +89,9 @@ vt_find_config <- function(){
         abort(e)
       }
     })
-
+  
+  check_for_child_projects_with_configs(root, config)
+  
   if(length(config) > 1){
     config <- config_selector(config)
   }
@@ -113,13 +116,21 @@ vt_find_config <- function(){
 #' @importFrom withr with_dir
 #' @noRd
 #'
-find_file <- function(filename, ref = ".", full_names = FALSE){
+find_file <- function(filename, ref = ".", full_names = FALSE, regex = FALSE, include_hidden_files = FALSE){
 
   with_dir(new = normalizePath(ref,winslash = "/"), {
-    file_list <- list.files(path = ".", recursive = TRUE, full.names = TRUE)
+    file_list <- list.files(path = ".", recursive = TRUE, full.names = TRUE, all.files = include_hidden_files)
   })
-
-  file_path <- file_list[basename(file_list) %in% filename]
+  
+  if(!regex){
+    file_path <- file_list[basename(file_list) %in% filename]
+  }else{
+    if(length(filename)>1){
+      abort("If `regex` is set to `TRUE`, filename is used as a pattern",
+            class = "vt.file_multiple_regex")
+    }
+    file_path <- file_list[grepl(pattern = filename,x = basename(file_list))]
+  }
 
   if(length(file_path) == 0){
     abort(paste0("File `",filename,"` not found."),
@@ -169,7 +180,62 @@ config_selector <- function(files, is_live = interactive()){
 }
 
 
+check_for_child_projects_with_configs <- function(root, configs){
+  
+  if(length(configs) > 1){
+    
+    root_files <- c(
+      tryCatch(find_file("[.]Rproj$", root, regex = TRUE, full_names = TRUE, include_hidden_files = TRUE),error = function(e){c()}),
+      tryCatch(find_file("[.]here$", root, regex = TRUE, full_names = TRUE, include_hidden_files = TRUE),error = function(e){c()}),
+      find_r_pkg_desc(root)
+    )
+    
+    root_dirs <- unique(dirname(root_files))
+    root_child_dirs<- setdiff(root_dirs, root)
+    
+    if(length(root_child_dirs) > 0){
+    
+      roots_child_with_validation <- c()
+      for(root_path in root_child_dirs){
+        if(any(grepl(paste0(root_path,"/"),configs,fixed=TRUE))){
+          roots_child_with_validation <- c(
+            roots_child_with_validation,
+            root_path
+          )
+        }
+      }
+      
+      roots_child_with_validation <- unique(roots_child_with_validation)
+      
+      if(length(roots_child_with_validation) > 1){
+        
+        ref_dirs <- gsub(paste0(normalizePath(getwd(),winslash = "/"),"/"),"",roots_child_with_validation,fixed = TRUE)
+        
+        abort(
+          paste0("Nested projects with validation infrastructures exist. Set the working directory to one of:\n",
+               paste0("\t- `setwd(\"",ref_dirs,"\")`\n", collapse = "")),
+        class = "vt.multiple_validation_roots_found")
+      } 
+    }
+  }
 
+}
 
-
+find_r_pkg_desc <- function(root){
+  
+  desc_files <- tryCatch(find_file("DESCRIPTION", root, regex = TRUE, full_names = TRUE, include_hidden_files = TRUE),error = function(e){c()})
+  
+  if(is.null(desc_files)){
+    return(c())
+  }else{
+    desc_file_out <- c()
+    for(desc_file in desc_files){
+      contents <- readLines(con = desc_file)
+      if(any(grepl("^Package:", contents))){
+        desc_file_out <- c(desc_file_out, desc_file)
+      }
+    }
+    return(desc_file_out)
+  }
+}
 
