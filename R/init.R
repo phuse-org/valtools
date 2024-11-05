@@ -62,6 +62,18 @@ vt_use_validation <- function( pkg = ".", working_dir, ...) {
 #' @importFrom usethis create_package
 vt_create_package <- function(pkg = ".", ..., fields = list(), rstudio = rstudioapi::isAvailable(),
                               roxygen = TRUE, check_name = TRUE, open = rlang::is_interactive()) {
+  # This fields modification block can likely be removed once usethis > 3.0.0 is
+  # released on CRAN. See full note in tests/testthat/helpers.R
+  fields <- utils::modifyList(
+    fields,
+    list(
+      `Authors@R` = paste0(
+        "person(\"First\", \"Last\", email = \"first.last",
+        "@example.com\", role = c(\"aut\", \"cre\"))"
+      )
+    ),
+    keep.null = TRUE
+  )
 
   tryCatch({
     create_package(

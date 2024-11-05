@@ -18,7 +18,7 @@ make_vt_test_package <- function(){
 #' once usethis > 3.0.0 is released, the custom `fields` argument below should
 #' be able to be removed. At that time, if desired, this wrapper function could
 #' also just be removed and replaced with usethis::create_package() in the unit
-#' tests.
+#' tests. See also another instance in vt_create_package().
 #'
 #' @param ... Passed to usethis::create_package()
 #'
