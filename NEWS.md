@@ -1,3 +1,5 @@
+# valtools (development version)
+
 # valtools 0.4.1
 
 * Initialize this NEWS.md
