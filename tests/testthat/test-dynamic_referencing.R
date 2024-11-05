@@ -414,7 +414,7 @@ test_that("Dynamic Number Referencing across rmarkdown chunks", {
     "",
     "",
     "",
-    "```r",
+    "``` r",
     "#library(valtools)",
     "test_referencer <- vt_dynamic_referencer$new(reference_indicator = \"##\")",
     "```",
