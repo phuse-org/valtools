@@ -27,7 +27,7 @@ remotes::install_github("phuse-org/valtools", ref = remotes::github_release())
 To install the latest development version, use:
 
 ```
-remotes::install_github("phuse-org/valtools")
+remotes::install_github("phuse-org/valtools", ref = "develop")
 ```
 
 ## Usage
